@@ -1,0 +1,45 @@
+#!/bin/sh
+
+state_dir="${XDG_RUNTIME_DIR:-/tmp}/hypr-osd-notify"
+id_file="$state_dir/brightness.id"
+
+mkdir -p "$state_dir"
+
+case "$1" in
+  up)
+    brightnessctl s +5%
+    ;;
+  down)
+    brightnessctl s 5%-
+    ;;
+  *)
+    exit 2
+    ;;
+esac
+
+value="$(brightnessctl g | awk -v max="$(brightnessctl m)" '{printf "%d", $1 / max * 100}')"
+
+if [ "$value" -le 33 ]; then
+  icon="display-brightness-low"
+elif [ "$value" -le 66 ]; then
+  icon="display-brightness-medium"
+else
+  icon="display-brightness-high"
+fi
+
+old_id=""
+[ -s "$id_file" ] && old_id="$(cat "$id_file")"
+
+if [ -n "$old_id" ]; then
+  new_id="$(notify-send -p -e -a "System" -r "$old_id" -i "$icon" \
+    -h "string:synchronous:system-Brightness" \
+    -h "int:value:${value}" \
+    -t 1200 "Brightness" "${value}%")"
+else
+  new_id="$(notify-send -p -e -a "System" -i "$icon" \
+    -h "string:synchronous:system-Brightness" \
+    -h "int:value:${value}" \
+    -t 1200 "Brightness" "${value}%")"
+fi
+
+[ -n "$new_id" ] && printf '%s\n' "$new_id" > "$id_file"

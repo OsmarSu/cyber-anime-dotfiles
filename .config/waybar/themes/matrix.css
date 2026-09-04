@@ -1,0 +1,46 @@
+/* ─────────────────────────────────────────────────────────
+   Theme — Matrix / BlackArch Red
+   Palette: rosso su nero, gerarchia 5 livelli.
+   Per cambiare tema: ln -sf themes/matrix.css theme.css + killall -SIGUSR2 waybar
+   ───────────────────────────────────────────────────────── */
+
+/* ── Palette ── */
+@define-color base       #080000;
+@define-color mantle     #050000;
+@define-color crust      #020000;
+@define-color surface0   #160404;
+@define-color surface1   #1e0606;
+@define-color surface2   #280808;
+@define-color text       #cc3344;
+@define-color subtext0   #994455;
+@define-color subtext1   #aa3344;
+@define-color overlay0   #6b2030;
+@define-color overlay1   #7a2535;
+@define-color overlay2   #893040;
+@define-color rosewater  #ffdd44;
+@define-color flamingo   #ff6677;
+@define-color pink       #ff4455;
+@define-color mauve      #ff4455;
+@define-color red        #ff4455;
+@define-color maroon     #ff6677;
+@define-color peach      #ff8040;
+@define-color yellow     #ffdd44;
+@define-color green      #ff4455;
+@define-color teal       #cc3344;
+@define-color sky        #ff8040;
+@define-color sapphire   #cc3344;
+@define-color blue       #cc3344;
+@define-color lavender   #ff6677;
+
+/* ── Role mapping ── */
+@define-color bar-bg          rgba(8, 0, 0, 0.88);
+@define-color pill-bg         @surface0;
+@define-color pill-bg-hover   @surface1;
+@define-color text-fg         @text;
+@define-color text-dim        @overlay0;
+@define-color accent-active   #ff4455;
+@define-color accent-hover    #ff6677;
+@define-color accent-warning  #ff8040;
+@define-color accent-critical #ffdd44;
+@define-color accent-good     #ff4455;
+@define-color accent-info     #cc3344;

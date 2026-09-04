@@ -1,0 +1,34 @@
+/* colors-matrix.rasi — BlackArch Red / Matrix
+ * Palette identica a ~/.config/waybar/themes/matrix.css → coerenza visiva totale.
+ * Swap: ln -sf colors-matrix.rasi ~/.config/rofi/colors.rasi
+ */
+
+* {
+    /* ── Base (= waybar base/surface0/surface1) ── */
+    bg          : #080000cc;   /* base     80% — finestra                  */
+    bg-alt      : #160404e0;   /* surface0 88% — sidebar + inputbar        */
+    bg-selected : #1e0606e0;   /* surface1 88% — voce selezionata          */
+    surface     : #280808;     /* surface2 100% — bordi                    */
+
+    /* ── Foreground (= waybar text/subtext/overlay) ── */
+    fg          : #cc3344;   /* text     = waybar @text-fg   */
+    fg-alt      : #aa3344;   /* subtext1                     */
+    fg-dim      : #6b2030;   /* overlay0 = waybar @text-dim  */
+
+    /* ── Accent — rosso vivo (= waybar @accent-active) ── */
+    accent      : #ff4455;   /* accent-active                */
+    accent-dim  : #cc3344;   /* text                         */
+
+    /* ── Semantic ── */
+    urgent      : #ffdd44;   /* accent-critical = giallo     */
+    warning     : #ff8040;   /* accent-warning  = arancio    */
+
+    /* ── Typography ── */
+    font-family : "JetBrainsMono Nerd Font";
+    font-size   : 12;
+
+    /* ── Border radius — squadrato ── */
+    border-r         : 0px;
+    border-r-inner   : 0px;
+    border-r-element : 0px;
+}

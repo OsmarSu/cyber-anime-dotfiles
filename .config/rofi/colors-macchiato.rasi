@@ -1,0 +1,35 @@
+/* colors-macchiato.rasi — Catppuccin Macchiato
+ * Palette identica a ~/.config/waybar/theme.css → coerenza visiva totale.
+ * Swap: ln -sf colors-macchiato.rasi ~/.config/rofi/colors.rasi
+ */
+
+* {
+    /* ── Base (= waybar base/mantle/surface0/surface1) ── */
+    /* Alpha: finestra 80%, inputbar/selezione 88% → blur Hyprland visibile */
+    bg          : #24273acc;   /* base     80% — lascia passare il blur       */
+    bg-alt      : #1e2030e0;   /* mantle   88% — inputbar leggibile           */
+    bg-selected : #363a4fe0;   /* surface0 88% — voce selezionata leggibile   */
+    surface     : #494d64;     /* surface1 100% — usato solo per bordi        */
+
+    /* ── Foreground (= waybar text/subtext/overlay) ── */
+    fg          : #cad3f5;   /* text     = waybar @text-fg   */
+    fg-alt      : #b8c0e0;   /* subtext1                     */
+    fg-dim      : #6e738d;   /* overlay0 = waybar @text-dim  */
+
+    /* ── Accent — lavender (= waybar @accent-hover) ── */
+    accent      : #b7bdf8;   /* lavender                     */
+    accent-dim  : #8087a2;   /* overlay1                     */
+
+    /* ── Semantic ── */
+    urgent      : #ed8796;   /* red      = waybar @accent-critical */
+    warning     : #eed49f;   /* yellow   = waybar @accent-warning  */
+
+    /* ── Typography ── */
+    font-family : "JetBrainsMono Nerd Font";
+    font-size   : 12;
+
+    /* ── Border radius ── */
+    border-r         : 12px;
+    border-r-inner   : 8px;
+    border-r-element : 8px;
+}

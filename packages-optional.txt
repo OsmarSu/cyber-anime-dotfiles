@@ -1,0 +1,42 @@
+# packages-optional.txt
+# Optional components — installer asks before including these.
+# Each section maps to one prompt in install.sh.
+
+# kitty — terminal emulator (also enables yazi file manager)
+kitty
+yazi
+
+# zsh — shell with Oh My Zsh, Powerlevel10k, autosuggestions, syntax highlighting
+zsh
+zsh-autosuggestions
+zsh-completions
+zsh-syntax-highlighting
+zsh-theme-powerlevel10k-git
+
+# neovim — text editor with lazy.nvim, LSP, Treesitter
+# LSP runtime deps: nodejs+npm (bash/html/css/pyright), python-pip (Mason fallback)
+neovim
+lazygit
+nodejs
+npm
+python-pip
+
+# extras — personal tools and utilities, not required for the rice to work
+figlet
+cmatrix
+hunspell-it
+ttf-firacode-nerd
+ttf-cascadia-code-nerd
+ttf-cascadia-mono-nerd
+ttf-iosevka-nerd
+ttf-iosevkaterm-nerd
+ttf-fira-mono
+ttf-fira-sans
+cava
+easyeffects
+vim
+ex-vi-compat
+imv
+ncdu
+iotop
+vimix-cursors

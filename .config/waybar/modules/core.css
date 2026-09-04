@@ -1,0 +1,67 @@
+/* ─────────────────────────────────────────────────────────
+   Core — window, workspaces, tray, clock
+   ───────────────────────────────────────────────────────── */
+
+#window {
+  font-style: italic;
+  color: @text-fg;
+}
+window#waybar.empty #window {
+  background: transparent;
+  color: @text-dim;
+}
+
+#workspaces button {
+  padding: 0 6px;
+  margin: 0 2px;
+  background: transparent;
+  color: @text-dim;
+  border-radius: 6px;
+  border: 1px solid transparent;
+}
+#workspaces button.active {
+  color: @accent-active;
+  border: 1px solid @accent-active;
+  background: alpha(@accent-active, 0.08);
+}
+#workspaces button.urgent {
+  color: @base;
+  background: @accent-warning;
+}
+#workspaces button:hover {
+  background: alpha(@accent-hover, 0.15);
+  color: @accent-hover;
+  border-color: @accent-hover;
+}
+#workspaces button.empty {
+  opacity: 0.35;
+}
+#workspaces button.special {
+  color: @accent-warning;
+  border: 1px solid alpha(@accent-warning, 0.45);
+  background: alpha(@accent-warning, 0.07);
+}
+#workspaces button.special.active {
+  color: @accent-warning;
+  border: 1px solid @accent-warning;
+  background: alpha(@accent-warning, 0.18);
+}
+#workspaces button.special:hover {
+  color: @accent-warning;
+  border-color: @accent-warning;
+  background: alpha(@accent-warning, 0.18);
+}
+
+#tray {
+  padding: 2px 8px;
+}
+#tray > .passive   { -gtk-icon-effect: dim; }
+#tray > .needs-attention {
+  -gtk-icon-effect: highlight;
+  background: alpha(@accent-warning, 0.2);
+}
+
+#clock {
+  font-weight: bold;
+  padding: 2px 12px;
+}

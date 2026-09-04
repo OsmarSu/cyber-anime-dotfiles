@@ -1,0 +1,139 @@
+/* launcher.rasi — sidebar verticale sx + contenuto dx, 2 colonne.
+ * Struttura: mainbox (horizontal) → [mode-switcher | listbox]
+ *            listbox (vertical)   → [inputbar | listview]
+ * Importa colors.rasi (swap-target) — mai hardcodare hex qui.
+ */
+
+@import "colors.rasi"
+
+* {
+    background-color: transparent;
+    text-color:       @fg;
+    font:             "JetBrainsMono Nerd Font 12";
+}
+
+/* ---- Window ---- */
+window {
+    transparency:     "real";
+    location:         center;
+    anchor:           center;
+    width:            740px;
+    height:           480px;
+    background-color: @bg;
+    border:           2px solid;
+    border-color:     @accent;
+    border-radius:    @border-r;
+    padding:          0px;
+}
+
+/* ---- Mainbox: orizzontale, sfondo = wallpaper corrente ---- */
+mainbox {
+    orientation:      horizontal;
+    children:         [ "mode-switcher", "listbox" ];
+    spacing:          0px;
+    padding:          0px;
+    border-radius:    @border-r;
+    background-image: url("~/.config/rofi/.current_wallpaper", width);
+}
+
+/* ---- Sidebar sinistra: tab verticali icon-only ---- */
+mode-switcher {
+    orientation:      vertical;
+    expand:           false;
+    width:            72px;
+    spacing:          0.5em;
+    padding:          1em 0.4em;
+    background-color: @bg-alt;
+    border-radius:    @border-r;
+}
+
+button {
+    padding:          0.9em 0.3em;
+    border-radius:    @border-r-inner;
+    background-color: transparent;
+    text-color:       @fg-dim;
+    cursor:           pointer;
+    horizontal-align: 0.5;
+    vertical-align:   0.5;
+    font:             "JetBrainsMono Nerd Font 22";
+}
+
+button selected {
+    background-color: @bg-selected;
+    text-color:       @accent;
+}
+
+/* ---- Area contenuto destra: inputbar + listview impilati ---- */
+listbox {
+    orientation:      vertical;
+    children:         [ "inputbar", "listview" ];
+    spacing:          0.7em;
+    padding:          0.9em;
+    background-color: transparent;
+}
+
+/* ---- Search bar ---- */
+inputbar {
+    children:         [ "prompt", "entry" ];
+    spacing:          0.5em;
+    padding:          0.5em 0.7em;
+    background-color: @bg-alt;
+    border-radius:    @border-r-inner;
+}
+
+prompt {
+    text-color: @accent;
+}
+
+entry {
+    placeholder:        "Search…";
+    placeholder-color:  @fg-dim;
+    text-color:         @fg;
+    cursor:             text;
+}
+
+/* ---- Risultati: 2 colonne ---- */
+listview {
+    columns:          2;
+    lines:            5;
+    spacing:          0.3em;
+    cycle:            true;
+    scrollbar:        false;
+    fixed-height:     true;
+    background-color: @bg;
+    border-radius:    @border-r-inner;
+    padding:          0.4em;
+}
+
+element {
+    padding:          0.5em;
+    border-radius:    @border-r-element;
+    spacing:          0.6em;
+    children:         [ "element-icon", "element-text" ];
+    cursor:           pointer;
+}
+
+element normal.normal {
+    text-color: @fg-alt;
+}
+
+element selected.normal {
+    background-color: @bg-selected;
+    text-color:       @accent;
+    border:           0px 0px 0px 3px;
+    border-color:     @accent;
+}
+
+element-icon {
+    size:             1.5em;
+    background-color: transparent;
+}
+
+element-text {
+    text-color:     inherit;
+    vertical-align: 0.5;
+}
+
+element urgent {
+    text-color: @urgent;
+}

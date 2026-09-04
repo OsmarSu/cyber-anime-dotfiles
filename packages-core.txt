@@ -1,0 +1,85 @@
+# packages-core.txt
+# Required packages for this rice — always installed.
+# Assumes a base Arch install (base, linux, grub, networkmanager, sudo already present).
+# Hardware-specific packages (intel-ucode, intel-media-driver) not included — install as needed.
+# Optional components (Kitty, Zsh, Neovim) are in packages-optional.txt.
+# For hacking tools see packages-blackarch.txt.
+
+# Uwsm needs to be set up as per Arch wiki documentation.
+
+# display manager
+sddm
+sddm-catppuccin-git
+
+# wayland / wm
+hyprland
+uwsm
+xdg-desktop-portal-hyprland
+hypridle
+hyprlock
+hyprpicker
+awww
+
+# bar / notifications / launcher
+waybar
+swaync
+rofi
+rofi-calc
+rofi-emoji
+wlogout
+grimblast-git
+wtype
+swappy
+
+# audio
+pipewire
+wireplumber
+alsa-utils
+pamixer
+pulsemixer
+pavucontrol
+
+# theming
+nwg-look
+kvantum
+kvantum-theme-catppuccin-git
+qt5ct
+qt6ct
+qt5-wayland
+qt6-wayland
+capitaine-cursors
+
+# fonts
+ttf-jetbrains-mono-nerd
+ttf-nerd-fonts-symbols
+ttf-nerd-fonts-symbols-mono
+noto-fonts-emoji
+
+# utils
+cliphist
+gvfs
+gvfs-mtp
+7zip
+unrar
+tree
+lsof
+brightnessctl
+
+# bluetooth
+bluez-utils
+bluetuith
+blueman
+
+# networking
+ufw
+openbsd-netcat
+
+# build tools
+gcc
+make
+
+# misc
+pacman-contrib
+yay
+git
+polkit-kde-agent

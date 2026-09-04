@@ -1,0 +1,16 @@
+#!/bin/sh
+
+printf 'Restarting swaync at %s\n' "$(date -Is)"
+printf 'style.css head: '
+sed -n '2p' "$HOME/.config/swaync/style.css"
+
+pkill -x swaync 2>/dev/null || true
+
+i=0
+while pgrep -x swaync >/dev/null 2>&1 && [ "$i" -lt 20 ]; do
+  sleep 0.1
+  i=$((i + 1))
+done
+
+printf 'waited ticks: %s\n' "$i"
+exec /usr/bin/swaync

@@ -1,0 +1,75 @@
+#!/bin/sh
+
+state_dir="${XDG_RUNTIME_DIR:-/tmp}/hypr-osd-notify"
+id_file="$state_dir/volume.id"
+
+mkdir -p "$state_dir"
+
+case "$1" in
+  up)
+    pamixer -i 5
+    ;;
+  down)
+    pamixer -d 5
+    ;;
+  mute)
+    pamixer -t
+    ;;
+  mic)
+    id_file="$state_dir/microphone.id"
+    pamixer --default-source -t
+    muted="$(pamixer --default-source --get-mute)"
+    if [ "$muted" = "true" ]; then
+      icon="microphone-sensitivity-muted"
+      body="Muted"
+      value=0
+    else
+      icon="microphone-sensitivity-high"
+      body="On"
+      value="$(pamixer --default-source --get-volume)"
+    fi
+    summary="Microphone"
+    ;;
+  *)
+    exit 2
+    ;;
+esac
+
+if [ "$1" != "mic" ]; then
+  muted="$(pamixer --get-mute)"
+  volume="$(pamixer --get-volume)"
+  summary="Volume"
+
+  if [ "$muted" = "true" ]; then
+    icon="audio-volume-muted"
+    body="Muted"
+    value=0
+  else
+    body="${volume}%"
+    value="$volume"
+    if [ "$volume" -le 33 ]; then
+      icon="audio-volume-low"
+    elif [ "$volume" -le 66 ]; then
+      icon="audio-volume-medium"
+    else
+      icon="audio-volume-high"
+    fi
+  fi
+fi
+
+old_id=""
+[ -s "$id_file" ] && old_id="$(cat "$id_file")"
+
+if [ -n "$old_id" ]; then
+  new_id="$(notify-send -p -e -a "System" -r "$old_id" -i "$icon" \
+    -h "string:synchronous:system-${summary}" \
+    -h "int:value:${value}" \
+    -t 1200 "$summary" "$body")"
+else
+  new_id="$(notify-send -p -e -a "System" -i "$icon" \
+    -h "string:synchronous:system-${summary}" \
+    -h "int:value:${value}" \
+    -t 1200 "$summary" "$body")"
+fi
+
+[ -n "$new_id" ] && printf '%s\n' "$new_id" > "$id_file"

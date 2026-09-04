@@ -1,0 +1,108 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  shellcheck:
+    name: ShellCheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install ShellCheck
+        run: sudo apt-get install -y shellcheck
+      - name: Run ShellCheck
+        run: |
+          find . -name "*.sh" -not -path "./.git/*" \
+            | xargs shellcheck --shell=bash --severity=warning
+
+  lua-syntax:
+    name: Lua syntax
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lua
+        run: sudo apt-get install -y lua5.4
+      - name: Check Lua syntax
+        run: |
+          find . -name "*.lua" -not -path "./.git/*" \
+            | xargs -I{} luac5.4 -p {}
+
+  repo-integrity:
+    name: Repo integrity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Required files exist
+        run: |
+          fail=0
+          check() {
+            if [[ ! -e "$1" ]]; then
+              echo "MISSING: $1"
+              fail=1
+            fi
+          }
+          # package lists
+          check packages-core.txt
+          check packages-optional.txt
+          # installer scripts
+          check install.sh
+          check uninstall.sh
+          # hyprland theme files
+          check .config/hypr/themes/macchiato.lua
+          check .config/hypr/themes/matrix.lua
+          check .config/hypr/themes/hyprlock-macchiato.conf
+          check .config/hypr/themes/hyprlock-matrix.conf
+          # waybar themes
+          check .config/waybar/themes/macchiato.css
+          check .config/waybar/themes/matrix.css
+          # kitty themes
+          check .config/kitty/themes/macchiato.conf
+          check .config/kitty/themes/matrix.conf
+          # rofi colors
+          check .config/rofi/colors-macchiato.rasi
+          check .config/rofi/colors-matrix.rasi
+          # swaync themes
+          check .config/swaync/themes/macchiato.css
+          check .config/swaync/themes/matrix.css
+          # fastfetch configs
+          check .config/fastfetch/config-macchiato.jsonc
+          check .config/fastfetch/config-matrix.jsonc
+          # theme-switch script
+          check .config/waybar/scripts/theme-switch.sh
+          exit "$fail"
+      - name: Asset directories are non-empty
+        run: |
+          fail=0
+          check_dir() {
+            if [[ ! -d "$1" ]]; then
+              echo "MISSING dir: $1"
+              fail=1
+            elif [[ -z "$(ls -A "$1")" ]]; then
+              echo "EMPTY dir: $1"
+              fail=1
+            fi
+          }
+          check_dir assets/backgrounds/whitehat
+          check_dir assets/backgrounds/blackhat
+          exit "$fail"
+
+  permissions:
+    name: File permissions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: All .sh files must be executable
+        run: |
+          fail=0
+          while IFS= read -r -d '' f; do
+            mode=$(git ls-files --stage -- "$f" | awk '{print $1}')
+            if [[ "$mode" != "100755" ]]; then
+              echo "NOT executable: $f  (mode $mode)"
+              fail=1
+            fi
+          done < <(git ls-files -z -- '*.sh')
+          exit "$fail"

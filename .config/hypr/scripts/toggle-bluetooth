@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if bluetoothctl show | grep -q "Powered: yes"; then
+  bluetoothctl power off
+  notify-send -e -a "System" -t 1200 "Bluetooth" "Disabled"
+else
+  bluetoothctl power on
+  notify-send -e -a "System" -t 1200 "Bluetooth" "Enabled"
+fi

@@ -1,0 +1,90 @@
+/* ─────────────────────────────────────────────────────────
+   Status — privacy, vpn, idle-inhibitor, weather
+   ───────────────────────────────────────────────────────── */
+
+#privacy {
+  background: alpha(@accent-critical, 0.45);
+  color: @accent-critical;
+  border-radius: 8px;
+  padding: 2px 8px;
+}
+#privacy item.audio-in    { color: @accent-critical; }
+#privacy item.screenshare { color: @accent-warning; }
+#privacy item.audio-out   { color: @accent-good; }
+
+#custom-vpn {
+  color: @accent-good;
+  background: alpha(@accent-good, 0.15);
+  min-width: 0;
+}
+
+#idle_inhibitor {
+  color: @text-dim;
+  /* background: @pill-bg ereditato da _base.css */
+  padding: 2px 6px;
+  opacity: 0.55;
+}
+#idle_inhibitor.activated {
+  background: alpha(@accent-warning, 0.25);
+  color: @accent-warning;
+  opacity: 1;
+}
+
+#custom-weather { color: @sky; min-width: 0; }
+
+#custom-active-ip {
+  color: @accent-active;
+  font-weight: bold;
+  min-width: 0;
+}
+
+/* ── Cyber Anime additions ── */
+#custom-appmenu {
+  background: @pill-bg;
+  color: @accent-active;
+  font-size: 16px;
+  padding: 2px 10px;
+  border-radius: 8px;
+  margin: 4px 2px;
+}
+#custom-appmenu:hover {
+  background: @pill-bg-hover;
+  color: @accent-hover;
+}
+
+#pulseaudio {
+  color: @teal;
+  padding: 2px 8px;
+}
+#pulseaudio.muted {
+  color: @overlay0;
+}
+
+#network {
+  color: @sky;
+  padding: 2px 8px;
+}
+#network.disconnected {
+  color: @accent-critical;
+}
+
+#bluetooth {
+  color: @blue;
+  padding: 2px 8px;
+}
+#bluetooth.disabled {
+  color: @overlay0;
+}
+
+#custom-power {
+  background: @pill-bg;
+  color: @accent-critical;
+  padding: 2px 10px;
+  border-radius: 8px;
+  margin: 4px 2px;
+  font-size: 14px;
+}
+#custom-power:hover {
+  background: @accent-critical;
+  color: @base;
+}

@@ -1,0 +1,66 @@
+/* wlogout — Catppuccin Macchiato
+ * border: 2px solid transparent → mantiene il box model GTK intatto
+ * ma non mostra mai nessun bordo visibile.
+ */
+
+* {
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-size: 13pt;
+    font-weight: bold;
+}
+
+window {
+    background-color: rgba(36, 39, 58, 0.88);
+    color: #cad3f5;
+}
+
+button {
+    background-repeat:   no-repeat;
+    background-position: center;
+    background-size:     22%;
+    background-color:    transparent;
+    border:              2px solid transparent;
+    border-radius:       16px;
+    color:               #a5adcb;
+    margin:              12px;
+    transition:          background-color 0.2s ease,
+                         background-size 0.2s ease,
+                         color 0.2s ease,
+                         margin 0.15s ease;
+    outline:             none;
+}
+
+button:hover,
+button:focus {
+    background-color: rgba(54, 58, 79, 0.85);
+    background-size:  40%;
+    color:            #cad3f5;
+    margin:           4px;
+    outline:          none;
+    border-color:     transparent;
+}
+
+button span {
+    font-size: 0pt;
+}
+
+/* ---- Voci: icone default wlogout ---- */
+#lock {
+    background-image: image(url("./icons/default/lock.png"));
+}
+
+#logout {
+    background-image: image(url("./icons/default/logout.png"));
+}
+
+#suspend {
+    background-image: image(url("./icons/default/suspend.png"));
+}
+
+#reboot {
+    background-image: image(url("./icons/default/reboot.png"));
+}
+
+#shutdown {
+    background-image: image(url("./icons/default/shutdown.png"));
+}

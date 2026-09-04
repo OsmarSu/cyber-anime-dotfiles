@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+# rofi-wallpaper — galleria wallpaper con thumbnail + opzione random.
+# Applica il wallpaper scelto con awww e aggiorna il symlink usato
+# da launcher.rasi come background-image.
+#
+# Uso: rofi-wallpaper            → apre il picker visuale
+#      rofi-wallpaper --random   → applica wallpaper casuale senza aprire rofi
+
+set -euo pipefail
+
+WALL_DIR=$(cat "$HOME/.config/rofi/.wall_dir" 2>/dev/null || echo "$HOME/.config/assets/backgrounds/sfondi")
+CURRENT_LINK="$HOME/.config/rofi/.current_wallpaper"
+THEME="$HOME/.config/rofi/wallpaper.rasi"
+
+apply_wall() {
+    local path="$1"
+    awww img "$path" --transition-type random --transition-fps 255 --transition-duration 0.8
+    ln -sf "$path" "$CURRENT_LINK"
+}
+
+# --random: usato dall'autostart per inizializzare il symlink all'avvio
+if [[ "${1:-}" == "--random" ]]; then
+    target=$(find "$WALL_DIR" -maxdepth 1 -type f \
+        \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.webp" \) \
+        | shuf -n1)
+    apply_wall "$target"
+    exit 0
+fi
+
+# Raccoglie i wallpaper in un array (ordinati per nome)
+mapfile -d '' walls < <(find "$WALL_DIR" -maxdepth 1 -type f \
+    \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.webp" \) \
+    -print0 | sort -z)
+
+if [[ ${#walls[@]} -eq 0 ]]; then
+    notify-send "rofi-wallpaper" "Nessun wallpaper trovato in $WALL_DIR" --urgency=critical
+    exit 1
+fi
+
+# Costruisce le voci dmenu con thumbnail come icone (formato rofi 1.7+):
+# "testo\x00icon\x1f/path/assoluto/immagine\n"
+chosen=$(
+    {
+        printf '󰑐  Random\x00icon\x1f%s\n' "${walls[RANDOM % ${#walls[@]}]}"
+        for f in "${walls[@]}"; do
+            printf '%s\x00icon\x1f%s\n' "$(basename "$f")" "$f"
+        done
+    } | rofi -dmenu -i \
+             -p "Wallpaper" \
+             -show-icons \
+             -theme "$THEME"
+) || exit 0   # Escape = uscita pulita
+
+[[ -z "$chosen" ]] && exit 0
+
+if [[ "$chosen" == "󰑐  Random" ]]; then
+    target="${walls[RANDOM % ${#walls[@]}]}"
+else
+    target="$WALL_DIR/$chosen"
+fi
+
+apply_wall "$target"

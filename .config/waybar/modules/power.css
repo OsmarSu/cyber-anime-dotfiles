@@ -1,0 +1,20 @@
+/* ─────────────────────────────────────────────────────────
+   Power — backlight + battery
+   ───────────────────────────────────────────────────────── */
+
+#backlight       { color: @yellow; }
+#backlight:hover { background: @pill-bg-hover; }
+
+#battery                    { color: @green; }
+#battery.charging,
+#battery.plugged            { color: @accent-info; }
+#battery.warning            { color: @accent-warning; }
+#battery.critical           {
+  color: @base;
+  background: @accent-critical;
+  animation: blink-crit 1s ease-in-out infinite alternate;
+}
+
+@keyframes blink-crit {
+  to { background: alpha(@accent-critical, 0.45); }
+}

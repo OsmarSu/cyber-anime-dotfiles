@@ -1,0 +1,8 @@
+.wall_dir_cache
+*.swp
+*.swo
+*~
+.DS_Store
+.current_wallpaper
+assets/icons/
+assets/themes/

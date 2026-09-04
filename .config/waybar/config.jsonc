@@ -1,0 +1,182 @@
+// ═══════════════════════════════════════════════════════════════════════
+// Waybar Config — Cyber-Anime Rice (Community Layout Standard)
+// ═══════════════════════════════════════════════════════════════════════
+{
+  "layer": "top",
+  "position": "top",
+  "mode": "dock",
+  "exclusive": true,
+  "passthrough": false,
+  "gtk-layer-shell": true,
+  "height": 36,
+  "spacing": 4,
+  "fixed-center": true,
+  "ipc": true,
+  "margin-top": 4,
+  "margin-left": 8,
+  "margin-right": 8,
+
+  // Community layout: Workspaces on left, Clock in center, Status on right
+  "modules-left": [
+    "custom/appmenu",
+    "hyprland/workspaces",
+    "custom/wpe",
+    "hyprland/window"
+  ],
+
+  "modules-center": [
+    "clock"
+  ],
+
+  "modules-right": [
+    "tray",
+    "custom/idle-inhibitor",
+    "pulseaudio",
+    "network",
+    "bluetooth",
+    "battery",
+    "custom/control-center",
+    "custom/power"
+  ],
+
+  // ─── CORE / APPS ──────────────────────────────────────────────────────
+  "custom/appmenu": {
+    "format": "󰣇",
+    "tooltip": true,
+    "tooltip-format": "Caja de aplicaciones (Super + A)",
+    "on-click": "$HOME/.local/bin/rofi-launcher"
+  },
+
+  "custom/wpe": {
+    "format": "󰸉",
+    "tooltip": true,
+    "tooltip-format": "Wallpaper Engine Picker (Super + W)",
+    "on-click": "$HOME/.local/bin/wpe-picker"
+  },
+
+  "hyprland/workspaces": {
+    "all-outputs": true,
+    "warp-on-scroll": false,
+    "sort-by-number": true,
+    "show-special": false,
+    "on-click": "activate",
+    "on-scroll-up": "hyprctl dispatch workspace e+1",
+    "on-scroll-down": "hyprctl dispatch workspace e-1",
+    "format": "{name} {windows}",
+    "format-window-separator": " ",
+    "window-rewrite-default": "•",
+    "window-rewrite": {
+      "class<firefox|zen|brave-browser>": "󰈹",
+      "class<kitty|alacritty>": "󰄛",
+      "class<discord|vesktop>": "󰙯",
+      "class<steam>": "󰓓",
+      "class<code|vscodium>": "󰨞",
+      "class<dolphin|yazi>": "󰉋",
+      "class<obsidian>": "󰎕",
+      "class<spotify>": "󰓇"
+    },
+    "persistent-workspaces": { "*": 1 }
+  },
+
+  "hyprland/window": {
+    "format": "{}",
+    "icon": true,
+    "icon-size": 14,
+    "max-length": 35,
+    "separate-outputs": true
+  },
+
+  // ─── CENTER: CLOCK ────────────────────────────────────────────────────
+  "clock": {
+    "format": "󱑂 {0:%H:%M}  󰸗 {0:%d %b}",
+    "format-alt": "󰸗 {:%d %B %Y}  󱑂 {:%H:%M:%S}",
+    "interval": 1,
+    "tooltip-format": "<tt><small>{calendar}</small></tt>",
+    "on-click": "swaync-client -t",
+    "calendar": {
+      "mode": "month",
+      "mode-mon-col": 3,
+      "format": {
+        "months":   "<span color='#00f0ff'><b>{}</b></span>",
+        "weekdays": "<span color='#8fa8b8'><b>{}</b></span>",
+        "today":    "<span color='#ff007f'><b>{}</b></span>",
+        "days":     "<span color='#e2f1f8'>{}</span>"
+      }
+    }
+  },
+
+  // ─── RIGHT: SYSTEM & CONTROLS ─────────────────────────────────────────
+  "tray": {
+    "icon-size": 16,
+    "spacing": 8
+  },
+
+  "custom/idle-inhibitor": {
+    "format": "{}",
+    "exec": "pgrep -x hypridle > /dev/null && echo '󰒲' || echo '☕'",
+    "on-click": "~/.config/waybar/scripts/idle-toggle.sh",
+    "signal": 8,
+    "tooltip": true,
+    "tooltip-format": "Inhibidor de reposo (☕ despierto · 󰒲 reposo)"
+  },
+
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "format-muted": "󰝟 Silenciado",
+    "format-icons": {
+      "default": ["󰕿", "󰖀", "󰕾"]
+    },
+    "scroll-step": 5,
+    "on-click": "pavucontrol",
+    "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+    "tooltip-format": "{desc} ({volume}%)\nClic izq: Mezclador Pavucontrol\nClic der: Silenciar"
+  },
+
+  "network": {
+    "format-wifi": "󰤨 {essid}",
+    "format-ethernet": "󰈀 {ipaddr}",
+    "format-linked": "󰈀 {ifname} (Sin IP)",
+    "format-disconnected": "󰤭 Desconectado",
+    "tooltip-format": "Red: {essid} ({signalStrength}%)\nIP: {ipaddr}\nClic para configurar Wi-Fi",
+    "on-click": "kitty --class nmtui -e nmtui",
+    "on-click-right": "nm-connection-editor"
+  },
+
+  "bluetooth": {
+    "format": "󰂯 {status}",
+    "format-connected": "󰂱 {device_alias}",
+    "format-connected-battery": "󰂱 {device_alias} ({device_battery_percentage}%)",
+    "format-disabled": "󰂲 Off",
+    "tooltip-format": "Bluetooth: {controller_alias}\nDispositivos conectados: {num_connections}\nClic para conectar",
+    "on-click": "kitty --class bluetoothctl -e bluetoothctl",
+    "on-click-right": "rfkill toggle bluetooth"
+  },
+
+  "battery": {
+    "states": { "good": 95, "warning": 30, "critical": 20 },
+    "format": "{icon} {capacity}%",
+    "format-charging": "󰂄 {capacity}%",
+    "format-plugged": "󰚥 {capacity}%",
+    "format-alt": "{time} {icon}",
+    "format-icons": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+    "tooltip-format": "{capacity}% ({timeTo})\nClic para monitor de recursos",
+    "on-click": "kitty -e btop"
+  },
+
+  "custom/control-center": {
+    "format": "󰂚 {}",
+    "exec": "swaync-client -swb",
+    "on-click": "swaync-client -t -sw",
+    "on-click-right": "swaync-client -d -sw",
+    "return-type": "json",
+    "tooltip-format": "Notificaciones: {}\nClic izquierdo: Centro de Control\nClic derecho: No molestar",
+    "escape": true
+  },
+
+  "custom/power": {
+    "format": "⏻",
+    "tooltip": true,
+    "tooltip-format": "Menú de apagado y sesión (Super + Esc)",
+    "on-click": "wlogout -p layer-shell -C $HOME/.config/wlogout/style.css -l $HOME/.config/wlogout/layout -b 5"
+  }
+}

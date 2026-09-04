@@ -1,0 +1,14 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   Waybar style — entry point
+   Tema: theme.css (symlink → themes/macchiato.css)
+   Per cambiare tema: ln -sf themes/X.css theme.css && killall -SIGUSR2 waybar
+   ═══════════════════════════════════════════════════════════════════════ */
+
+@import url("theme.css");
+@import url("modules/_base.css");
+@import url("modules/core.css");
+@import url("modules/system.css");
+@import url("modules/themeswitcher.css");
+@import url("modules/power.css");
+@import url("modules/status.css");
+@import url("modules/control-center.css");

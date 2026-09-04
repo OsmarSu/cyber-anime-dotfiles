@@ -1,0 +1,43 @@
+/* config.rasi — logica rofi (modi, plugin, behavior).
+ * Layout visivo: launcher.rasi (importato qui sotto).
+ * Power menu: lanciato separatamente con -theme powermenu.rasi via rofi-power.
+ */
+
+configuration {
+    /* path assoluto: Hyprland non eredita ~/.local/bin nel PATH */
+    modi: "drun,run,window,clipboard:/home/oswi/.local/bin/rofi-clipboard";
+
+    /* drun behavior */
+    show-icons: true;
+    drun-display-format: "{name}";
+    drun-match-fields: "name,generic,exec,categories,keywords";
+
+    /* window behavior */
+    window-format: "{w}  {c}  {t}";
+
+    /* matching */
+    matching: "fuzzy";
+    sort: true;
+    sorting-method: "fzf";
+    case-sensitive: false;
+
+    /* sidebar icons — solo glifo, nessun testo (tab verticali) */
+    display-drun:      "󰀻";   /* mdi-apps */
+    display-run:       "󰌨";   /* mdi-console-line */
+    display-window:    "󰖯";   /* mdi-window-maximize */
+    display-clipboard: "󰅇";   /* mdi-clipboard-text */
+
+    hover-select:      true;
+    me-select-entry:   "MouseSecondary";
+    me-accept-entry:   "MousePrimary";
+
+    /* terminal usato per app TerminalEmulator=true */
+    terminal: "kitty";
+
+    /* keybind interni utili */
+    kb-mode-next:     "Shift+Right,Control+Tab";
+    kb-mode-previous: "Shift+Left,Control+ISO_Left_Tab";
+    kb-cancel:        "Escape";
+}
+
+@theme "launcher.rasi"

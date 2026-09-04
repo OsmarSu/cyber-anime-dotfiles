@@ -1,0 +1,26 @@
+/* ─────────────────────────────────────────────────────────
+   Notify+Theme drawer (control-center handle + macchiato + matrix)
+   ───────────────────────────────────────────────────────── */
+
+/* Il gruppo è trasparente — il background lo porta la campanella */
+#notify {
+  background: transparent;
+  padding: 0 2px;
+  margin: 4px 0;
+}
+
+/* Pulsanti tema: trasparenti, così l'arancione della campanella
+   non viene "coperto" da un box grigio quando il drawer è aperto */
+#custom-theme-macchiato,
+#custom-theme-hacker {
+  background: transparent;
+  margin: 0;
+  border-radius: 0;
+  padding: 2px 8px;
+}
+
+#custom-theme-macchiato        { color: @lavender; opacity: 0.7; }
+#custom-theme-macchiato:hover  { opacity: 1.0; }
+
+#custom-theme-hacker           { color: @green; opacity: 0.7; }
+#custom-theme-hacker:hover     { opacity: 1.0; }

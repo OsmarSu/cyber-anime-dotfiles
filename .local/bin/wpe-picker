@@ -1,0 +1,164 @@
+#!/usr/bin/env python3
+"""
+wpe-picker: Wallpaper Engine Steam Workshop Picker for Hyprland / Wayland.
+Renders all downloaded wallpapers with previews in Rofi, and applies them
+using mpvpaper (videos), linux-wallpaperengine (scenes), or awww (previews/static).
+"""
+
+import os
+import sys
+import json
+import glob
+import subprocess
+import shutil
+
+WORKSHOP_DIR = os.path.expanduser("~/.local/share/Steam/steamapps/workshop/content/431960")
+DEFAULT_PROJECTS = os.path.expanduser("~/.local/share/Steam/steamapps/common/wallpaper_engine/projects/defaultprojects")
+STATE_FILE = os.path.expanduser("~/.config/rofi/.current_wpe")
+
+def get_active_monitor():
+    try:
+        res = subprocess.check_output(["hyprctl", "monitors", "-j"], text=True)
+        monitors = json.loads(res)
+        for m in monitors:
+            if m.get("focused", False):
+                return m.get("name", "eDP-1")
+        if monitors:
+            return monitors[0].get("name", "eDP-1")
+    except Exception:
+        pass
+    return "eDP-1"
+
+def scan_wallpapers():
+    wallpapers = []
+    folders = glob.glob(os.path.join(WORKSHOP_DIR, "*/"))
+    if os.path.isdir(DEFAULT_PROJECTS):
+        folders += glob.glob(os.path.join(DEFAULT_PROJECTS, "*/"))
+
+    for folder in sorted(folders, key=os.path.getmtime, reverse=True):
+        proj_file = os.path.join(folder, "project.json")
+        if not os.path.isfile(proj_file):
+            continue
+        try:
+            with open(proj_file, "r", encoding="utf-8", errors="ignore") as f:
+                data = json.load(f)
+            title = data.get("title", os.path.basename(os.path.abspath(folder)))
+            wtype = data.get("type", "Unknown").lower()
+            preview = data.get("preview", "")
+            preview_path = os.path.join(folder, preview) if preview else ""
+            if not os.path.isfile(preview_path):
+                # Fallback to any image in the directory
+                for ext in ["*.jpg", "*.jpeg", "*.png", "*.gif"]:
+                    cands = glob.glob(os.path.join(folder, ext))
+                    if cands:
+                        preview_path = cands[0]
+                        break
+
+            main_file = data.get("file", "")
+            file_path = os.path.join(folder, main_file) if main_file else ""
+            wallpapers.append({
+                "title": title,
+                "type": wtype,
+                "preview": preview_path,
+                "file": file_path,
+                "folder": folder,
+                "id": os.path.basename(os.path.abspath(folder))
+            })
+        except Exception:
+            continue
+    return wallpapers
+
+def apply_wallpaper(wp):
+    monitor = get_active_monitor()
+    wtype = wp["type"]
+    file_path = wp["file"]
+    preview_path = wp["preview"]
+    folder = wp["folder"]
+    title = wp["title"]
+
+    # Kill running live wallpaper engines
+    subprocess.run(["pkill", "-x", "mpvpaper"], capture_output=True)
+    subprocess.run(["pkill", "-x", "linux-wallpaperengine"], capture_output=True)
+
+    has_mpvpaper = shutil.which("mpvpaper") is not None
+    has_linux_wpe = shutil.which("linux-wallpaperengine") is not None
+
+    applied_live = False
+
+    # Video wallpapers
+    if wtype == "video" and os.path.isfile(file_path):
+        if has_mpvpaper:
+            # mpvpaper hardware accelerated loop on monitor
+            cmd = ["mpvpaper", "-o", "no-audio loop hwdec=auto", monitor, file_path]
+            subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+            applied_live = True
+        else:
+            subprocess.run(["notify-send", "-a", "Wallpaper Engine", "Fondos de Video", 
+                            "Instala mpvpaper (yay -S mpvpaper) para reproducir videos en vivo."])
+
+    # Scene / 3D wallpapers
+    elif (wtype in ["scene", "web"]) and has_linux_wpe:
+        cmd = ["linux-wallpaperengine", "--screen-root", monitor, folder]
+        subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+        applied_live = True
+
+    # Static / preview fallback with awww
+    if not applied_live and preview_path and os.path.isfile(preview_path):
+        subprocess.run(["awww", "img", preview_path, "--transition-type", "grow", "--transition-pos", "center", "--transition-duration", "1.0"])
+        # Update symlink for rofi/hyprlock
+        symlink_path = os.path.expanduser("~/.config/rofi/.current_wallpaper")
+        try:
+            if os.path.islink(symlink_path) or os.path.exists(symlink_path):
+                os.remove(symlink_path)
+            os.symlink(preview_path, symlink_path)
+        except Exception:
+            pass
+
+    # Save state
+    try:
+        with open(STATE_FILE, "w", encoding="utf-8") as f:
+            json.dump(wp, f, indent=2)
+    except Exception:
+        pass
+
+    subprocess.run(["notify-send", "-a", "Wallpaper Engine", f"Fondo aplicado: {title}", f"Tipo: {wtype.upper()} ({'En vivo' if applied_live else 'Vista previa'})"])
+
+def main():
+    wallpapers = scan_wallpapers()
+    if not wallpapers:
+        subprocess.run(["notify-send", "-a", "Wallpaper Engine", "No se encontraron fondos", "Verifica la carpeta de Workshop en Steam."])
+        return
+
+    # Prepare rofi input lines
+    # Format: Display Title\0icon\x1f/path/to/icon
+    rofi_lines = []
+    for w in wallpapers:
+        badge = "🎞️" if w["type"] == "video" else ("✨" if w["type"] in ["scene", "web"] else "🖼️")
+        line = f"{badge}  {w['title']}  [{w['type'].upper()}]"
+        if w["preview"] and os.path.isfile(w["preview"]):
+            line += f"\0icon\x1f{w['preview']}"
+        rofi_lines.append(line)
+
+    rofi_input = "\n".join(rofi_lines).encode("utf-8")
+
+    rofi_cmd = [
+        "rofi",
+        "-dmenu",
+        "-i",
+        "-p", "󰸉 Wallpaper Engine",
+        "-format", "i",
+        "-theme-str", "window { width: 750px; } listview { lines: 8; columns: 1; }"
+    ]
+
+    try:
+        proc = subprocess.Popen(rofi_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        out, _ = proc.communicate(input=rofi_input)
+        if proc.returncode == 0 and out.strip():
+            selected_idx = int(out.strip().decode("utf-8"))
+            if 0 <= selected_idx < len(wallpapers):
+                apply_wallpaper(wallpapers[selected_idx])
+    except Exception as e:
+        print(f"Error: {e}", file=sys.stderr)
+
+if __name__ == "__main__":
+    main()

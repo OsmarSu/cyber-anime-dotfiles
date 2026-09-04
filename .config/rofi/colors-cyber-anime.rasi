@@ -1,0 +1,33 @@
+/* colors-cyber-anime.rasi — Cyber Anime (Tokyo Night Neon / Cyberpunk)
+ * Palette aligned with Waybar, SwayNC and Hyprland cyber-anime themes.
+ */
+
+* {
+    /* ── Base ── */
+    bg          : #08090de6;   /* Onyx 90%                       */
+    bg-alt      : #0e111af0;   /* Surface 94% — input/sidebar    */
+    bg-selected : #161b28f0;   /* Item selected                  */
+    surface     : #1f2638;     /* Surface borders                */
+
+    /* ── Foreground ── */
+    fg          : #e2f1f8;     /* Cyber Ice text                 */
+    fg-alt      : #8fa8b8;     /* Dim text                       */
+    fg-dim      : #465868;     /* Overlay                        */
+
+    /* ── Accent ── */
+    accent      : #00f0ff;     /* Electric Cyan                  */
+    accent-dim  : #ff007f;     /* Neon Pink / Magenta            */
+
+    /* ── Semantic ── */
+    urgent      : #ff0055;     /* Cyber Red                      */
+    warning     : #fcee0a;     /* Cyber Yellow                   */
+
+    /* ── Typography ── */
+    font-family : "JetBrainsMono Nerd Font";
+    font-size   : 12;
+
+    /* ── Border radius — Modern rounded ── */
+    border-r         : 8px;
+    border-r-inner   : 6px;
+    border-r-element : 6px;
+}

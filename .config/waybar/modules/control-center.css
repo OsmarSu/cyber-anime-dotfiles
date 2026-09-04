@@ -1,0 +1,24 @@
+/* ─────────────────────────────────────────────────────────
+   Control center — dentro #notify (porta il proprio pill)
+   ───────────────────────────────────────────────────────── */
+
+#custom-control-center {
+  color: @lavender;
+  background: @pill-bg;
+  padding: 2px 8px;
+  border-radius: 8px;
+  margin: 0;
+}
+#custom-control-center:hover {
+  background: @pill-bg-hover;
+  color: @accent-hover;
+}
+/* Notifiche attive: arancione solido — niente grigio che trapela */
+#custom-control-center.notification {
+  color: @base;
+  background: @accent-warning;
+}
+#custom-control-center.dnd-notification,
+#custom-control-center.dnd-none {
+  color: @text-dim;
+}

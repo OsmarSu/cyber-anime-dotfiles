@@ -1,0 +1,257 @@
+/* ─────────────────────────────────────────────────────────
+   SwayNC — Cyber Anime (Tokyo Night Neon / Cyberpunk)
+   Palette aligned with Waybar, Hyprland and Rofi cyber-anime themes.
+   ───────────────────────────────────────────────────────── */
+
+/* Palette */
+@define-color base       #08090d;
+@define-color mantle     #050608;
+@define-color crust      #020305;
+@define-color surface0   #0e111a;
+@define-color surface1   #161b28;
+@define-color surface2   #1f2638;
+@define-color text       #e2f1f8;
+@define-color subtext0   #8fa8b8;
+@define-color overlay0   #465868;
+@define-color pink       #ff007f;
+@define-color mauve      #c678dd;
+@define-color red        #ff0055;
+@define-color maroon     #e06c75;
+@define-color peach      #ff9e64;
+@define-color yellow     #fcee0a;
+@define-color green      #00ff9f;
+@define-color teal       #00f0ff;
+@define-color sky        #7dcfff;
+@define-color sapphire   #2ac3de;
+@define-color blue       #00b4d8;
+@define-color lavender   #b4befe;
+
+* {
+  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-size: 13px;
+}
+
+scrollbar,
+scrollbar contents,
+scrollbar trough,
+scrollbar slider {
+  min-width: 0;
+  min-height: 0;
+  opacity: 0;
+  background: transparent;
+  border: none;
+}
+
+/* Notification toast */
+.notification-row {
+  outline: none;
+  background: transparent;
+  padding: 4px;
+}
+
+.notification-row:focus,
+.notification-row:hover {
+  background: transparent;
+}
+
+.notification {
+  background: rgba(14, 17, 26, 0.92);
+  border: 1px solid #00f0ff;
+  border-radius: 8px;
+  padding: 12px;
+  margin: 0px 4px 6px 4px;
+  box-shadow: 0 4px 12px rgba(0, 240, 255, 0.15);
+}
+
+.notification-content {
+  background: transparent;
+}
+
+.close-button {
+  background: transparent;
+  color: @subtext0;
+  text-shadow: none;
+  padding: 0;
+  border-radius: 100%;
+  margin-top: 5px;
+  margin-right: 5px;
+  box-shadow: none;
+  border: none;
+  min-width: 24px;
+  min-height: 24px;
+}
+
+.close-button:hover {
+  box-shadow: none;
+  background: @surface1;
+  transition: all 0.15s ease-in-out;
+  border: none;
+  color: #ff0055;
+}
+
+.notification-default-action,
+.notification-action {
+  padding: 4px;
+  margin: 0;
+  box-shadow: none;
+  background: @surface0;
+  border: 1px solid @surface1;
+  color: @text;
+  transition: all 0.15s ease-in-out;
+}
+
+.notification-default-action:hover,
+.notification-action:hover {
+  background: @surface1;
+  border-color: #00f0ff;
+  color: #00f0ff;
+}
+
+.summary {
+  font-size: 14px;
+  font-weight: bold;
+  background: transparent;
+  color: #00f0ff;
+  text-shadow: none;
+}
+
+.time {
+  font-size: 11px;
+  color: @subtext0;
+  text-shadow: none;
+  margin-right: 18px;
+}
+
+.body {
+  font-size: 12px;
+  font-weight: normal;
+  background: transparent;
+  color: @text;
+  text-shadow: none;
+}
+
+/* Control Center */
+.control-center {
+  background: rgba(8, 9, 13, 0.90);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8), 0 0 16px rgba(0, 240, 255, 0.15);
+}
+
+.control-center-list {
+  background: transparent;
+}
+
+.widget-title {
+  color: #00f0ff;
+  font-size: 15px;
+  font-weight: bold;
+  padding: 4px;
+  margin-bottom: 8px;
+}
+
+.widget-title > button {
+  font-size: 12px;
+  color: @subtext0;
+  text-shadow: none;
+  background: @surface0;
+  border: 1px solid @surface1;
+  box-shadow: none;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+.widget-title > button:hover {
+  background: @surface1;
+  border-color: #ff007f;
+  color: #ff007f;
+}
+
+.widget-dnd {
+  color: @text;
+  padding: 4px;
+  margin-bottom: 8px;
+}
+
+.widget-dnd > switch {
+  font-size: 13px;
+  border-radius: 12px;
+  background: @surface0;
+  border: 1px solid @surface1;
+  box-shadow: none;
+}
+
+.widget-dnd > switch:checked {
+  background: #ff007f;
+  border-color: #ff007f;
+}
+
+.widget-dnd > switch slider {
+  background: @text;
+  border-radius: 12px;
+}
+
+/* Sliders */
+.widget-volume,
+.widget-backlight {
+  background: @surface0;
+  padding: 10px 14px;
+  margin: 6px 0;
+  border-radius: 8px;
+  border: 1px solid @surface1;
+}
+
+.widget-volume > trough > highlight {
+  background: linear-gradient(90deg, #00f0ff, #ff007f);
+}
+
+.widget-backlight > trough > highlight {
+  background: linear-gradient(90deg, #fcee0a, #00f0ff);
+}
+
+/* Buttons grid */
+.widget-buttons-grid {
+  padding: 8px 0;
+}
+
+.widget-buttons-grid > flowbox > flowboxchild > button {
+  background: @surface0;
+  border-radius: 8px;
+  border: 1px solid @surface1;
+  color: @text;
+  min-width: 48px;
+  min-height: 48px;
+  margin: 4px;
+}
+
+.widget-buttons-grid > flowbox > flowboxchild > button:hover {
+  background: @surface1;
+  border-color: #00f0ff;
+  color: #00f0ff;
+}
+
+/* Media player */
+.widget-mpris {
+  background: @surface0;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 240, 255, 0.25);
+}
+
+.widget-mpris-player {
+  padding: 6px;
+}
+
+.widget-mpris-title {
+  font-weight: bold;
+  font-size: 14px;
+  color: #00f0ff;
+}
+
+.widget-mpris-subtitle {
+  font-size: 12px;
+  color: @subtext0;
+}

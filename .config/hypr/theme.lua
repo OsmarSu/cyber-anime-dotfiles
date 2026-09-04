@@ -1,0 +1,1 @@
+/home/oswi/.config/hypr/themes/macchiato.lua

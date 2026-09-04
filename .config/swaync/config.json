@@ -1,0 +1,103 @@
+{
+  "$schema": "/etc/xdg/swaync/configSchema.json",
+  "positionX": "center",
+  "positionY": "top",
+  "layer": "overlay",
+  "control-center-layer": "top",
+  "layer-shell": true,
+  "cssPriority": "user",
+  "control-center-margin-top": 8,
+  "control-center-margin-bottom": 8,
+  "control-center-margin-right": 0,
+  "control-center-width": 430,
+  "control-center-height": 720,
+  "notification-2fa-action": true,
+  "notification-inline-replies": true,
+  "notification-grouping": true,
+  "notification-window-width": 360,
+  "notification-icon-size": 48,
+  "notification-body-image-height": 100,
+  "notification-body-image-width": 200,
+  "fit-to-screen": false,
+  "keyboard-shortcuts": true,
+  "image-visibility": "when-available",
+  "timeout": 8,
+  "timeout-low": 5,
+  "timeout-critical": 0,
+  "transition-time": 200,
+  "hide-on-clear": true,
+  "hide-on-action": true,
+  "text-empty": "No notifications",
+  "script-fail-notify": true,
+  "notification-visibility": {
+    "system-osd": {
+      "state": "transient",
+      "app-name": "System",
+      "summary": "^(Volume|Audio|Brightness|Microphone)$"
+    }
+  },
+  "widgets": [
+    "title#header",
+    "dnd",
+    "buttons-grid",
+    "volume",
+    "slider#microphone",
+    "backlight",
+    "title#notifications",
+    "mpris",
+    "notifications"
+  ],
+  "widget-config": {
+    "notifications": {
+      "vexpand": true
+    },
+    "title#header": {
+      "text": "Control Center",
+      "clear-all-button": false
+    },
+    "title#notifications": {
+      "text": "Notifications",
+      "clear-all-button": true,
+      "button-text": "Clear all"
+    },
+    "dnd": {
+      "text": "Do Not Disturb"
+    },
+    "buttons-grid": {
+      "buttons-per-row": 4,
+      "actions": [
+        { "label": "󰐥", "command": "wlogout -p layer-shell -C /home/kernel_x23_6/.config/wlogout/style.css -l /home/kernel_x23_6/.config/wlogout/layout -b 5" },
+        { "label": "󰌾", "command": "hyprlock" },
+        { "label": "󰕾", "command": "pamixer -t" },
+        { "label": "󰍬", "command": "pamixer --default-source -t" },
+        { "label": "󰄀", "command": "grimblast --notify copysave area" },
+        { "label": "🖼", "command": "awww img $(find $(cat ~/.config/rofi/.wall_dir) -type f | shuf -n1) --transition-type random" },
+        { "label": "󰤨", "command": "kitty --class floating-tool -e nmtui" },
+        { "label": "󰂱", "command": "kitty --class floating-tool -e bluetuith" }
+      ]
+    },
+    "volume": {
+      "label": "󰕿",
+      "show-per-app": false
+    },
+    "slider#microphone": {
+      "label": "󰍬",
+      "cmd_setter": "pamixer --default-source --set-volume $value",
+      "cmd_getter": "pamixer --default-source --get-volume",
+      "min": 0,
+      "max": 100,
+      "min_limit": 0,
+      "max_limit": 100
+    },
+    "backlight": {
+      "label": "󰃞",
+      "device": "intel_backlight",
+      "subsystem": "backlight",
+      "min": 1
+    },
+    "mpris": {
+      "image-size": 96,
+      "image-radius": 8
+    }
+  }
+}

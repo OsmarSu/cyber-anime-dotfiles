@@ -1,0 +1,44 @@
+/* ─────────────────────────────────────────────────────────
+   Theme — Cyber Anime (Tokyo Night Neon / Cyberpunk)
+   Palette: Electric Cyan (#00f0ff) & Neon Magenta (#ff007f) on Onyx Dark.
+   ───────────────────────────────────────────────────────── */
+
+/* ── Palette ── */
+@define-color base       #08090d;
+@define-color mantle     #050608;
+@define-color crust      #020305;
+@define-color surface0   #0e111a;
+@define-color surface1   #161b28;
+@define-color surface2   #1f2638;
+@define-color text       #e2f1f8;
+@define-color subtext0   #8fa8b8;
+@define-color subtext1   #b4cddc;
+@define-color overlay0   #465868;
+@define-color overlay1   #5c7184;
+@define-color overlay2   #758e9f;
+@define-color rosewater  #f5bde6;
+@define-color flamingo   #ff66a3;
+@define-color pink       #ff007f;
+@define-color mauve      #c678dd;
+@define-color red        #ff0055;
+@define-color maroon     #e06c75;
+@define-color peach      #ff9e64;
+@define-color yellow     #fcee0a;
+@define-color green      #00ff9f;
+@define-color teal       #00f0ff;
+@define-color sky        #7dcfff;
+@define-color sapphire   #2ac3de;
+@define-color blue       #00b4d8;
+@define-color lavender   #b4befe;
+
+/* ── Role mapping ── */
+@define-color bar-bg          rgba(8, 9, 13, 0.82);
+@define-color pill-bg         rgba(14, 17, 26, 0.80);
+@define-color pill-bg-hover   rgba(22, 27, 40, 0.95);
+@define-color text-fg         @text;
+@define-color text-dim        @overlay0;
+@define-color accent-active   #00f0ff;
+@define-color accent-hover    #ff007f;
+@define-color accent-warning  #fcee0a;
+@define-color accent-critical #ff0055;
+@define-color accent-good     #00ff9f;

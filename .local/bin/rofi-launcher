@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# rofi-launcher — aggiorna il background con un wallpaper random, poi lancia rofi.
+# Passa tutti gli argomenti a rofi invariati, quindi sostituisce completamente
+# il binario rofi nei keybind senza cambiare la logica di nessuna chiamata.
+
+export PATH="$HOME/.local/bin:$PATH"
+
+WALL_DIR=$(cat "$HOME/.config/rofi/.wall_dir" 2>/dev/null || echo "$HOME/.config/assets/backgrounds/whitehat")
+CURRENT_LINK="$HOME/.config/rofi/.current_wallpaper"
+
+target=$(find "$WALL_DIR" -maxdepth 1 -type f \
+    \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.webp" \) 2>/dev/null \
+    | shuf -n1)
+
+[[ -n "$target" ]] && ln -sf "$target" "$CURRENT_LINK"
+
+if [[ $# -eq 0 ]]; then
+    exec rofi -show drun
+else
+    exec rofi "$@"
+fi

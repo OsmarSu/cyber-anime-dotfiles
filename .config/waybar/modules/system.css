@@ -1,0 +1,47 @@
+/* ─────────────────────────────────────────────────────────
+   System — cpu + memory + temp pill
+   ───────────────────────────────────────────────────────── */
+
+#system {
+  background: @pill-bg;
+  border-radius: 8px;
+  padding: 0 4px;
+  margin: 4px 2px;
+}
+#cpu,
+#memory,
+#custom-temp {
+  background: transparent;
+  margin: 0;
+  padding: 2px 6px;
+  border-radius: 0;
+}
+
+#cpu          { color: @lavender; }
+#memory       { color: @teal; }
+#custom-temp  { color: @green; }
+
+#custom-temp.warm     { color: @yellow; }
+#custom-temp.hot      { color: @peach; }
+#custom-temp.critical {
+  color: @base;
+  background: @accent-critical;
+  border-radius: 4px;
+  padding: 2px 8px;
+}
+
+#system:hover { background: @pill-bg-hover; }
+
+/* Wallpaper Engine button */
+#custom-wpe {
+  background: @pill-bg;
+  color: @accent-active;
+  border-radius: 8px;
+  padding: 2px 10px;
+  margin: 4px 2px;
+  font-size: 14px;
+}
+#custom-wpe:hover {
+  background: @pill-bg-hover;
+  color: @accent-hover;
+}

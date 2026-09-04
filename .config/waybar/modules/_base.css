@@ -1,0 +1,55 @@
+/* ─────────────────────────────────────────────────────────
+   Base — reset, font, common pill rules
+   ───────────────────────────────────────────────────────── */
+
+* {
+  border: none;
+  border-radius: 0;
+  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-weight: bold;
+  font-size: 13px;
+  min-height: 0;
+  transition: background 200ms ease, color 200ms ease, opacity 200ms ease;
+}
+
+window#waybar {
+  background: @bar-bg;
+  color: @text-fg;
+}
+
+/* Common pill style */
+#window,
+#tray,
+#clock,
+#cpu,
+#memory,
+#bluetooth,
+#network,
+#backlight,
+#battery,
+#idle_inhibitor,
+#custom-temp,
+#custom-vpn,
+#custom-active-ip,
+#custom-weather,
+#privacy {
+  background: @pill-bg;
+  color: @text-fg;
+  padding: 2px 10px;
+  margin: 4px 0;
+  border-radius: 8px;
+}
+
+#workspaces {
+  background: @pill-bg;
+  margin: 4px 0;
+  padding: 2px 6px;
+  border-radius: 8px;
+}
+
+tooltip {
+  background: @mantle;
+  border: 1px solid @surface0;
+  border-radius: 8px;
+  color: @text;
+}
