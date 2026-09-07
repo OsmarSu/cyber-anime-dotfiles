@@ -644,6 +644,63 @@ class CyberSettingsWindow(Gtk.Window):
         c3.pack_start(row_shdw, False, False, 0)
 
         box.pack_start(c3, False, False, 0)
+
+        # 4. Terminal Kitty & Saludo Fastfetch
+        c4 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        c4.get_style_context().add_class("card")
+        c4_title = Gtk.Label(label="󰄛 Terminal Kitty & Saludo Fastfetch", xalign=0)
+        c4_title.get_style_context().add_class("card-title")
+        c4_desc = Gtk.Label(label="Controla la tarjeta informativa con especificaciones y el retrato de Alya Kujou al abrir la terminal.", xalign=0)
+        c4_desc.get_style_context().add_class("card-desc")
+        c4.pack_start(c4_title, False, False, 0)
+        c4.pack_start(c4_desc, False, False, 0)
+
+        # Fastfetch toggle row
+        fastfetch_disabled_file = os.path.expanduser("~/.config/fastfetch/.disabled")
+        row_fetch = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        lbl_fetch = Gtk.Label(label="Mostrar banner de Fastfetch al abrir la terminal", xalign=0)
+        lbl_fetch.get_style_context().add_class("card-desc")
+        sw_fetch = Gtk.Switch()
+        sw_fetch.set_active(not os.path.exists(fastfetch_disabled_file))
+
+        def on_toggle_fastfetch(s, p):
+            is_enabled = s.get_active()
+            if is_enabled:
+                if os.path.exists(fastfetch_disabled_file):
+                    try:
+                        os.remove(fastfetch_disabled_file)
+                    except Exception:
+                        pass
+                spawn_cmd("notify-send -a 'Ajustes Cyber' -i 'utilities-terminal' 'Fastfetch Activado' 'El saludo y retrato de Alya se mostrarán al abrir la terminal.'")
+            else:
+                os.makedirs(os.path.dirname(fastfetch_disabled_file), exist_ok=True)
+                try:
+                    with open(fastfetch_disabled_file, "w") as f:
+                        f.write("disabled\n")
+                except Exception:
+                    pass
+                spawn_cmd("notify-send -a 'Ajustes Cyber' -i 'utilities-terminal' 'Fastfetch Desactivado' 'La terminal se abrirá rápida y limpia sin el saludo.'")
+
+        sw_fetch.connect("notify::active", on_toggle_fastfetch)
+        row_fetch.pack_start(lbl_fetch, True, True, 0)
+        row_fetch.pack_end(sw_fetch, False, False, 0)
+        c4.pack_start(row_fetch, False, False, 0)
+
+        # Action buttons row: Test in terminal & Open config
+        fetch_actions = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+        b_test_fetch = Gtk.Button(label="󰐊 Probar Saludo en Vivo")
+        b_test_fetch.get_style_context().add_class("cyber-btn")
+        b_test_fetch.connect("clicked", lambda w: spawn_cmd("kitty --class floating-tool -e sh -c 'fastfetch; echo \"\"; read -n 1 -s -r -p \"Presiona cualquier tecla para cerrar...\"'"))
+
+        b_edit_fetch = Gtk.Button(label="󰏘 Configuración de Fastfetch")
+        b_edit_fetch.get_style_context().add_class("cyber-btn-magenta")
+        b_edit_fetch.connect("clicked", lambda w: (spawn_cmd("kitty --class floating-tool -e sh -c 'if command -v nvim >/dev/null 2>&1; then nvim ~/.config/fastfetch/config.jsonc; else nano ~/.config/fastfetch/config.jsonc; fi'"), self.close_window()))
+
+        fetch_actions.pack_start(b_test_fetch, True, True, 0)
+        fetch_actions.pack_start(b_edit_fetch, True, True, 0)
+        c4.pack_start(fetch_actions, False, False, 4)
+
+        box.pack_start(c4, False, False, 0)
         scroll.add(box)
         return scroll
 

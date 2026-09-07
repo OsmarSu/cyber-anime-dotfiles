@@ -2,6 +2,41 @@
 # fastfetch wrapper: displays a fixed square (N*N) artwork of Alya Kujou
 export PATH="$HOME/.local/bin:/usr/bin:$PATH"
 
+DIS_FILE="$HOME/.config/fastfetch/.disabled"
+
+case "$1" in
+    --enable)
+        rm -f "$DIS_FILE"
+        echo "Fastfetch: Saludo activado."
+        exit 0
+        ;;
+    --disable)
+        mkdir -p "$(dirname "$DIS_FILE")"
+        touch "$DIS_FILE"
+        echo "Fastfetch: Saludo desactivado."
+        exit 0
+        ;;
+    --toggle)
+        if [[ -f "$DIS_FILE" ]]; then
+            rm -f "$DIS_FILE"
+            echo "Fastfetch: Saludo activado."
+        else
+            mkdir -p "$(dirname "$DIS_FILE")"
+            touch "$DIS_FILE"
+            echo "Fastfetch: Saludo desactivado."
+        fi
+        exit 0
+        ;;
+    --status)
+        if [[ -f "$DIS_FILE" ]]; then
+            echo "Fastfetch: Saludo DESACTIVADO."
+        else
+            echo "Fastfetch: Saludo ACTIVADO."
+        fi
+        exit 0
+        ;;
+esac
+
 ALYA_ART="$HOME/.config/fastfetch/alya_kujou.png"
 CONFIG_FILE="$HOME/.config/fastfetch/config-cyber-anime.jsonc"
 [[ ! -f "$CONFIG_FILE" ]] && CONFIG_FILE="$HOME/.config/fastfetch/config.jsonc"

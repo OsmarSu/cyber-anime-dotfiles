@@ -60,3 +60,8 @@ ZSH_HIGHLIGHT_STYLES[globbing]='fg=#00DDBB'
 source /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
+# Fastfetch en terminal interactiva (si no está desactivado)
+if [[ ! -f "$HOME/.config/fastfetch/.disabled" ]] && [[ -o interactive ]] && command -v fastfetch >/dev/null 2>&1; then
+    fastfetch
+fi
+
