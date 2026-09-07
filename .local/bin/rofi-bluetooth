@@ -22,10 +22,11 @@ rofi_cmd() {
 status=$(bluetoothctl show 2>/dev/null | grep "Powered:" | awk '{print $2}')
 
 if [[ "$status" != "yes" ]]; then
-    choice=$(echo -e "󰂯  Encender Bluetooth\n󰅖  Cancelar" | rofi_cmd "󰂲 Bluetooth Apagado" -theme-str 'window { width: min(540px, 80%); } listview { lines: 3; }')
+    choice=$(echo -e "󰂯  Encender Bluetooth\n󰅖  Cancelar" | rofi_cmd "󰂲 Bluetooth Apagado" -theme-str 'window { width: 500px; } listview { lines: 2; }')
     if [[ "$choice" =~ "Encender" ]]; then
+        rfkill unblock bluetooth 2>/dev/null
         bluetoothctl power on
-        notify-send -a "Bluetooth" "Bluetooth Activado"
+        notify-send -a "Bluetooth" -i "bluetooth" "Bluetooth Activado"
     fi
     exit 0
 fi
@@ -60,7 +61,7 @@ elif [[ "$chosen" =~ "::" ]]; then
     name=$(echo "$chosen" | awk -F '::' '{print $1}' | sed 's/^[󰂱󰂲] *//' | sed 's/ *\[Conectado\].*//' | xargs)
     
     if echo "$chosen" | grep -q "\[Conectado\]"; then
-        action=$(echo -e "󰌹  Desconectar\n󰆴  Desvincular y Olvidar\n󰅖  Volver" | rofi_cmd "$name" -theme-str 'window { width: min(540px, 80%); } listview { lines: 4; }')
+        action=$(echo -e "󰌹  Desconectar\n󰆴  Desvincular y Olvidar\n󰅖  Volver" | rofi_cmd "$name" -theme-str 'window { width: 500px; } listview { lines: 3; }')
         case "$action" in
             *"Desconectar"*)
                 bluetoothctl disconnect "$mac"

@@ -14,9 +14,9 @@ window {
     transparency:     "real";
     location:         center;
     anchor:           center;
-    width:            min(760px, 85%);
+    width:            720px;
     background-color: @bg;
-    border:           2px solid;
+    border:           2px;
     border-color:     @accent;
     border-radius:    @border-r;
     padding:          16px;
@@ -35,7 +35,7 @@ inputbar {
     spacing:          10px;
     padding:          10px 14px;
     background-color: @bg-alt;
-    border:           1px solid;
+    border:           1px;
     border-color:     @surface;
     border-radius:    @border-r-inner;
 }
@@ -83,18 +83,47 @@ element {
     border-radius:    @border-r-element;
     background-color: transparent;
     cursor:           pointer;
-    border:           1px solid transparent;
+    border:           0px;
 }
 
-element selected {
+element normal.normal {
+    background-color: transparent;
+    text-color:       @fg;
+}
+
+element alternate.normal {
+    background-color: transparent;
+    text-color:       @fg;
+}
+
+element normal.active {
+    background-color: transparent;
+    text-color:       @accent;
+}
+
+element alternate.active {
+    background-color: transparent;
+    text-color:       @accent;
+}
+
+element selected.normal {
     background-color: @bg-selected;
     text-color:       @accent;
+    border:           0px 0px 0px 4px;
+    border-color:     @accent;
+}
+
+element selected.active {
+    background-color: @bg-selected;
+    text-color:       @accent;
+    border:           0px 0px 0px 4px;
     border-color:     @accent;
 }
 
 element-icon {
     size:             24px;
     cursor:           inherit;
+    background-color: transparent;
 }
 
 element-text {
@@ -102,4 +131,5 @@ element-text {
     text-color:       inherit;
     cursor:           inherit;
     font:             "JetBrainsMono Nerd Font 13";
+    background-color: transparent;
 }
