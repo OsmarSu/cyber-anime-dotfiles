@@ -1,0 +1,897 @@
+#!/usr/bin/env python3
+"""
+cyber-settings: Aesthetic Cyber-Anime Control Center and Configuration Panel
+for Hyprland with Material 3 / End4 inspired ergonomics.
+"""
+import os
+import sys
+import signal
+import subprocess
+
+LOCK_FILE = f"/tmp/cyber_settings_{os.getuid()}.pid"
+if os.path.exists(LOCK_FILE):
+    try:
+        with open(LOCK_FILE, "r") as f:
+            pid = int(f.read().strip())
+        os.remove(LOCK_FILE)
+        os.kill(pid, signal.SIGTERM)
+        sys.exit(0)
+    except Exception:
+        if os.path.exists(LOCK_FILE):
+            os.remove(LOCK_FILE)
+
+with open(LOCK_FILE, "w") as f:
+    f.write(str(os.getpid()))
+
+import gi
+gi.require_version("Gtk", "3.0")
+gi.require_version("GtkLayerShell", "0.1")
+from gi.repository import Gtk, Gdk, GtkLayerShell, GLib
+
+CSS = b"""
+* {
+    font-family: 'JetBrainsMono Nerd Font', 'Noto Sans', sans-serif;
+    -gtk-icon-style: regular;
+}
+
+window {
+    background: transparent;
+}
+
+.main-panel {
+    background-color: rgba(8, 9, 13, 0.95);
+    border: 1px solid rgba(0, 240, 255, 0.4);
+    border-radius: 18px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.85), 0 0 24px rgba(0, 240, 255, 0.2);
+    min-width: 820px;
+    min-height: 540px;
+    padding: 0;
+}
+
+.header-bar {
+    background: rgba(14, 17, 26, 0.9);
+    border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
+    padding: 12px 20px;
+}
+
+.panel-title {
+    font-size: 16px;
+    font-weight: 900;
+    color: #00f0ff;
+}
+
+.panel-sub {
+    font-size: 11px;
+    color: #8fa8b8;
+}
+
+.close-btn {
+    background: transparent;
+    color: #8fa8b8;
+    border: none;
+    font-size: 18px;
+    border-radius: 8px;
+    padding: 4px 8px;
+    transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+    color: #ffffff;
+    background: #ff0055;
+}
+
+/* Sidebar navigation */
+.sidebar {
+    background: rgba(11, 14, 22, 0.85);
+    border-right: 1px solid rgba(0, 240, 255, 0.15);
+    border-bottom-left-radius: 18px;
+    padding: 12px 8px;
+    min-width: 190px;
+}
+
+.nav-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    color: #8fa8b8;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 10px 14px;
+    margin: 3px 0;
+    transition: all 0.18s ease;
+}
+
+.nav-btn:hover {
+    background: rgba(0, 240, 255, 0.08);
+    border-color: rgba(0, 240, 255, 0.3);
+    color: #00f0ff;
+}
+
+.nav-btn.active {
+    background: rgba(0, 240, 255, 0.15);
+    border-color: #00f0ff;
+    color: #00f0ff;
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.25);
+}
+
+/* Content Pages */
+.content-page {
+    padding: 20px 24px;
+    background: transparent;
+}
+
+.section-header {
+    font-size: 14px;
+    font-weight: 800;
+    color: #00f0ff;
+    margin-bottom: 10px;
+}
+
+.card {
+    background: rgba(14, 17, 26, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+}
+
+.card-title {
+    font-size: 13px;
+    font-weight: bold;
+    color: #e2f1f8;
+}
+
+.card-desc {
+    font-size: 11px;
+    color: #8fa8b8;
+}
+
+/* Cyber buttons */
+.cyber-btn {
+    background: rgba(22, 27, 40, 0.9);
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    border-radius: 8px;
+    color: #e2f1f8;
+    font-weight: bold;
+    font-size: 12px;
+    padding: 8px 14px;
+    transition: all 0.2s ease;
+}
+
+.cyber-btn:hover {
+    background: #00f0ff;
+    color: #08090d;
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+}
+
+.cyber-btn-magenta {
+    background: rgba(30, 18, 30, 0.9);
+    border: 1px solid rgba(255, 0, 127, 0.4);
+    border-radius: 8px;
+    color: #ff007f;
+    font-weight: bold;
+    font-size: 12px;
+    padding: 8px 14px;
+    transition: all 0.2s ease;
+}
+
+.cyber-btn-magenta:hover {
+    background: #ff007f;
+    color: #ffffff;
+    box-shadow: 0 0 12px rgba(255, 0, 127, 0.4);
+}
+
+.cyber-btn-active {
+    background: rgba(0, 240, 255, 0.2);
+    border-color: #00f0ff;
+    color: #00f0ff;
+}
+
+/* Switch / Sliders */
+scale trough {
+    background-color: rgba(22, 27, 40, 0.9);
+    border: 1px solid rgba(0, 240, 255, 0.2);
+    border-radius: 6px;
+    min-height: 8px;
+}
+
+scale highlight {
+    background: linear-gradient(90deg, #00f0ff, #ff007f);
+    border-radius: 6px;
+}
+
+scale slider {
+    background-color: #00f0ff;
+    border-radius: 50%;
+    min-width: 14px;
+    min-height: 14px;
+    margin: -3px;
+    box-shadow: 0 0 8px #00f0ff;
+}
+
+switch {
+    background-color: #161b28;
+    border: 1px solid #1f2638;
+    border-radius: 12px;
+    min-width: 44px;
+    min-height: 22px;
+}
+
+switch:checked {
+    background-color: #00f0ff;
+    border-color: #00f0ff;
+}
+
+switch slider {
+    background-color: #e2f1f8;
+    border-radius: 12px;
+    min-width: 18px;
+    min-height: 18px;
+    margin: 2px;
+}
+/* Scrolled windows, Viewports & Lists */
+scrolledwindow, viewport, list {
+    background-color: transparent;
+    background: transparent;
+}
+
+list, .keybind-list {
+    background-color: transparent;
+    background: transparent;
+    border: none;
+}
+
+list row, .keybind-row {
+    background-color: rgba(14, 17, 26, 0.78);
+    border: 1px solid rgba(0, 240, 255, 0.15);
+    border-radius: 8px;
+    margin: 3px 0;
+    padding: 6px 12px;
+    color: #e2f1f8;
+    transition: all 0.18s ease;
+}
+
+list row:hover, .keybind-row:hover {
+    background-color: rgba(22, 27, 40, 0.95);
+    border-color: rgba(0, 240, 255, 0.5);
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.2);
+}
+
+list row:selected, .keybind-row:selected {
+    background-color: rgba(0, 240, 255, 0.18);
+    border-color: #00f0ff;
+    color: #ffffff;
+}
+
+/* Scrollbars */
+scrollbar {
+    background-color: transparent;
+    border: none;
+}
+
+scrollbar slider {
+    background-color: rgba(0, 240, 255, 0.25);
+    border-radius: 6px;
+    min-width: 6px;
+    min-height: 6px;
+}
+
+scrollbar slider:hover {
+    background-color: rgba(0, 240, 255, 0.6);
+}
+
+/* Search entry */
+entry, search-entry, .search-entry {
+    background-color: rgba(14, 17, 26, 0.9);
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    border-radius: 8px;
+    color: #e2f1f8;
+    padding: 8px 12px;
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+entry:focus, search-entry:focus, .search-entry:focus {
+    border-color: #00f0ff;
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+}
+
+/* Keybinds badges & tags */
+.key-badge {
+    background-color: rgba(0, 240, 255, 0.12);
+    border: 1px solid rgba(0, 240, 255, 0.4);
+    border-radius: 6px;
+    color: #00f0ff;
+    font-weight: bold;
+    font-size: 11px;
+    padding: 4px 8px;
+}
+
+.key-desc {
+    color: #e2f1f8;
+    font-size: 12px;
+}
+
+.category-tag {
+    font-size: 10px;
+    color: #ff007f;
+    font-weight: bold;
+}
+"""
+
+def run_cmd(cmd):
+    try:
+        return subprocess.check_output(cmd, shell=True).decode().strip()
+    except Exception:
+        return ""
+
+def spawn_cmd(cmd):
+    try:
+        subprocess.Popen(cmd, shell=True)
+    except Exception:
+        pass
+
+class CyberSettingsWindow(Gtk.Window):
+    def __init__(self):
+        super().__init__()
+
+        # Setup Layer-Shell
+        GtkLayerShell.init_for_window(self)
+        GtkLayerShell.set_layer(self, GtkLayerShell.Layer.OVERLAY)
+        # Center window by leaving all edge anchors false
+        GtkLayerShell.set_keyboard_mode(self, GtkLayerShell.KeyboardMode.ON_DEMAND)
+        GtkLayerShell.set_namespace(self, "cyber-settings")
+
+        provider = Gtk.CssProvider()
+        provider.load_from_data(CSS)
+        Gtk.StyleContext.add_provider_for_screen(
+            Gdk.Screen.get_default(),
+            provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        )
+
+        main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        main_box.get_style_context().add_class("main-panel")
+
+        # Top Header
+        header = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        header.get_style_context().add_class("header-bar")
+
+        title_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+        title_lbl = Gtk.Label(label="󱗼 CYBER CONTROL CENTER", xalign=0)
+        title_lbl.get_style_context().add_class("panel-title")
+        sub_lbl = Gtk.Label(label="Configuración de Sistema · Estética Neon & Hacker · Hyprland", xalign=0)
+        sub_lbl.get_style_context().add_class("panel-sub")
+        title_box.pack_start(title_lbl, False, False, 0)
+        title_box.pack_start(sub_lbl, False, False, 0)
+        header.pack_start(title_box, True, True, 0)
+
+        # Quick stats badge
+        stats_lbl = Gtk.Label(label=self.get_quick_stats(), xalign=1)
+        stats_lbl.get_style_context().add_class("panel-sub")
+        header.pack_start(stats_lbl, False, False, 10)
+
+        close_btn = Gtk.Button(label="󰅖")
+        close_btn.get_style_context().add_class("close-btn")
+        close_btn.connect("clicked", lambda w: self.close_window())
+        header.pack_end(close_btn, False, False, 0)
+
+        main_box.pack_start(header, False, False, 0)
+
+        # Body: Sidebar + Stack
+        body_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+
+        # Sidebar
+        self.sidebar = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+        self.sidebar.get_style_context().add_class("sidebar")
+
+        self.stack = Gtk.Stack()
+        self.stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
+        self.stack.set_transition_duration(150)
+
+        # Pages
+        self.nav_buttons = []
+        self.add_page("appearance", "󰄛 Apariencia", self.build_appearance_page())
+        self.add_page("system", "⚡ Rendimiento", self.build_system_page())
+        self.add_page("audio", "󰕾 Audio & Red", self.build_audio_page())
+        self.add_page("keybinds", "⌨ Atajos (<)", self.build_keybinds_page())
+        self.add_page("tools", "🛠 Herramientas", self.build_tools_page())
+
+        body_box.pack_start(self.sidebar, False, False, 0)
+        body_box.pack_start(self.stack, True, True, 0)
+        main_box.pack_start(body_box, True, True, 0)
+
+        self.add(main_box)
+        self.connect("key-press-event", self.on_key_press)
+        self.connect("destroy", self.on_destroy)
+
+    def get_quick_stats(self):
+        try:
+            uptime = run_cmd("uptime -p | sed 's/up //'")
+            return f"󰔟 {uptime}"
+        except Exception:
+            return ""
+
+    def add_page(self, name, label, widget):
+        btn = Gtk.Button(label=label)
+        btn.get_style_context().add_class("nav-btn")
+        if btn.get_child():
+            btn.get_child().set_halign(Gtk.Align.START)
+        btn.connect("clicked", lambda w: self.switch_page(name, btn))
+        self.sidebar.pack_start(btn, False, False, 0)
+        self.nav_buttons.append((name, btn))
+        self.stack.add_named(widget, name)
+
+        if len(self.nav_buttons) == 1:
+            btn.get_style_context().add_class("active")
+            self.stack.set_visible_child_name(name)
+
+    def switch_page(self, name, clicked_btn):
+        for n, btn in self.nav_buttons:
+            if n == name:
+                btn.get_style_context().add_class("active")
+            else:
+                btn.get_style_context().remove_class("active")
+        self.stack.set_visible_child_name(name)
+
+    # ────────────────────────── PAGES ──────────────────────────
+    def build_appearance_page(self):
+        scroll = Gtk.ScrolledWindow()
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=14)
+        box.get_style_context().add_class("content-page")
+
+        # 1. Perfiles de Tema
+        c1 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+        c1.get_style_context().add_class("card")
+        c1_title = Gtk.Label(label="󰏘 Perfil de Tema Activo", xalign=0)
+        c1_title.get_style_context().add_class("card-title")
+        c1_desc = Gtk.Label(label="Cambia de forma instantánea el tema visual de Hyprland, Waybar, SwayNC y Kitty.", xalign=0)
+        c1_desc.get_style_context().add_class("card-desc")
+        c1.pack_start(c1_title, False, False, 0)
+        c1.pack_start(c1_desc, False, False, 0)
+
+        theme_btns = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+        b_anime = Gtk.Button(label="󰄛 Cyber Anime (Tokyo Neon)")
+        b_anime.get_style_context().add_class("cyber-btn")
+        b_anime.connect("clicked", lambda w: spawn_cmd("~/.config/waybar/scripts/theme-switch.sh cyber-anime"))
+
+        b_matrix = Gtk.Button(label="󰌨 Matrix Blackhat")
+        b_matrix.get_style_context().add_class("cyber-btn")
+        b_matrix.connect("clicked", lambda w: spawn_cmd("~/.config/waybar/scripts/theme-switch.sh matrix"))
+
+        b_macchiato = Gtk.Button(label="󰄛 Macchiato Whitehat")
+        b_macchiato.get_style_context().add_class("cyber-btn")
+        b_macchiato.connect("clicked", lambda w: spawn_cmd("~/.config/waybar/scripts/theme-switch.sh macchiato"))
+
+        theme_btns.pack_start(b_anime, True, True, 0)
+        theme_btns.pack_start(b_matrix, True, True, 0)
+        theme_btns.pack_start(b_macchiato, True, True, 0)
+        c1.pack_start(theme_btns, False, False, 6)
+        box.pack_start(c1, False, False, 0)
+
+        # 2. Fondos de Pantalla
+        c2 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+        c2.get_style_context().add_class("card")
+        c2_title = Gtk.Label(label="󰸉 Fondos de Pantalla (Live & Estáticos)", xalign=0)
+        c2_title.get_style_context().add_class("card-title")
+        c2_desc = Gtk.Label(label="Fondos interactivos animados de Steam Wallpaper Engine o galerías estáticas.", xalign=0)
+        c2_desc.get_style_context().add_class("card-desc")
+        c2.pack_start(c2_title, False, False, 0)
+        c2.pack_start(c2_desc, False, False, 0)
+
+        wall_btns = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+        b_wpe = Gtk.Button(label="󰸉 Wallpaper Engine Picker")
+        b_wpe.get_style_context().add_class("cyber-btn")
+        b_wpe.connect("clicked", lambda w: (spawn_cmd("~/.local/bin/wpe-picker"), self.close_window()))
+
+        b_static = Gtk.Button(label="󰋩 Selector de Fondos Rofi")
+        b_static.get_style_context().add_class("cyber-btn")
+        b_static.connect("clicked", lambda w: (spawn_cmd("~/.local/bin/rofi-wallpaper"), self.close_window()))
+
+        b_rand = Gtk.Button(label="󰑓 Fondo Aleatorio")
+        b_rand.get_style_context().add_class("cyber-btn-magenta")
+        b_rand.connect("clicked", lambda w: spawn_cmd("~/.local/bin/rofi-wallpaper --random"))
+
+        wall_btns.pack_start(b_wpe, True, True, 0)
+        wall_btns.pack_start(b_static, True, True, 0)
+        wall_btns.pack_start(b_rand, True, True, 0)
+        c2.pack_start(wall_btns, False, False, 6)
+        box.pack_start(c2, False, False, 0)
+
+        # 3. Efectos Visuales de Hyprland
+        c3 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        c3.get_style_context().add_class("card")
+        c3_title = Gtk.Label(label="󰖩 Efectos del Compositor Hyprland", xalign=0)
+        c3_title.get_style_context().add_class("card-title")
+        c3.pack_start(c3_title, False, False, 0)
+
+        # Blur toggle
+        row_blur = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        lbl_blur = Gtk.Label(label="Desenfocado de Fondo (Dual-Kawase Blur)", xalign=0)
+        lbl_blur.get_style_context().add_class("card-desc")
+        sw_blur = Gtk.Switch()
+        sw_blur.set_active(True)
+        sw_blur.connect("notify::active", lambda s, p: spawn_cmd(f"hyprctl keyword decoration:blur:enabled {'1' if s.get_active() else '0'}"))
+        row_blur.pack_start(lbl_blur, True, True, 0)
+        row_blur.pack_end(sw_blur, False, False, 0)
+        c3.pack_start(row_blur, False, False, 0)
+
+        # Animations toggle
+        row_anim = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        lbl_anim = Gtk.Label(label="Animaciones Fluidas (Curvas Bezier)", xalign=0)
+        lbl_anim.get_style_context().add_class("card-desc")
+        sw_anim = Gtk.Switch()
+        sw_anim.set_active(True)
+        sw_anim.connect("notify::active", lambda s, p: spawn_cmd(f"hyprctl keyword animations:enabled {'1' if s.get_active() else '0'}"))
+        row_anim.pack_start(lbl_anim, True, True, 0)
+        row_anim.pack_end(sw_anim, False, False, 0)
+        c3.pack_start(row_anim, False, False, 0)
+
+        # Shadows toggle
+        row_shdw = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        lbl_shdw = Gtk.Label(label="Sombras y Resplandor Neon de Ventanas", xalign=0)
+        lbl_shdw.get_style_context().add_class("card-desc")
+        sw_shdw = Gtk.Switch()
+        sw_shdw.set_active(True)
+        sw_shdw.connect("notify::active", lambda s, p: spawn_cmd(f"hyprctl keyword decoration:shadow:enabled {'1' if s.get_active() else '0'}"))
+        row_shdw.pack_start(lbl_shdw, True, True, 0)
+        row_shdw.pack_end(sw_shdw, False, False, 0)
+        c3.pack_start(row_shdw, False, False, 0)
+
+        box.pack_start(c3, False, False, 0)
+        scroll.add(box)
+        return scroll
+
+    def build_system_page(self):
+        scroll = Gtk.ScrolledWindow()
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=14)
+        box.get_style_context().add_class("content-page")
+
+        # 1. Perfiles de Energía
+        c1 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+        c1.get_style_context().add_class("card")
+        c1_title = Gtk.Label(label="⚡ Perfil de Energía y Rendimiento", xalign=0)
+        c1_title.get_style_context().add_class("card-title")
+        c1_desc = Gtk.Label(label="Ajusta los estados de energía de la CPU y GPU según la carga de trabajo.", xalign=0)
+        c1_desc.get_style_context().add_class("card-desc")
+        c1.pack_start(c1_title, False, False, 0)
+        c1.pack_start(c1_desc, False, False, 0)
+
+        pwr_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+        b_perf = Gtk.Button(label="󰓅 Rendimiento Máximo")
+        b_perf.get_style_context().add_class("cyber-btn")
+        b_perf.connect("clicked", lambda w: spawn_cmd("powerprofilesctl set performance && notify-send 'Energía' 'Perfil: Rendimiento' -i system-run"))
+
+        b_bal = Gtk.Button(label="󰾆 Equilibrado")
+        b_bal.get_style_context().add_class("cyber-btn")
+        b_bal.connect("clicked", lambda w: spawn_cmd("powerprofilesctl set balanced && notify-send 'Energía' 'Perfil: Equilibrado' -i system-run"))
+
+        b_save = Gtk.Button(label="󰾆 Ahorro de Batería")
+        b_save.get_style_context().add_class("cyber-btn")
+        b_save.connect("clicked", lambda w: spawn_cmd("powerprofilesctl set power-saver && notify-send 'Energía' 'Perfil: Ahorro' -i system-run"))
+
+        pwr_box.pack_start(b_perf, True, True, 0)
+        pwr_box.pack_start(b_bal, True, True, 0)
+        pwr_box.pack_start(b_save, True, True, 0)
+        c1.pack_start(pwr_box, False, False, 6)
+        box.pack_start(c1, False, False, 0)
+
+        # 2. Control de Reposo
+        c2 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+        c2.get_style_context().add_class("card")
+        c2_title = Gtk.Label(label="󰒲 Modo de Reposo y Pantalla", xalign=0)
+        c2_title.get_style_context().add_class("card-title")
+
+        row_idle = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        lbl_idle = Gtk.Label(label="Inhibir reposo automático (Mantener sistema y pantalla despiertos)", xalign=0)
+        lbl_idle.get_style_context().add_class("card-desc")
+        sw_idle = Gtk.Switch()
+        sw_idle.set_active(run_cmd("pgrep -x hypridle") == "")
+        sw_idle.connect("notify::active", lambda s, p: spawn_cmd("~/.config/waybar/scripts/idle-toggle.sh"))
+        row_idle.pack_start(lbl_idle, True, True, 0)
+        row_idle.pack_end(sw_idle, False, False, 0)
+        c2.pack_start(c2_title, False, False, 0)
+        c2.pack_start(row_idle, False, False, 0)
+        box.pack_start(c2, False, False, 0)
+
+        # 3. Especificaciones del Hardware
+        c3 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+        c3.get_style_context().add_class("card")
+        c3_title = Gtk.Label(label="󰍹 Diagnóstico y Especificaciones", xalign=0)
+        c3_title.get_style_context().add_class("card-title")
+        c3.pack_start(c3_title, False, False, 0)
+
+        cpu_name = run_cmd("lscpu | grep 'Model name' | head -n1 | cut -d: -f2 | xargs")
+        os_info = run_cmd('uname -s -r')
+        host_info = run_cmd('cat /sys/devices/virtual/dmi/id/product_name 2>/dev/null || hostname')
+        info_text = (
+            f"OS: {os_info}\n"
+            f"Host: {host_info}\n"
+            f"CPU: {cpu_name}\n"
+            f"Hyprland: v0.55+ (Wayland Native Compositor)"
+        )
+        info_lbl = Gtk.Label(label=info_text, xalign=0)
+        info_lbl.get_style_context().add_class("card-desc")
+        c3.pack_start(info_lbl, False, False, 0)
+
+        btop_btn = Gtk.Button(label="󰻠 Abrir Monitor de Procesos (Btop)")
+        btop_btn.get_style_context().add_class("cyber-btn")
+        btop_btn.connect("clicked", lambda w: (spawn_cmd("kitty --class floating-tool -e btop"), self.close_window()))
+        c3.pack_start(btop_btn, False, False, 6)
+        box.pack_start(c3, False, False, 0)
+
+        scroll.add(box)
+        return scroll
+
+    def build_audio_page(self):
+        scroll = Gtk.ScrolledWindow()
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=14)
+        box.get_style_context().add_class("content-page")
+
+        # 1. Salida de Audio (Sink)
+        c1 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        c1.get_style_context().add_class("card")
+        c1_title = Gtk.Label(label="󰕾 Control de Salida (Altavoces / Auriculares)", xalign=0)
+        c1_title.get_style_context().add_class("card-title")
+        c1.pack_start(c1_title, False, False, 0)
+
+        sink_vol_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        sink_mute_btn = Gtk.Button(label="󰕾 Mute")
+        sink_mute_btn.get_style_context().add_class("cyber-btn")
+        sink_mute_btn.connect("clicked", lambda w: spawn_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"))
+
+        sink_scale = Gtk.Scale.new_with_range(Gtk.Orientation.HORIZONTAL, 0, 150, 1)
+        try:
+            vol_out = run_cmd("wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print int($2 * 100)}'")
+            sink_scale.set_value(float(vol_out or 50))
+        except Exception:
+            sink_scale.set_value(50)
+        sink_scale.connect("value-changed", lambda s: spawn_cmd(f"wpctl set-volume @DEFAULT_AUDIO_SINK@ {int(s.get_value())}%"))
+
+        sink_vol_box.pack_start(sink_mute_btn, False, False, 0)
+        sink_vol_box.pack_start(sink_scale, True, True, 0)
+        c1.pack_start(sink_vol_box, False, False, 0)
+
+        pavu_btn = Gtk.Button(label="󰝚 Abrir Panel de Volumen Avanzado (Popup)")
+        pavu_btn.get_style_context().add_class("cyber-btn")
+        pavu_btn.connect("clicked", lambda w: (spawn_cmd("~/.local/bin/volume-popup"), self.close_window()))
+        c1.pack_start(pavu_btn, False, False, 4)
+        box.pack_start(c1, False, False, 0)
+
+        # 2. Entrada de Audio (Mic)
+        c2 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        c2.get_style_context().add_class("card")
+        c2_title = Gtk.Label(label="󰍬 Control de Entrada (Micrófono)", xalign=0)
+        c2_title.get_style_context().add_class("card-title")
+        c2.pack_start(c2_title, False, False, 0)
+
+        mic_vol_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        mic_mute_btn = Gtk.Button(label="󰍬 Mute")
+        mic_mute_btn.get_style_context().add_class("cyber-btn")
+        mic_mute_btn.connect("clicked", lambda w: spawn_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"))
+
+        mic_scale = Gtk.Scale.new_with_range(Gtk.Orientation.HORIZONTAL, 0, 100, 1)
+        try:
+            vol_m = run_cmd("wpctl get-volume @DEFAULT_AUDIO_SOURCE@ | awk '{print int($2 * 100)}'")
+            mic_scale.set_value(float(vol_m or 50))
+        except Exception:
+            mic_scale.set_value(50)
+        mic_scale.connect("value-changed", lambda s: spawn_cmd(f"wpctl set-volume @DEFAULT_AUDIO_SOURCE@ {int(s.get_value())}%"))
+
+        mic_vol_box.pack_start(mic_mute_btn, False, False, 0)
+        mic_vol_box.pack_start(mic_scale, True, True, 0)
+        c2.pack_start(mic_vol_box, False, False, 0)
+        box.pack_start(c2, False, False, 0)
+
+        # 3. Conexiones (Red y Bluetooth)
+        c3 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        c3.get_style_context().add_class("card")
+        c3_title = Gtk.Label(label="󰤨 Red y Conectividad Inalámbrica", xalign=0)
+        c3_title.get_style_context().add_class("card-title")
+        c3.pack_start(c3_title, False, False, 0)
+
+        net_btns = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+        b_wifi = Gtk.Button(label="󰤨 Gestor Wi-Fi (nmtui)")
+        b_wifi.get_style_context().add_class("cyber-btn")
+        b_wifi.connect("clicked", lambda w: (spawn_cmd("kitty --class floating-tool -e nmtui"), self.close_window()))
+
+        b_bt = Gtk.Button(label="󰂯 Dispositivos Bluetooth")
+        b_bt.get_style_context().add_class("cyber-btn")
+        b_bt.connect("clicked", lambda w: (spawn_cmd("~/.local/bin/rofi-bluetooth"), self.close_window()))
+
+        net_btns.pack_start(b_wifi, True, True, 0)
+        net_btns.pack_start(b_bt, True, True, 0)
+        c3.pack_start(net_btns, False, False, 4)
+        box.pack_start(c3, False, False, 0)
+
+        scroll.add(box)
+        return scroll
+
+    def build_keybinds_page(self):
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+        box.get_style_context().add_class("content-page")
+
+        # Search bar
+        search_entry = Gtk.SearchEntry()
+        search_entry.set_placeholder_text("󰍉 Filtrar atajos de teclado (escribe para buscar)...")
+        search_entry.get_style_context().add_class("search-entry")
+        box.pack_start(search_entry, False, False, 0)
+
+        scroll = Gtk.ScrolledWindow()
+        scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+
+        list_box = Gtk.ListBox()
+        list_box.set_selection_mode(Gtk.SelectionMode.NONE)
+        list_box.get_style_context().add_class("keybind-list")
+
+        keybinds = [
+            ("Lanzador", "Super + A", "Caja de aplicaciones (Rofi)"),
+            ("Lanzador", "Super + Enter / Super + T", "Terminal Kitty"),
+            ("Lanzador", "Super + E", "Gestor de archivos (Dolphin)"),
+            ("Lanzador", "Super + S", "Gestor de archivos terminal (Yazi)"),
+            ("Lanzador", "Super + B", "Navegador Web (Brave / Firefox)"),
+            ("Lanzador", "Super + C", "Editor de código (VS Code)"),
+            ("Lanzador", "Super + V", "Historial de Portapapeles (Cliphist)"),
+            ("Lanzador", "Super + W", "Selector Wallpaper Engine (Live)"),
+            ("Lanzador", "Super + Shift + W", "Selector Fondos Estáticos"),
+            ("Lanzador", "Super + , / Super + S", "Panel de Control y Configuración"),
+            ("Lanzador", "Super + /", "Cheatsheet de atajos de teclado (<)"),
+            ("Ventanas", "Super + Q", "Cerrar ventana activa"),
+            ("Ventanas", "Super + F", "Alternar pantalla completa"),
+            ("Ventanas", "Super + Shift + F", "Alternar ventana flotante"),
+            ("Ventanas", "Super + Espacio", "Centrar ventana activa"),
+            ("Ventanas", "Super + J", "Alternar orientación split (Dwindle)"),
+            ("Ventanas", "Super + Flechas", "Mover foco de ventana"),
+            ("Ventanas", "Super + Shift + Flechas", "Mover ventana de posición"),
+            ("Ventanas", "Super + Ctrl + Flechas", "Redimensionar ventana"),
+            ("Workspaces", "Super + 1..10", "Cambiar al espacio de trabajo 1..10"),
+            ("Workspaces", "Super + Shift + 1..10", "Mover ventana al espacio 1..10"),
+            ("Workspaces", "Super + Tab", "Alternar con espacio de trabajo anterior"),
+            ("Sistema", "Super + N", "Centro de Control & Notificaciones (SwayNC)"),
+            ("Sistema", "Super + Escape", "Menú de energía y apagado (Wlogout)"),
+            ("Sistema", "Super + L", "Bloquear pantalla (Hyprlock)"),
+            ("Sistema", "Super + Shift + S", "Captura de pantalla de área (Swappy)"),
+            ("Sistema", "Print", "Captura de pantalla completa al portapapeles"),
+            ("Audio", "Volumen / Brillo", "Teclas multimedia del teclado (OSD)"),
+        ]
+
+        self.keybind_rows = []
+        for cat, keys, desc in keybinds:
+            row = Gtk.ListBoxRow()
+            row.get_style_context().add_class("keybind-row")
+            r_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=14)
+            r_box.set_margin_top(6)
+            r_box.set_margin_bottom(6)
+            r_box.set_margin_start(4)
+            r_box.set_margin_end(4)
+
+            cat_lbl = Gtk.Label(label=cat, xalign=0)
+            cat_lbl.get_style_context().add_class("category-tag")
+            cat_lbl.set_size_request(80, -1)
+
+            key_lbl = Gtk.Label(label=keys, xalign=0)
+            key_lbl.get_style_context().add_class("key-badge")
+            key_lbl.set_size_request(220, -1)
+
+            desc_lbl = Gtk.Label(label=desc, xalign=0)
+            desc_lbl.get_style_context().add_class("key-desc")
+
+            r_box.pack_start(cat_lbl, False, False, 0)
+            r_box.pack_start(key_lbl, False, False, 0)
+            r_box.pack_start(desc_lbl, True, True, 0)
+
+            row.add(r_box)
+            list_box.add(row)
+            self.keybind_rows.append((row, cat.lower() + " " + keys.lower() + " " + desc.lower()))
+
+        def filter_keybinds(entry):
+            query = entry.get_text().lower().strip()
+            for row, text in self.keybind_rows:
+                row.set_visible(query in text if query else True)
+
+        search_entry.connect("search-changed", filter_keybinds)
+        scroll.add(list_box)
+        box.pack_start(scroll, True, True, 0)
+        return box
+
+    def build_tools_page(self):
+        scroll = Gtk.ScrolledWindow()
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=14)
+        box.get_style_context().add_class("content-page")
+
+        # 1. Herramientas Rápidas
+        c1 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        c1.get_style_context().add_class("card")
+        c1_title = Gtk.Label(label="🛠 Utilidades Rápidas de Escritorio", xalign=0)
+        c1_title.get_style_context().add_class("card-title")
+        c1.pack_start(c1_title, False, False, 0)
+
+        grid1 = Gtk.Grid()
+        grid1.set_column_spacing(10)
+        grid1.set_row_spacing(10)
+        grid1.set_column_homogeneous(True)
+
+        b_color = Gtk.Button(label="󰈊 Selector de Color")
+        b_color.get_style_context().add_class("cyber-btn")
+        b_color.connect("clicked", lambda w: (spawn_cmd("hyprpicker | wl-copy"), self.close_window()))
+
+        b_crop = Gtk.Button(label="󰄀 Captura de Área (Swappy)")
+        b_crop.get_style_context().add_class("cyber-btn")
+        b_crop.connect("clicked", lambda w: (spawn_cmd("grim -g \"$(slurp)\" - | swappy -f -"), self.close_window()))
+
+        b_full = Gtk.Button(label="󰹑 Captura Pantalla Completa")
+        b_full.get_style_context().add_class("cyber-btn")
+        b_full.connect("clicked", lambda w: (spawn_cmd("grimblast --notify copysave screen"), self.close_window()))
+
+        b_clip = Gtk.Button(label="󰅇 Portapapeles (Cliphist)")
+        b_clip.get_style_context().add_class("cyber-btn")
+        b_clip.connect("clicked", lambda w: (spawn_cmd("~/.local/bin/rofi-clipboard"), self.close_window()))
+
+        grid1.attach(b_color, 0, 0, 1, 1)
+        grid1.attach(b_crop, 1, 0, 1, 1)
+        grid1.attach(b_full, 0, 1, 1, 1)
+        grid1.attach(b_clip, 1, 1, 1, 1)
+        c1.pack_start(grid1, False, False, 4)
+        box.pack_start(c1, False, False, 0)
+
+        # 2. Control de Sesión y Servicios
+        c2 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        c2.get_style_context().add_class("card")
+        c2_title = Gtk.Label(label="󰐥 Control de Sesión y Recarga", xalign=0)
+        c2_title.get_style_context().add_class("card-title")
+        c2.pack_start(c2_title, False, False, 0)
+
+        grid2 = Gtk.Grid()
+        grid2.set_column_spacing(10)
+        grid2.set_row_spacing(10)
+        grid2.set_column_homogeneous(True)
+
+        b_hypr_reload = Gtk.Button(label="󰑓 Recargar Hyprland")
+        b_hypr_reload.get_style_context().add_class("cyber-btn")
+        b_hypr_reload.connect("clicked", lambda w: spawn_cmd("hyprctl reload && notify-send 'Hyprland' 'Configuración recargada'"))
+
+        b_wb_reload = Gtk.Button(label="󰑓 Reiniciar Waybar")
+        b_wb_reload.get_style_context().add_class("cyber-btn")
+        b_wb_reload.connect("clicked", lambda w: spawn_cmd("killall -SIGUSR2 waybar || ~/.local/bin/waybar"))
+
+        b_lock = Gtk.Button(label="󰌾 Bloquear Pantalla")
+        b_lock.get_style_context().add_class("cyber-btn-magenta")
+        b_lock.connect("clicked", lambda w: (spawn_cmd("~/.local/bin/hypr-lock"), self.close_window()))
+
+        b_power = Gtk.Button(label="⏻ Menú de Sesión")
+        b_power.get_style_context().add_class("cyber-btn-magenta")
+        b_power.connect("clicked", lambda w: (spawn_cmd("~/.local/bin/hypr-power-menu"), self.close_window()))
+
+        grid2.attach(b_hypr_reload, 0, 0, 1, 1)
+        grid2.attach(b_wb_reload, 1, 0, 1, 1)
+        grid2.attach(b_lock, 0, 1, 1, 1)
+        grid2.attach(b_power, 1, 1, 1, 1)
+        c2.pack_start(grid2, False, False, 4)
+        box.pack_start(c2, False, False, 0)
+
+        scroll.add(box)
+        return scroll
+
+    def on_key_press(self, widget, event):
+        if event.keyval == Gdk.KEY_Escape:
+            self.close_window()
+            return True
+        return False
+
+    def close_window(self):
+        self.destroy()
+
+    def on_destroy(self, widget):
+        if os.path.exists(LOCK_FILE):
+            try:
+                os.remove(LOCK_FILE)
+            except Exception:
+                pass
+        Gtk.main_quit()
+
+if __name__ == "__main__":
+    win = CyberSettingsWindow()
+    win.show_all()
+    Gtk.main()

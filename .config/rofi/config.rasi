@@ -5,7 +5,7 @@
 
 configuration {
     /* path assoluto: Hyprland non eredita ~/.local/bin nel PATH */
-    modi: "drun,run,window,clipboard:/home/oswi/.local/bin/rofi-clipboard";
+    modi: "drun,run,window,clipboard:/home/oswi/.local/bin/rofi-clipboard,keys:/home/oswi/.local/bin/rofi-keybinds";
 
     /* drun behavior */
     show-icons: true;
@@ -26,6 +26,7 @@ configuration {
     display-run:       "󰌨";   /* mdi-console-line */
     display-window:    "󰖯";   /* mdi-window-maximize */
     display-clipboard: "󰅇";   /* mdi-clipboard-text */
+    display-keys:      "󰌌";   /* mdi-keyboard */
 
     hover-select:      true;
     me-select-entry:   "MouseSecondary";

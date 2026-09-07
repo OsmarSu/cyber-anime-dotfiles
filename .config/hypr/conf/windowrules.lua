@@ -103,13 +103,30 @@ hl.window_rule({
     size   = { 920, 640 },
 })
 
--- Generic floating terminal tools
+-- Generic floating terminal tools and popups
 hl.window_rule({
     name   = "floating-terminal-tools",
-    match  = { class = "^(floating-tool)$" },
+    match  = { class = "^(floating-tool|nmtui|bluetoothctl|btop-float)$" },
     float  = true,
     center = true,
     size   = { 900, 620 },
+})
+
+-- Pavucontrol audio mixer popup
+hl.window_rule({
+    name   = "pavucontrol-float",
+    match  = { class = "^(pavucontrol|org.pulseaudio.pavucontrol)$" },
+    float  = true,
+    center = true,
+    size   = { 850, 580 },
+})
+
+-- Swappy screenshot annotation tool
+hl.window_rule({
+    name   = "swappy-float",
+    match  = { class = "^(swappy)$" },
+    float  = true,
+    center = true,
 })
 
 -- Keybind cheat sheet: floating, pinned, centered
@@ -121,3 +138,49 @@ hl.window_rule({
     size   = { 880, 840 },
     pin    = true,
 })
+
+-- Polkit authentication agent dialogs
+hl.window_rule({
+    name   = "polkit-auth-dialogs",
+    match  = { class = "^(org.kde.polkit-kde-authentication-agent-1|polkit-gnome-authentication-agent-1|polkit-kde-authentication-agent-1)$" },
+    float  = true,
+    center = true,
+})
+
+-- Portal file pickers and dialogs
+hl.window_rule({
+    name   = "portal-dialogs",
+    match  = { class = "^(xdg-desktop-portal-gtk|xdg-desktop-portal-hyprland|xdg-desktop-portal-kde)$" },
+    float  = true,
+    center = true,
+    size   = { 900, 600 },
+})
+
+-- Steam auxiliary dialogs
+hl.window_rule({
+    name   = "steam-dialogs",
+    match  = {
+        class = "^(steam)$",
+        title = "^(Friends List|Special Offers|Steam - News|Steam Guard|Settings)$",
+    },
+    float  = true,
+})
+
+-- Media viewers (imv, mpv floating by default)
+hl.window_rule({
+    name   = "media-viewers",
+    match  = { class = "^(imv|mpv)$" },
+    float  = true,
+    center = true,
+})
+
+-- Cyber settings and control panels
+hl.window_rule({
+    name   = "cyber-settings-float",
+    match  = { class = "^(cyber-settings|CyberSettings)$" },
+    float  = true,
+    center = true,
+    size   = { 940, 680 },
+    pin    = false,
+})
+

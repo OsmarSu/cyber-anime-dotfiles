@@ -7,7 +7,7 @@ local mainMod = "SUPER"
 local terminal    = "kitty"
 local fileManager = "dolphin"
 local termFileManager = "kitty -e yazi"
-local browser     = "firefox"
+local browser     = "sh -c 'command -v brave >/dev/null 2>&1 && exec brave || exec firefox'"
 local editor      = "code"
 local colorPicker = "hyprpicker"
 local menu        = home .. "/.local/bin/rofi-launcher -show drun -modi 'drun,window,clipboard:" .. home .. "/.local/bin/rofi-clipboard'"
@@ -20,7 +20,14 @@ hl.bind(mainMod .. " + A",           hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + E",           hl.dsp.exec_cmd(fileManager))
 
 -- Gestor de archivos de terminal (Yazi)
-hl.bind(mainMod .. " + S",           hl.dsp.exec_cmd(termFileManager))
+hl.bind(mainMod .. " + Y",           hl.dsp.exec_cmd(termFileManager))
+
+-- Panel de Control y Configuración (Cyber Settings)
+hl.bind(mainMod .. " + S",           hl.dsp.exec_cmd(home .. "/.local/bin/cyber-settings"))
+hl.bind(mainMod .. " + comma",       hl.dsp.exec_cmd(home .. "/.local/bin/cyber-settings"))
+
+-- Hoja de atajos de teclado interactiva (<)
+hl.bind(mainMod .. " + slash",       hl.dsp.exec_cmd(home .. "/.local/bin/rofi-keybinds"))
 
 -- Terminal (Kitty) - Soporta tanto Super+Enter como Super+T
 hl.bind(mainMod .. " + Return",      hl.dsp.exec_cmd(terminal))
@@ -130,25 +137,20 @@ hl.bind(mainMod .. " + mouse_up",    hl.dsp.focus({ workspace = "e-1" }))
 
 -- ── 4. Sistema, Notificaciones y Capturas ────────────────────────────────────
 -- Bloquear pantalla (Hyprlock)
-hl.bind(mainMod .. " + L",           hl.dsp.exec_cmd("hyprlock"))
+hl.bind(mainMod .. " + L",           hl.dsp.exec_cmd(home .. "/.local/bin/hypr-lock"))
 
 -- Menú de energía / cerrar sesión (Wlogout)
-hl.bind(mainMod .. " + ESCAPE",      hl.dsp.exec_cmd(
-    "wlogout -p layer-shell" ..
-    " -C " .. home .. "/.config/wlogout/style.css" ..
-    " -l " .. home .. "/.config/wlogout/layout" ..
-    " -b 5"
-))
+hl.bind(mainMod .. " + Escape",      hl.dsp.exec_cmd(home .. "/.local/bin/hypr-power-menu"))
 
 -- Alternar centro de control de notificaciones (SwayNC)
 hl.bind(mainMod .. " + N",           hl.dsp.exec_cmd("swaync-client -t"))
 
 -- Alternar visibilidad de Waybar
-hl.bind("CTRL + ESCAPE",             hl.dsp.exec_cmd("sh -c 'killall waybar || waybar'"))
+hl.bind("CTRL + ESCAPE",             hl.dsp.exec_cmd("sh -c 'killall waybar || ~/.local/bin/waybar'"))
 
 -- Capturas de pantalla
--- Super + Shift + S: Selección de área con anotación interactiva (Swappy)
-hl.bind(mainMod .. " + SHIFT + S",   hl.dsp.exec_cmd("sh -c 'grim -g \"$(slurp)\" - | swappy -f -'"))
+-- Super + Shift + S: Selección de área (Swappy si está instalado, o grimblast directo)
+hl.bind(mainMod .. " + SHIFT + S",   hl.dsp.exec_cmd("sh -c 'if command -v swappy >/dev/null 2>&1; then grim -g \"$(slurp)\" - | swappy -f -; else grimblast --notify copysave area; fi'"))
 -- Print: Pantalla completa al portapapeles
 hl.bind("Print",                     hl.dsp.exec_cmd("grimblast --notify copysave screen"))
 hl.bind(mainMod .. " + Print",       hl.dsp.exec_cmd("grimblast --notify copysave active"))

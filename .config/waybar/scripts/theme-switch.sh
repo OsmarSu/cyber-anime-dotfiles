@@ -53,5 +53,5 @@ hyprctl reload >/tmp/hypr-theme-switch.log 2>&1 || true
 pkill -SIGUSR1 -x kitty 2>/dev/null || true
 setsid "$HOME/.config/swaync/restart" >/tmp/swaync-theme-switch.log 2>&1 &
 
-# Waybar reload
-killall -SIGUSR2 waybar 2>/dev/null || true
+# Waybar reload (o iniciar si no estaba corriendo)
+pgrep -x waybar >/dev/null && killall -SIGUSR2 waybar 2>/dev/null || setsid waybar >/dev/null 2>&1 &

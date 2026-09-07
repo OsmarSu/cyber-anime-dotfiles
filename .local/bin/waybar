@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+# Resolve active Hyprland signature if missing
+if [ -z "$HYPRLAND_INSTANCE_SIGNATURE" ]; then
+    HYPRLAND_INSTANCE_SIGNATURE=$(python3 -c "import os; p=f'/run/user/{os.getuid()}/hypr'; [print(d) for d in os.listdir(p) if not d.endswith('-wb') and os.path.exists(f'{p}/{d}/.socket.sock')]" 2>/dev/null | head -n1)
+fi
+
+if [ -n "$HYPRLAND_INSTANCE_SIGNATURE" ]; then
+    BASE_SIG="${HYPRLAND_INSTANCE_SIGNATURE%-wb}"
+    BRIDGE_DIR="/run/user/$UID/hypr/${BASE_SIG}-wb"
+    BRIDGE_SOCK="$BRIDGE_DIR/.socket.sock"
+
+    # Check if bridge is actually responsive
+    if ! python3 -c "import socket; s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM); s.settimeout(0.2); s.connect('$BRIDGE_SOCK'); s.close()" 2>/dev/null; then
+        rm -f "$BRIDGE_SOCK"
+        setsid python3 /home/oswi/.local/bin/waybar-hypr-bridge.py >/dev/null 2>&1 &
+        for i in {1..40}; do
+            if python3 -c "import socket; s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM); s.settimeout(0.2); s.connect('$BRIDGE_SOCK'); s.close()" 2>/dev/null; then
+                break
+            fi
+            sleep 0.05
+        done
+    fi
+
+    if python3 -c "import socket; s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM); s.settimeout(0.2); s.connect('$BRIDGE_SOCK'); s.close()" 2>/dev/null; then
+        export HYPRLAND_INSTANCE_SIGNATURE="${BASE_SIG}-wb"
+    else
+        export HYPRLAND_INSTANCE_SIGNATURE="$BASE_SIG"
+    fi
+fi
+
+exec /usr/bin/waybar "$@"

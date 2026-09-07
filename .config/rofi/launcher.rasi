@@ -1,7 +1,6 @@
-/* launcher.rasi — sidebar verticale sx + contenuto dx, 2 colonne.
- * Struttura: mainbox (horizontal) → [mode-switcher | listbox]
- *            listbox (vertical)   → [inputbar | listview]
- * Importa colors.rasi (swap-target) — mai hardcodare hex qui.
+/* launcher.rasi — Cyber-Anime App Drawer (Super + A)
+ * Layout: 980x620px spacious window, 3.2em prominent icons, 2 columns.
+ * Dynamic Wallpaper Engine background integration with high-res 1:1 scaling.
  */
 
 @import "colors.rasi"
@@ -9,7 +8,7 @@
 * {
     background-color: transparent;
     text-color:       @fg;
-    font:             "JetBrainsMono Nerd Font 12";
+    font:             "JetBrainsMono Nerd Font 13";
 }
 
 /* ---- Window ---- */
@@ -17,8 +16,8 @@ window {
     transparency:     "real";
     location:         center;
     anchor:           center;
-    width:            740px;
-    height:           480px;
+    width:            980px;
+    height:           620px;
     background-color: @bg;
     border:           2px solid;
     border-color:     @accent;
@@ -26,23 +25,23 @@ window {
     padding:          0px;
 }
 
-/* ---- Mainbox: orizzontale, sfondo = wallpaper corrente ---- */
+/* ---- Mainbox: horizontal layout with Wallpaper Engine dynamic background ---- */
 mainbox {
     orientation:      horizontal;
     children:         [ "mode-switcher", "listbox" ];
     spacing:          0px;
     padding:          0px;
     border-radius:    @border-r;
-    background-image: url("~/.config/rofi/.current_wallpaper", width);
+    background-image: url("/home/oswi/.config/rofi/.current_wallpaper.png", both);
 }
 
-/* ---- Sidebar sinistra: tab verticali icon-only ---- */
+/* ---- Left sidebar: mode switcher ---- */
 mode-switcher {
     orientation:      vertical;
     expand:           false;
-    width:            72px;
-    spacing:          0.5em;
-    padding:          1em 0.4em;
+    width:            76px;
+    spacing:          0.8em;
+    padding:          1.2em 0.4em;
     background-color: @bg-alt;
     border-radius:    @border-r;
 }
@@ -55,7 +54,7 @@ button {
     cursor:           pointer;
     horizontal-align: 0.5;
     vertical-align:   0.5;
-    font:             "JetBrainsMono Nerd Font 22";
+    font:             "JetBrainsMono Nerd Font 24";
 }
 
 button selected {
@@ -63,74 +62,84 @@ button selected {
     text-color:       @accent;
 }
 
-/* ---- Area contenuto destra: inputbar + listview impilati ---- */
+/* ---- Content Area: Search Bar + App Grid ---- */
 listbox {
     orientation:      vertical;
     children:         [ "inputbar", "listview" ];
-    spacing:          0.7em;
-    padding:          0.9em;
+    spacing:          0.8em;
+    padding:          1.2em;
     background-color: transparent;
 }
 
 /* ---- Search bar ---- */
 inputbar {
     children:         [ "prompt", "entry" ];
-    spacing:          0.5em;
-    padding:          0.5em 0.7em;
+    spacing:          0.8em;
+    padding:          0.7em 1.2em;
     background-color: @bg-alt;
+    border:           1px solid;
+    border-color:     @surface;
     border-radius:    @border-r-inner;
 }
 
 prompt {
     text-color: @accent;
+    font:       "JetBrainsMono Nerd Font Bold 14";
 }
 
 entry {
-    placeholder:        "Search…";
+    placeholder:        "Buscar aplicaciones...";
     placeholder-color:  @fg-dim;
     text-color:         @fg;
     cursor:             text;
+    font:               "JetBrainsMono Nerd Font 13";
 }
 
-/* ---- Risultati: 2 colonne ---- */
+/* ---- Results: 2 columns with spacious app cards ---- */
 listview {
     columns:          2;
     lines:            5;
-    spacing:          0.3em;
+    spacing:          0.6em;
     cycle:            true;
     scrollbar:        false;
     fixed-height:     true;
-    background-color: @bg;
+    background-color: #08090db8;
+    border:           1px solid;
+    border-color:     @surface;
     border-radius:    @border-r-inner;
-    padding:          0.4em;
+    padding:          0.6em;
 }
 
+/* ---- App Card Element ---- */
 element {
-    padding:          0.5em;
+    padding:          0.8em 1em;
     border-radius:    @border-r-element;
-    spacing:          0.6em;
+    spacing:          1em;
     children:         [ "element-icon", "element-text" ];
     cursor:           pointer;
+    background-color: #0e111a88;
 }
 
 element normal.normal {
-    text-color: @fg-alt;
+    text-color: @fg;
 }
 
 element selected.normal {
     background-color: @bg-selected;
     text-color:       @accent;
-    border:           0px 0px 0px 3px;
+    border:           0px 0px 0px 4px;
     border-color:     @accent;
 }
 
+/* ---- Large Prominent App Icons ---- */
 element-icon {
-    size:             1.5em;
+    size:             3.2em;
     background-color: transparent;
 }
 
 element-text {
     text-color:     inherit;
+    font:           "JetBrainsMono Nerd Font SemiBold 13";
     vertical-align: 0.5;
 }
 

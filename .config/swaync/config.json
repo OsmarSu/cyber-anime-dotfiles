@@ -1,20 +1,22 @@
 {
   "$schema": "/etc/xdg/swaync/configSchema.json",
-  "positionX": "center",
+  "positionX": "right",
   "positionY": "top",
+  "control-center-positionX": "right",
+  "control-center-positionY": "top",
   "layer": "overlay",
   "control-center-layer": "top",
   "layer-shell": true,
   "cssPriority": "user",
-  "control-center-margin-top": 8,
-  "control-center-margin-bottom": 8,
-  "control-center-margin-right": 0,
-  "control-center-width": 430,
+  "control-center-margin-top": 48,
+  "control-center-margin-bottom": 16,
+  "control-center-margin-right": 16,
+  "control-center-width": 410,
   "control-center-height": 720,
   "notification-2fa-action": true,
   "notification-inline-replies": true,
   "notification-grouping": true,
-  "notification-window-width": 360,
+  "notification-window-width": 380,
   "notification-icon-size": 48,
   "notification-body-image-height": 100,
   "notification-body-image-width": 200,
@@ -27,7 +29,7 @@
   "transition-time": 200,
   "hide-on-clear": true,
   "hide-on-action": true,
-  "text-empty": "No notifications",
+  "text-empty": "Sin notificaciones",
   "script-fail-notify": true,
   "notification-visibility": {
     "system-osd": {
@@ -52,28 +54,28 @@
       "vexpand": true
     },
     "title#header": {
-      "text": "Control Center",
+      "text": "Centro de Control & Notificaciones",
       "clear-all-button": false
     },
     "title#notifications": {
-      "text": "Notifications",
+      "text": "Notificaciones",
       "clear-all-button": true,
-      "button-text": "Clear all"
+      "button-text": "Limpiar todo"
     },
     "dnd": {
-      "text": "Do Not Disturb"
+      "text": "No Molestar"
     },
     "buttons-grid": {
       "buttons-per-row": 4,
       "actions": [
-        { "label": "󰐥", "command": "wlogout -p layer-shell -C /home/kernel_x23_6/.config/wlogout/style.css -l /home/kernel_x23_6/.config/wlogout/layout -b 5" },
-        { "label": "󰌾", "command": "hyprlock" },
-        { "label": "󰕾", "command": "pamixer -t" },
-        { "label": "󰍬", "command": "pamixer --default-source -t" },
-        { "label": "󰄀", "command": "grimblast --notify copysave area" },
-        { "label": "🖼", "command": "awww img $(find $(cat ~/.config/rofi/.wall_dir) -type f | shuf -n1) --transition-type random" },
         { "label": "󰤨", "command": "kitty --class floating-tool -e nmtui" },
-        { "label": "󰂱", "command": "kitty --class floating-tool -e bluetuith" }
+        { "label": "󰂯", "command": "$HOME/.local/bin/rofi-bluetooth" },
+        { "label": "󰕾", "command": "$HOME/.local/bin/volume-popup" },
+        { "label": "󰃞", "command": "$HOME/.local/bin/toggle-nightlight" },
+        { "label": "󰄀", "command": "sh -c 'if command -v swappy >/dev/null 2>&1; then grim -g \"$(slurp)\" - | swappy -f -; else grimblast --notify copysave area; fi'" },
+        { "label": "󰸉", "command": "$HOME/.local/bin/wpe-picker" },
+        { "label": "󰒓", "command": "$HOME/.local/bin/cyber-settings" },
+        { "label": "󰌾", "command": "$HOME/.local/bin/hypr-lock" }
       ]
     },
     "volume": {
@@ -82,8 +84,8 @@
     },
     "slider#microphone": {
       "label": "󰍬",
-      "cmd_setter": "pamixer --default-source --set-volume $value",
-      "cmd_getter": "pamixer --default-source --get-volume",
+      "cmd_setter": "pactl set-source-volume @DEFAULT_SOURCE@ $value%",
+      "cmd_getter": "wpctl get-volume @DEFAULT_AUDIO_SOURCE@ | awk '{print int($2 * 100)}'",
       "min": 0,
       "max": 100,
       "min_limit": 0,
@@ -91,12 +93,12 @@
     },
     "backlight": {
       "label": "󰃞",
-      "device": "intel_backlight",
+      "device": "amdgpu_bl1",
       "subsystem": "backlight",
       "min": 1
     },
     "mpris": {
-      "image-size": 96,
+      "image-size": 84,
       "image-radius": 8
     }
   }

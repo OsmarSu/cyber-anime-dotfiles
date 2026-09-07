@@ -1,24 +1,51 @@
 /* ─────────────────────────────────────────────────────────
-   Control center — dentro #notify (porta il proprio pill)
+   Control center & Settings triggers
    ───────────────────────────────────────────────────────── */
 
 #custom-control-center {
-  color: @lavender;
+  color: @teal;
   background: @pill-bg;
-  padding: 2px 8px;
-  border-radius: 8px;
-  margin: 0;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 2px 10px;
+  border-radius: 10px;
+  margin: 2px 2px;
+  font-size: 14px;
+  transition: all 180ms ease;
 }
+
 #custom-control-center:hover {
-  background: @pill-bg-hover;
-  color: @accent-hover;
+  background: rgba(255, 0, 127, 0.2);
+  color: #ff007f;
+  border-color: rgba(255, 0, 127, 0.5);
+  box-shadow: 0 0 10px rgba(255, 0, 127, 0.35);
 }
-/* Notifiche attive: arancione solido — niente grigio che trapela */
+
 #custom-control-center.notification {
-  color: @base;
-  background: @accent-warning;
+  color: #08090d;
+  background: linear-gradient(135deg, #fcee0a, #ff9e64);
+  border-color: #fcee0a;
+  box-shadow: 0 0 10px rgba(252, 238, 10, 0.5);
 }
+
 #custom-control-center.dnd-notification,
 #custom-control-center.dnd-none {
   color: @text-dim;
+}
+
+#custom-settings {
+  color: #00f0ff;
+  background: @pill-bg;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 2px 10px;
+  border-radius: 10px;
+  margin: 2px 2px;
+  font-size: 14px;
+  transition: all 180ms ease;
+}
+
+#custom-settings:hover {
+  background: rgba(0, 240, 255, 0.2);
+  color: #00f0ff;
+  border-color: #00f0ff;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
 }

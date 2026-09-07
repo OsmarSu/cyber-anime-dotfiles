@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+# rofi-bluetooth: Graphical Bluetooth Menu for Rofi / Waybar
+
+# If blueman-manager is installed, prefer full GUI
+if command -v blueman-manager >/dev/null 2>&1; then
+    exec blueman-manager
+fi
+
+rofi_cmd() {
+    rofi -dmenu -i -p "󰂯 Bluetooth" -theme-str 'window { width: 450px; }'
+}
+
+# Check status
+status=$(bluetoothctl show | grep "Powered:" | awk '{print $2}')
+
+if [[ "$status" != "yes" ]]; then
+    choice=$(echo -e "󰂯 Encender Bluetooth\n󰅖 Cancelar" | rofi_cmd)
+    if [[ "$choice" =~ "Encender" ]]; then
+        bluetoothctl power on
+        notify-send -a "Bluetooth" "Bluetooth Activado"
+    fi
+    exit 0
+fi
+
+# Powered ON: Build menu
+devices=$(bluetoothctl devices | while read -r _ mac name; do
+    info=$(bluetoothctl info "$mac")
+    if echo "$info" | grep -q "Connected: yes"; then
+        echo "󰂱 $name [Conectado] :: $mac"
+    else
+        echo "󰂲 $name :: $mac"
+    fi
+done)
+
+menu="󰂲 Apagar Bluetooth\n󰑐 Escanear dispositivos (5s)\n$devices\n󰅖 Salir"
+
+chosen=$(echo -e "$menu" | rofi_cmd)
+
+[[ -z "$chosen" || "$chosen" =~ "Salir" ]] && exit 0
+
+if [[ "$chosen" =~ "Apagar" ]]; then
+    bluetoothctl power off
+    notify-send -a "Bluetooth" "Bluetooth Desactivado"
+    exit 0
+elif [[ "$chosen" =~ "Escanear" ]]; then
+    notify-send -a "Bluetooth" "Buscando dispositivos..."
+    bluetoothctl --timeout 5 scan on >/dev/null 2>&1
+    exec "$0"
+elif [[ "$chosen" =~ "::" ]]; then
+    mac=$(echo "$chosen" | awk -F ':: ' '{print $2}')
+    name=$(echo "$chosen" | awk -F ' ::' '{print $1}' | sed 's/^[󰂱󰂲] //')
+    
+    if echo "$chosen" | grep -q "\[Conectado\]"; then
+        action=$(echo -e "󰌹 Desconectar\n󰆴 Desvincular\n󰅖 Volver" | rofi -dmenu -i -p "$name" -theme-str 'window { width: 350px; }')
+        case "$action" in
+            *"Desconectar"*)
+                bluetoothctl disconnect "$mac"
+                notify-send -a "Bluetooth" "Desconectado de $name"
+                ;;
+            *"Desvincular"*)
+                bluetoothctl remove "$mac"
+                notify-send -a "Bluetooth" "Dispositivo eliminado: $name"
+                ;;
+        esac
+    else
+        notify-send -a "Bluetooth" "Conectando a $name..."
+        bluetoothctl connect "$mac" && notify-send -a "Bluetooth" "Conectado a $name" || notify-send -u critical -a "Bluetooth" "Error al conectar a $name"
+    fi
+fi

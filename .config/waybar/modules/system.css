@@ -2,14 +2,20 @@
    System — cpu + memory + temp pill
    ───────────────────────────────────────────────────────── */
 
-#system {
+#system,
+#hardware {
   background: @pill-bg;
   border-radius: 8px;
   padding: 0 4px;
   margin: 4px 2px;
 }
+#hardware:hover {
+  background: @pill-bg-hover;
+}
 #cpu,
 #memory,
+#temperature,
+#disk,
 #custom-temp {
   background: transparent;
   margin: 0;
@@ -19,7 +25,11 @@
 
 #cpu          { color: @lavender; }
 #memory       { color: @teal; }
+#temperature  { color: @green; }
+#temperature.critical { color: @accent-critical; }
+#disk         { color: @peach; }
 #custom-temp  { color: @green; }
+
 
 #custom-temp.warm     { color: @yellow; }
 #custom-temp.hot      { color: @peach; }

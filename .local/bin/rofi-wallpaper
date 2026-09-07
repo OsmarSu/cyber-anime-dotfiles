@@ -14,6 +14,8 @@ THEME="$HOME/.config/rofi/wallpaper.rasi"
 
 apply_wall() {
     local path="$1"
+    pkill -f mpvpaper 2>/dev/null || true
+    pkill -f linux-wallpaperengine 2>/dev/null || true
     awww img "$path" --transition-type random --transition-fps 255 --transition-duration 0.8
     ln -sf "$path" "$CURRENT_LINK"
 }

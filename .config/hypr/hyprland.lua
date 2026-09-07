@@ -18,7 +18,7 @@ local home        = os.getenv("HOME")
 local terminal    = "kitty"
 local fileManager = "yazi"
 local menu        = home .. "/.local/bin/rofi-launcher -show drun -modi 'drun,window,clipboard:" .. home .. "/.local/bin/rofi-clipboard'"
-local browser     = "firefox"
+local browser     = "sh -c 'command -v brave >/dev/null 2>&1 && exec brave || exec firefox'"
 local notes       = "obsidian"
 local editor      = "code"
 local colorPicker = "hyprpicker"
@@ -28,6 +28,7 @@ local colorPicker = "hyprpicker"
 ---- ENVIRONMENT VARIABLES ----
 --------------------------------
 
+hl.env("PATH", os.getenv("HOME") .. "/.local/bin:" .. (os.getenv("PATH") or ""))
 hl.env("XCURSOR_SIZE",      "24")
 hl.env("HYPRCURSOR_SIZE",   "24")
 

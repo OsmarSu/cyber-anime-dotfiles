@@ -1,1 +1,1 @@
-/home/oswi/.config/hypr/themes/macchiato.lua
+/home/oswi/.config/hypr/themes/cyber-anime.lua

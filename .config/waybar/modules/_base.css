@@ -1,5 +1,5 @@
 /* ─────────────────────────────────────────────────────────
-   Base — reset, font, common pill rules
+   Base — reset, font, floating islands & common pill rules
    ───────────────────────────────────────────────────────── */
 
 * {
@@ -9,15 +9,33 @@
   font-weight: bold;
   font-size: 13px;
   min-height: 0;
-  transition: background 200ms ease, color 200ms ease, opacity 200ms ease;
+  transition: all 180ms ease;
 }
 
 window#waybar {
-  background: @bar-bg;
+  background: transparent;
   color: @text-fg;
 }
 
-/* Common pill style */
+/* Floating Islands for Left, Center, and Right groups */
+.modules-left,
+.modules-center,
+.modules-right {
+  background: @bar-bg;
+  border: 1px solid rgba(0, 240, 255, 0.18);
+  border-radius: 16px;
+  padding: 3px 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.55), 0 0 6px rgba(0, 240, 255, 0.08);
+}
+
+.modules-left:hover,
+.modules-center:hover,
+.modules-right:hover {
+  border-color: rgba(0, 240, 255, 0.35);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.65), 0 0 10px rgba(0, 240, 255, 0.12);
+}
+
+/* Common pill style inside islands */
 #window,
 #tray,
 #clock,
@@ -32,24 +50,43 @@ window#waybar {
 #custom-vpn,
 #custom-active-ip,
 #custom-weather,
+#custom-settings,
+#custom-wpe,
 #privacy {
   background: @pill-bg;
+  border: 1px solid rgba(255, 255, 255, 0.05);
   color: @text-fg;
   padding: 2px 10px;
-  margin: 4px 0;
-  border-radius: 8px;
+  margin: 2px 3px;
+  border-radius: 10px;
+}
+
+#window:hover,
+#tray:hover,
+#cpu:hover,
+#memory:hover,
+#bluetooth:hover,
+#network:hover,
+#battery:hover,
+#custom-wpe:hover,
+#custom-settings:hover {
+  background: @pill-bg-hover;
+  border-color: rgba(0, 240, 255, 0.4);
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
 }
 
 #workspaces {
-  background: @pill-bg;
-  margin: 4px 0;
-  padding: 2px 6px;
-  border-radius: 8px;
+  background: transparent;
+  margin: 0 2px;
+  padding: 0;
+  border-radius: 10px;
 }
 
 tooltip {
-  background: @mantle;
-  border: 1px solid @surface0;
-  border-radius: 8px;
+  background: rgba(8, 9, 13, 0.95);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  border-radius: 10px;
   color: @text;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8), 0 0 12px rgba(0, 240, 255, 0.2);
+  padding: 8px 12px;
 }

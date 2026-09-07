@@ -1,8 +1,4 @@
-/* wlogout — Catppuccin Macchiato
- * border: 2px solid transparent → mantiene il box model GTK intatto
- * ma non mostra mai nessun bordo visibile.
- */
-
+/* wlogout — Cyber Anime (Tokyo Night Neon / Cyberpunk) */
 * {
     font-family: "JetBrainsMono Nerd Font", monospace;
     font-size: 13pt;
@@ -10,57 +6,71 @@
 }
 
 window {
-    background-color: rgba(36, 39, 58, 0.88);
-    color: #cad3f5;
+    background-color: rgba(8, 9, 13, 0.86);
+    color: #e2f1f8;
 }
 
 button {
     background-repeat:   no-repeat;
-    background-position: center;
-    background-size:     22%;
-    background-color:    transparent;
-    border:              2px solid transparent;
-    border-radius:       16px;
-    color:               #a5adcb;
-    margin:              12px;
-    transition:          background-color 0.2s ease,
-                         background-size 0.2s ease,
-                         color 0.2s ease,
-                         margin 0.15s ease;
+    background-position: center 32%;
+    background-size:     24%;
+    background-color:    rgba(14, 17, 26, 0.75);
+    border:              2px solid rgba(0, 240, 255, 0.25);
+    border-radius:       18px;
+    color:               #e2f1f8;
+    margin:              16px;
+    transition:          all 0.2s ease-in-out;
     outline:             none;
 }
 
 button:hover,
 button:focus {
-    background-color: rgba(54, 58, 79, 0.85);
-    background-size:  40%;
-    color:            #cad3f5;
-    margin:           4px;
-    outline:          none;
-    border-color:     transparent;
+    background-color:    rgba(22, 27, 40, 0.95);
+    background-size:     28%;
+    border-color:        #00f0ff;
+    color:               #00f0ff;
+    box-shadow:          0 0 20px rgba(0, 240, 255, 0.4), 0 0 35px rgba(255, 0, 127, 0.25);
+    margin:              10px;
+    outline:             none;
 }
 
 button span {
-    font-size: 0pt;
+    font-size: 12pt;
+    margin-top: 95px;
 }
 
-/* ---- Voci: icone default wlogout ---- */
+/* ---- Iconos con rutas absolutas ---- */
 #lock {
-    background-image: image(url("./icons/default/lock.png"));
+    background-image: image(url("/home/oswi/.config/wlogout/icons/lock.png"), url("/usr/share/wlogout/icons/lock.png"));
+}
+#lock:focus, #lock:hover {
+    background-image: image(url("/home/oswi/.config/wlogout/icons/lock-hover.png"), url("/home/oswi/.config/wlogout/icons/lock.png"), url("/usr/share/wlogout/icons/lock.png"));
 }
 
 #logout {
-    background-image: image(url("./icons/default/logout.png"));
+    background-image: image(url("/home/oswi/.config/wlogout/icons/logout.png"), url("/usr/share/wlogout/icons/logout.png"));
+}
+#logout:focus, #logout:hover {
+    background-image: image(url("/home/oswi/.config/wlogout/icons/logout-hover.png"), url("/home/oswi/.config/wlogout/icons/logout.png"), url("/usr/share/wlogout/icons/logout.png"));
 }
 
 #suspend {
-    background-image: image(url("./icons/default/suspend.png"));
+    background-image: image(url("/home/oswi/.config/wlogout/icons/sleep.png"), url("/usr/share/wlogout/icons/suspend.png"));
+}
+#suspend:focus, #suspend:hover {
+    background-image: image(url("/home/oswi/.config/wlogout/icons/sleep-hover.png"), url("/home/oswi/.config/wlogout/icons/sleep.png"), url("/usr/share/wlogout/icons/suspend.png"));
 }
 
 #reboot {
-    background-image: image(url("./icons/default/reboot.png"));
+    background-image: image(url("/home/oswi/.config/wlogout/icons/restart.png"), url("/usr/share/wlogout/icons/reboot.png"));
+}
+#reboot:focus, #reboot:hover {
+    background-image: image(url("/home/oswi/.config/wlogout/icons/restart-hover.png"), url("/home/oswi/.config/wlogout/icons/restart.png"), url("/usr/share/wlogout/icons/reboot.png"));
 }
 
 #shutdown {
-    background-image: image(url("./icons/default/shutdown.png"));
+    background-image: image(url("/home/oswi/.config/wlogout/icons/power.png"), url("/usr/share/wlogout/icons/shutdown.png"));
+}
+#shutdown:focus, #shutdown:hover {
+    background-image: image(url("/home/oswi/.config/wlogout/icons/power-hover.png"), url("/home/oswi/.config/wlogout/icons/power.png"), url("/usr/share/wlogout/icons/shutdown.png"));
 }

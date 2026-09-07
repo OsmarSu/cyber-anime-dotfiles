@@ -14,7 +14,25 @@ import shutil
 
 WORKSHOP_DIR = os.path.expanduser("~/.local/share/Steam/steamapps/workshop/content/431960")
 DEFAULT_PROJECTS = os.path.expanduser("~/.local/share/Steam/steamapps/common/wallpaper_engine/projects/defaultprojects")
+ASSETS_DIR = os.path.expanduser("~/.local/share/Steam/steamapps/common/wallpaper_engine/assets")
 STATE_FILE = os.path.expanduser("~/.config/rofi/.current_wpe")
+PROPS_FILE = os.path.expanduser("~/.config/rofi/wpe_properties.json")
+
+def load_properties():
+    if os.path.isfile(PROPS_FILE):
+        try:
+            with open(PROPS_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {}
+
+def save_properties(data):
+    try:
+        with open(PROPS_FILE, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+    except Exception:
+        pass
 
 def get_active_monitor():
     try:
@@ -68,6 +86,8 @@ def scan_wallpapers():
             continue
     return wallpapers
 
+import time
+
 def apply_wallpaper(wp):
     monitor = get_active_monitor()
     wtype = wp["type"]
@@ -76,20 +96,45 @@ def apply_wallpaper(wp):
     folder = wp["folder"]
     title = wp["title"]
 
-    # Kill running live wallpaper engines
-    subprocess.run(["pkill", "-x", "mpvpaper"], capture_output=True)
-    subprocess.run(["pkill", "-x", "linux-wallpaperengine"], capture_output=True)
+    # Kill running live wallpaper engines cleanly
+    subprocess.run(["pkill", "-f", "mpvpaper"], capture_output=True)
+    subprocess.run(["pkill", "-f", "linux-wallpaperengine"], capture_output=True)
+    time.sleep(0.15)
 
     has_mpvpaper = shutil.which("mpvpaper") is not None
     has_linux_wpe = shutil.which("linux-wallpaperengine") is not None
 
     applied_live = False
 
+    # Always set static wallpaper / preview via awww and update rofi symlink
+    # This provides seamless fallback, instant feedback, and themes rofi/hyprlock
+    if preview_path and os.path.isfile(preview_path):
+        subprocess.run([
+            "awww", "img", preview_path,
+            "--resize", "crop",
+            "--filter", "Lanczos3",
+            "--transition-type", "fade",
+            "--transition-duration", "0.5"
+        ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        wpid = wp.get("id", os.path.basename(os.path.abspath(folder)))
+        cached_wpe = os.path.expanduser(f"~/.cache/rofi-wpe-wallpapers/{wpid}.png")
+        rofi_source = cached_wpe if os.path.isfile(cached_wpe) else preview_path
+
+        for link_name in [".current_wallpaper", ".current_wallpaper.png"]:
+            symlink_path = os.path.expanduser(f"~/.config/rofi/{link_name}")
+            try:
+                if os.path.islink(symlink_path) or os.path.exists(symlink_path):
+                    os.remove(symlink_path)
+                if rofi_source and os.path.isfile(rofi_source):
+                    os.symlink(rofi_source, symlink_path)
+            except Exception:
+                pass
+
     # Video wallpapers
     if wtype == "video" and os.path.isfile(file_path):
         if has_mpvpaper:
-            # mpvpaper hardware accelerated loop on monitor
-            cmd = ["mpvpaper", "-o", "no-audio loop hwdec=auto", monitor, file_path]
+            # Explicitly specify layer 'background' so it never obscures waybar or windows
+            cmd = ["mpvpaper", "-l", "background", "-o", "no-audio loop hwdec=auto panscan=1.0 mute=yes volume=0", monitor, file_path]
             subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
             applied_live = True
         else:
@@ -98,21 +143,45 @@ def apply_wallpaper(wp):
 
     # Scene / 3D wallpapers
     elif (wtype in ["scene", "web"]) and has_linux_wpe:
-        cmd = ["linux-wallpaperengine", "--screen-root", monitor, folder]
-        subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+        # Explicitly specify layer 'background' so it never obscures waybar or windows
+        cmd = [
+            "linux-wallpaperengine",
+            "--screen-root", monitor,
+            "--layer", "background",
+            "--silent",
+            "--no-audio-processing"
+        ]
+        if os.path.isdir(ASSETS_DIR):
+            cmd.extend(["--assets-dir", ASSETS_DIR])
+        cmd.extend(["--scaling", "fill"])
+
+        # Apply saved user property overrides
+        all_props = load_properties()
+        wp_props = all_props.get(wp.get("id", os.path.basename(os.path.abspath(folder))), {})
+        for prop_k, prop_v in wp_props.items():
+            if prop_k == "disable_particles" and prop_v:
+                cmd.append("--disable-particles")
+            elif prop_k == "disable_parallax" and prop_v:
+                cmd.append("--disable-parallax")
+            elif prop_k == "disable_mouse" and prop_v:
+                cmd.append("--disable-mouse")
+            elif prop_v is not None and str(prop_v) != "":
+                cmd.extend(["--set-property", f"{prop_k}={prop_v}"])
+
+        cmd.append(folder)
+        wpe_env = os.environ.copy()
+        wpe_env["SDL_AUDIODRIVER"] = "dummy"
+        subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True, env=wpe_env)
         applied_live = True
 
-    # Static / preview fallback with awww
-    if not applied_live and preview_path and os.path.isfile(preview_path):
-        subprocess.run(["awww", "img", preview_path, "--transition-type", "grow", "--transition-pos", "center", "--transition-duration", "1.0"])
-        # Update symlink for rofi/hyprlock
-        symlink_path = os.path.expanduser("~/.config/rofi/.current_wallpaper")
-        try:
-            if os.path.islink(symlink_path) or os.path.exists(symlink_path):
-                os.remove(symlink_path)
-            os.symlink(preview_path, symlink_path)
-        except Exception:
-            pass
+    # Ensure waybar is running and visible
+    try:
+        wb_check = subprocess.run(["pgrep", "-x", "waybar"], capture_output=True)
+        if wb_check.returncode != 0:
+            subprocess.Popen([os.path.expanduser("~/.local/bin/waybar")],
+                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+    except Exception:
+        pass
 
     # Save state
     try:
@@ -123,15 +192,212 @@ def apply_wallpaper(wp):
 
     subprocess.run(["notify-send", "-a", "Wallpaper Engine", f"Fondo aplicado: {title}", f"Tipo: {wtype.upper()} ({'En vivo' if applied_live else 'Vista previa'})"])
 
+def configure_properties(wp=None):
+    if wp is None:
+        if os.path.isfile(STATE_FILE):
+            try:
+                with open(STATE_FILE, "r", encoding="utf-8") as f:
+                    wp = json.load(f)
+            except Exception:
+                pass
+
+    if not wp:
+        subprocess.run(["notify-send", "-a", "Wallpaper Engine", "Configuración de Efectos", "No hay ningún fondo activo actualmente."])
+        return
+
+    if wp.get("type", "").lower() not in ["scene", "web"]:
+        subprocess.run(["notify-send", "-a", "Wallpaper Engine", "Configuración de Efectos", 
+                        f"El fondo '{wp.get('title')}' es de tipo {wp.get('type')}. Solo los fondos 3D/Scene interactivos tienen efectos configurables."])
+        return
+
+    folder = wp.get("folder", "")
+    wpid = wp.get("id", os.path.basename(os.path.abspath(folder)))
+    proj_file = os.path.join(folder, "project.json")
+
+    raw_props = {}
+    if os.path.isfile(proj_file):
+        try:
+            with open(proj_file, "r", encoding="utf-8", errors="ignore") as f:
+                pdata = json.load(f)
+            raw_props = pdata.get("general", {}).get("properties", {})
+        except Exception:
+            pass
+
+    import re
+
+    while True:
+        all_props = load_properties()
+        curr_saved = all_props.get(wpid, {})
+
+        menu_items = []
+        actions = []
+
+        # 1. Propiedades del fondo en project.json
+        for key, pinfo in raw_props.items():
+            if key.lower() in ["schemecolor", "backgroundmusic"]:
+                continue
+            ptype = pinfo.get("type", "").lower()
+            ptext = pinfo.get("text", key)
+            clean_text = re.sub(r'<[^>]+>', ' ', ptext).replace("&nbsp;", " ").strip()
+            if not clean_text:
+                clean_text = key
+
+            if ptype in ["bool", "boolean"]:
+                default_val = bool(pinfo.get("value", True))
+                val = curr_saved.get(key, default_val)
+                val_bool = str(val).lower() in ["1", "true"]
+                icon = "✓" if val_bool else "✗"
+                status = "ACTIVO" if val_bool else "DESACTIVADO"
+                badge = "🟢" if val_bool else "🔴"
+                menu_items.append(f"{badge} [{icon}]  {clean_text}  [{status}]")
+                actions.append({"type": "toggle_bool", "key": key, "val": val_bool})
+
+            elif ptype == "combo":
+                options = pinfo.get("options", [])
+                curr_val = str(curr_saved.get(key, pinfo.get("value", "1")))
+                curr_label = curr_val
+                for opt in options:
+                    if str(opt.get("value")) == curr_val:
+                        curr_label = opt.get("label", curr_val)
+                        break
+                menu_items.append(f"🎨  {clean_text}  [Opción: {curr_label}]")
+                actions.append({"type": "cycle_combo", "key": key, "options": options, "curr_val": curr_val})
+
+            elif ptype == "slider":
+                cur_val = curr_saved.get(key, pinfo.get("value", 1))
+                menu_items.append(f"🎚️  {clean_text}  [Valor: {cur_val}]")
+                actions.append({"type": "slider_prompt", "key": key, "val": cur_val, "min": pinfo.get("min", 0), "max": pinfo.get("max", 1)})
+
+        # 2. Modificadores del motor
+        p_dis = curr_saved.get("disable_particles", False)
+        menu_items.append(f"{'🔴 [✗]' if p_dis else '🟢 [✓]'}  Partículas de la escena ({'DESACTIVADO' if p_dis else 'ACTIVO'})")
+        actions.append({"type": "engine_toggle", "key": "disable_particles"})
+
+        pr_dis = curr_saved.get("disable_parallax", False)
+        menu_items.append(f"{'🔴 [✗]' if pr_dis else '🟢 [✓]'}  Efecto Parallax (Seguimiento ratón) ({'DESACTIVADO' if pr_dis else 'ACTIVO'})")
+        actions.append({"type": "engine_toggle", "key": "disable_parallax"})
+
+        m_dis = curr_saved.get("disable_mouse", False)
+        menu_items.append(f"{'🔴 [✗]' if m_dis else '🟢 [✓]'}  Interacción con ratón ({'DESACTIVADO' if m_dis else 'ACTIVO'})")
+        actions.append({"type": "engine_toggle", "key": "disable_mouse"})
+
+        # 3. Acciones
+        menu_items.append("🔄  Restablecer efectos por defecto")
+        actions.append({"type": "reset"})
+
+        menu_items.append("↩️  Salir / Listo")
+        actions.append({"type": "exit"})
+
+        rofi_cmd = [
+            "rofi",
+            "-dmenu",
+            "-i",
+            "-p", "⚙️ Efectos",
+            "-format", "i",
+            "-theme-str", "window { width: 750px; } listview { lines: 10; columns: 1; }"
+        ]
+        rofi_input = "\n".join(menu_items).encode("utf-8")
+
+        try:
+            proc = subprocess.Popen(rofi_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+            out, _ = proc.communicate(input=rofi_input)
+            if proc.returncode != 0 or not out.strip():
+                break
+            idx = int(out.strip().decode("utf-8"))
+            if idx < 0 or idx >= len(actions):
+                break
+            act = actions[idx]
+
+            if act["type"] == "exit":
+                break
+
+            elif act["type"] == "reset":
+                if wpid in all_props:
+                    del all_props[wpid]
+                    save_properties(all_props)
+                    apply_wallpaper(wp)
+                    subprocess.run(["notify-send", "-a", "Wallpaper Engine", "Efectos", "Efectos restablecidos a los valores originales."])
+
+            elif act["type"] == "toggle_bool":
+                new_val = 0 if act["val"] else 1
+                curr_saved[act["key"]] = new_val
+                all_props[wpid] = curr_saved
+                save_properties(all_props)
+                apply_wallpaper(wp)
+
+            elif act["type"] == "engine_toggle":
+                key = act["key"]
+                curr_val = curr_saved.get(key, False)
+                curr_saved[key] = not curr_val
+                all_props[wpid] = curr_saved
+                save_properties(all_props)
+                apply_wallpaper(wp)
+
+            elif act["type"] == "cycle_combo":
+                opts = act["options"]
+                if opts:
+                    vals = [str(o.get("value")) for o in opts]
+                    try:
+                        cur_i = vals.index(str(act["curr_val"]))
+                        next_i = (cur_i + 1) % len(vals)
+                        curr_saved[act["key"]] = vals[next_i]
+                    except Exception:
+                        curr_saved[act["key"]] = vals[0]
+                    all_props[wpid] = curr_saved
+                    save_properties(all_props)
+                    apply_wallpaper(wp)
+
+            elif act["type"] == "slider_prompt":
+                prompt_cmd = [
+                    "rofi",
+                    "-dmenu",
+                    "-p", f"Nuevo valor ({act['min']} a {act['max']})",
+                    "-theme-str", "window { width: 400px; }"
+                ]
+                pproc = subprocess.Popen(prompt_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+                pout, _ = pproc.communicate(input=str(act["val"]).encode("utf-8"))
+                if pproc.returncode == 0 and pout.strip():
+                    try:
+                        new_val = float(pout.strip().decode("utf-8"))
+                        curr_saved[act["key"]] = new_val
+                        all_props[wpid] = curr_saved
+                        save_properties(all_props)
+                        apply_wallpaper(wp)
+                    except Exception:
+                        pass
+
+        except Exception as e:
+            print(f"Error in configure_properties: {e}", file=sys.stderr)
+            break
+
 def main():
+    # Handle --restore / --reload / -r argument
+    if len(sys.argv) > 1 and sys.argv[1] in ["--restore", "--reload", "-r"]:
+        if os.path.isfile(STATE_FILE):
+            try:
+                with open(STATE_FILE, "r", encoding="utf-8") as f:
+                    wp = json.load(f)
+                apply_wallpaper(wp)
+                return
+            except Exception as e:
+                print(f"Error al restaurar fondo: {e}", file=sys.stderr)
+
+    # Handle --config / -c / --props argument
+    if len(sys.argv) > 1 and sys.argv[1] in ["--config", "-c", "--props"]:
+        configure_properties()
+        return
+
     wallpapers = scan_wallpapers()
     if not wallpapers:
         subprocess.run(["notify-send", "-a", "Wallpaper Engine", "No se encontraron fondos", "Verifica la carpeta de Workshop en Steam."])
         return
 
     # Prepare rofi input lines
-    # Format: Display Title\0icon\x1f/path/to/icon
-    rofi_lines = []
+    # First item: Option to configure current wallpaper effects
+    rofi_lines = [
+        "⚙️   Configurar efectos del fondo activo\0icon\x1fpreferences-system"
+    ]
+
     for w in wallpapers:
         badge = "🎞️" if w["type"] == "video" else ("✨" if w["type"] in ["scene", "web"] else "🖼️")
         line = f"{badge}  {w['title']}  [{w['type'].upper()}]"
@@ -155,8 +421,10 @@ def main():
         out, _ = proc.communicate(input=rofi_input)
         if proc.returncode == 0 and out.strip():
             selected_idx = int(out.strip().decode("utf-8"))
-            if 0 <= selected_idx < len(wallpapers):
-                apply_wallpaper(wallpapers[selected_idx])
+            if selected_idx == 0:
+                configure_properties()
+            elif 1 <= selected_idx <= len(wallpapers):
+                apply_wallpaper(wallpapers[selected_idx - 1])
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
 

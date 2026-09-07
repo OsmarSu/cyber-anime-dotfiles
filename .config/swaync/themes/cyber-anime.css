@@ -55,12 +55,12 @@ scrollbar slider {
 }
 
 .notification {
-  background: rgba(14, 17, 26, 0.92);
-  border: 1px solid #00f0ff;
-  border-radius: 8px;
-  padding: 12px;
-  margin: 0px 4px 6px 4px;
-  box-shadow: 0 4px 12px rgba(0, 240, 255, 0.15);
+  background: rgba(14, 17, 26, 0.94);
+  border: 1px solid rgba(0, 240, 255, 0.45);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin: 0px 4px 8px 4px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75), 0 0 14px rgba(0, 240, 255, 0.2);
 }
 
 .notification-content {
@@ -72,7 +72,7 @@ scrollbar slider {
   color: @subtext0;
   text-shadow: none;
   padding: 0;
-  border-radius: 100%;
+  border-radius: 50%;
   margin-top: 5px;
   margin-right: 5px;
   box-shadow: none;
@@ -83,16 +83,17 @@ scrollbar slider {
 
 .close-button:hover {
   box-shadow: none;
-  background: @surface1;
-  transition: all 0.15s ease-in-out;
+  background: #ff0055;
+  transition: all 0.18s ease-in-out;
   border: none;
-  color: #ff0055;
+  color: #ffffff;
 }
 
 .notification-default-action,
 .notification-action {
-  padding: 4px;
+  padding: 6px 12px;
   margin: 0;
+  border-radius: 8px;
   box-shadow: none;
   background: @surface0;
   border: 1px solid @surface1;
@@ -132,12 +133,12 @@ scrollbar slider {
 
 /* Control Center */
 .control-center {
-  background: rgba(8, 9, 13, 0.90);
+  background: rgba(8, 9, 13, 0.94);
   border: 1px solid rgba(0, 240, 255, 0.4);
-  border-radius: 12px;
-  padding: 16px;
+  border-radius: 18px;
+  padding: 18px;
   margin: 8px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8), 0 0 16px rgba(0, 240, 255, 0.15);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.88), 0 0 24px rgba(0, 240, 255, 0.2);
 }
 
 .control-center-list {
@@ -147,7 +148,7 @@ scrollbar slider {
 .widget-title {
   color: #00f0ff;
   font-size: 15px;
-  font-weight: bold;
+  font-weight: 800;
   padding: 4px;
   margin-bottom: 8px;
 }
@@ -159,8 +160,8 @@ scrollbar slider {
   background: @surface0;
   border: 1px solid @surface1;
   box-shadow: none;
-  border-radius: 6px;
-  padding: 4px 8px;
+  border-radius: 8px;
+  padding: 4px 10px;
 }
 
 .widget-title > button:hover {
@@ -196,11 +197,11 @@ scrollbar slider {
 /* Sliders */
 .widget-volume,
 .widget-backlight {
-  background: @surface0;
+  background: rgba(14, 17, 26, 0.85);
   padding: 10px 14px;
   margin: 6px 0;
-  border-radius: 8px;
-  border: 1px solid @surface1;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 240, 255, 0.18);
 }
 
 .widget-volume > trough > highlight {
@@ -217,28 +218,32 @@ scrollbar slider {
 }
 
 .widget-buttons-grid > flowbox > flowboxchild > button {
-  background: @surface0;
-  border-radius: 8px;
-  border: 1px solid @surface1;
+  background: rgba(14, 17, 26, 0.85);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 240, 255, 0.2);
   color: @text;
-  min-width: 48px;
-  min-height: 48px;
+  min-width: 52px;
+  min-height: 52px;
   margin: 4px;
+  font-size: 18px;
+  transition: all 180ms ease;
 }
 
 .widget-buttons-grid > flowbox > flowboxchild > button:hover {
-  background: @surface1;
+  background: rgba(22, 27, 40, 0.95);
   border-color: #00f0ff;
   color: #00f0ff;
+  box-shadow: 0 0 14px rgba(0, 240, 255, 0.35);
 }
 
 /* Media player */
 .widget-mpris {
-  background: @surface0;
-  padding: 12px;
+  background: rgba(14, 17, 26, 0.85);
+  padding: 14px;
   margin: 8px 0;
-  border-radius: 10px;
-  border: 1px solid rgba(0, 240, 255, 0.25);
+  border-radius: 14px;
+  border: 1px solid rgba(0, 240, 255, 0.28);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
 }
 
 .widget-mpris-player {

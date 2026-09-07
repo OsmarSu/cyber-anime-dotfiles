@@ -32,9 +32,9 @@
 @define-color lavender   #b4befe;
 
 /* ── Role mapping ── */
-@define-color bar-bg          rgba(8, 9, 13, 0.82);
-@define-color pill-bg         rgba(14, 17, 26, 0.80);
-@define-color pill-bg-hover   rgba(22, 27, 40, 0.95);
+@define-color bar-bg          rgba(8, 9, 13, 0.72);
+@define-color pill-bg         rgba(14, 17, 26, 0.70);
+@define-color pill-bg-hover   rgba(22, 27, 40, 0.88);
 @define-color text-fg         @text;
 @define-color text-dim        @overlay0;
 @define-color accent-active   #00f0ff;

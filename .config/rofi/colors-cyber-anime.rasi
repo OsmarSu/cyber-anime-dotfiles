@@ -27,7 +27,7 @@
     font-size   : 12;
 
     /* ── Border radius — Modern rounded ── */
-    border-r         : 8px;
-    border-r-inner   : 6px;
-    border-r-element : 6px;
+    border-r         : 16px;
+    border-r-inner   : 12px;
+    border-r-element : 8px;
 }

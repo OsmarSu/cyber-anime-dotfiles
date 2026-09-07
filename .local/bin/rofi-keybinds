@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+# rofi-keybinds: Interactive keybinds viewer & launcher for Rofi
+# Can be used standalone or as a Rofi mode: rofi -modi "keys:rofi-keybinds" -show keys
+
+KEYBINDS=(
+    "󰌌 [SUPER + Enter]         Terminal Kitty"
+    "󰌌 [SUPER + T]             Terminal Kitty (Alternativo)"
+    "󰌌 [SUPER + A]             Caja de aplicaciones (Rofi Launcher)"
+    "󰌌 [SUPER + S]             Panel de Control y Configuración (Cyber Settings)"
+    "󰌌 [SUPER + ,]             Panel de Control y Configuración (Alternativo)"
+    "󰌌 [SUPER + /]             Hoja de atajos de teclado (<)"
+    "󰌌 [SUPER + E]             Gestor de archivos gráfico (Dolphin)"
+    "󰌌 [SUPER + S]             Gestor de archivos de terminal (Yazi)"
+    "󰌌 [SUPER + B]             Navegador Web (Brave / Firefox)"
+    "󰌌 [SUPER + C]             Editor de código (VS Code)"
+    "󰌌 [SUPER + V]             Historial de Portapapeles (Cliphist)"
+    "󰌌 [SUPER + W]             Selector Wallpaper Engine (Fondos Live)"
+    "󰌌 [SUPER + SHIFT + W]     Selector de Fondos Estáticos"
+    "󰌌 [SUPER + P]             Selector de Color (Hyprpicker)"
+    "󰌌 [SUPER + .]             Selector de Emojis"
+    "󰌌 [SUPER + Q]             Cerrar ventana activa"
+    "󰌌 [SUPER + F]             Pantalla completa"
+    "󰌌 [SUPER + SHIFT + F]     Alternar ventana flotante"
+    "󰌌 [SUPER + Space]         Centrar ventana activa"
+    "󰌌 [SUPER + J]             Alternar orientación split (Dwindle)"
+    "󰌌 [SUPER + Flechas]       Mover foco entre ventanas"
+    "󰌌 [SUPER + SHIFT + Flechas] Mover ventana de posición"
+    "󰌌 [SUPER + CTRL + Flechas]  Redimensionar ventana"
+    "󰌌 [SUPER + 1..10]         Cambiar al espacio de trabajo 1 al 10"
+    "󰌌 [SUPER + SHIFT + 1..10]  Mover ventana al espacio de trabajo"
+    "󰌌 [SUPER + Tab]           Alternar con el espacio de trabajo previo"
+    "󰌌 [SUPER + N]             Centro de Control & Notificaciones (SwayNC)"
+    "󰌌 [SUPER + Escape]        Menú de energía y sesión (Wlogout)"
+    "󰌌 [SUPER + L]             Bloquear pantalla (Hyprlock)"
+    "󰌌 [SUPER + SHIFT + S]     Captura de pantalla de área (Swappy)"
+    "󰌌 [Print]                 Captura de pantalla completa al portapapeles"
+    "󰌌 [CTRL + ESCAPE]         Mostrar / Ocultar barra superior (Waybar)"
+)
+
+if [ -z "$1" ]; then
+    # Output list for Rofi
+    for k in "${KEYBINDS[@]}"; do
+        echo "$k"
+    done
+else
+    # Action when selected
+    SELECTED="$1"
+    if [[ "$SELECTED" =~ "Cyber Settings" ]]; then
+        exec "$HOME/.local/bin/cyber-settings"
+    elif [[ "$SELECTED" =~ "Terminal Kitty" ]]; then
+        exec kitty
+    elif [[ "$SELECTED" =~ "Dolphin" ]]; then
+        exec dolphin
+    elif [[ "$SELECTED" =~ "VS Code" ]]; then
+        exec code
+    elif [[ "$SELECTED" =~ "Cliphist" ]]; then
+        exec "$HOME/.local/bin/rofi-clipboard"
+    elif [[ "$SELECTED" =~ "Wallpaper Engine" ]]; then
+        exec "$HOME/.local/bin/wpe-picker"
+    elif [[ "$SELECTED" =~ "SwayNC" ]]; then
+        swaync-client -t
+    elif [[ "$SELECTED" =~ "Wlogout" ]]; then
+        exec "$HOME/.local/bin/hypr-power-menu"
+    elif [[ "$SELECTED" =~ "Hyprlock" ]]; then
+        exec "$HOME/.local/bin/hypr-lock"
+    elif [[ "$SELECTED" =~ "Swappy" ]]; then
+        sh -c 'if command -v swappy >/dev/null 2>&1; then grim -g "$(slurp)" - | swappy -f -; else grimblast --notify copysave area; fi'
+    else
+        notify-send -a "Atajos de Teclado" "Atajo seleccionado" "$SELECTED" -t 1500
+    fi
+fi

@@ -5,30 +5,54 @@ id_file="$state_dir/volume.id"
 
 mkdir -p "$state_dir"
 
+has_wpctl() { command -v wpctl >/dev/null 2>&1; }
+
 case "$1" in
   up)
-    pamixer -i 5
+    if has_wpctl; then
+      wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+
+    elif command -v pamixer >/dev/null 2>&1; then
+      pamixer -i 5
+    fi
     ;;
   down)
-    pamixer -d 5
+    if has_wpctl; then
+      wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
+    elif command -v pamixer >/dev/null 2>&1; then
+      pamixer -d 5
+    fi
     ;;
   mute)
-    pamixer -t
+    if has_wpctl; then
+      wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+    elif command -v pamixer >/dev/null 2>&1; then
+      pamixer -t
+    fi
     ;;
   mic)
     id_file="$state_dir/microphone.id"
-    pamixer --default-source -t
-    muted="$(pamixer --default-source --get-mute)"
+    if has_wpctl; then
+      wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+      out="$(wpctl get-volume @DEFAULT_AUDIO_SOURCE@ 2>/dev/null || echo 'Volume: 1.00')"
+      muted="false"
+      echo "$out" | grep -q 'MUTED' && muted="true"
+      vol="$(echo "$out" | awk '{print int($2 * 100)}')"
+    else
+      pamixer --default-source -t 2>/dev/null || true
+      muted="$(pamixer --default-source --get-mute 2>/dev/null || echo false)"
+      vol="$(pamixer --default-source --get-volume 2>/dev/null || echo 100)"
+    fi
+
     if [ "$muted" = "true" ]; then
       icon="microphone-sensitivity-muted"
-      body="Muted"
+      body="Silenciado"
       value=0
     else
       icon="microphone-sensitivity-high"
-      body="On"
-      value="$(pamixer --default-source --get-volume)"
+      body="Activo"
+      value="$vol"
     fi
-    summary="Microphone"
+    summary="Micrófono"
     ;;
   *)
     exit 2
@@ -36,13 +60,20 @@ case "$1" in
 esac
 
 if [ "$1" != "mic" ]; then
-  muted="$(pamixer --get-mute)"
-  volume="$(pamixer --get-volume)"
-  summary="Volume"
+  if has_wpctl; then
+    out="$(wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null || echo 'Volume: 1.00')"
+    muted="false"
+    echo "$out" | grep -q 'MUTED' && muted="true"
+    volume="$(echo "$out" | awk '{print int($2 * 100)}')"
+  else
+    muted="$(pamixer --get-mute 2>/dev/null || echo false)"
+    volume="$(pamixer --get-volume 2>/dev/null || echo 100)"
+  fi
+  summary="Volumen"
 
   if [ "$muted" = "true" ]; then
     icon="audio-volume-muted"
-    body="Muted"
+    body="Silenciado"
     value=0
   else
     body="${volume}%"

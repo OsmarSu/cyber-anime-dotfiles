@@ -1,19 +1,34 @@
 #!/usr/bin/env bash
-# rofi-launcher — aggiorna il background con un wallpaper random, poi lancia rofi.
-# Passa tutti gli argomenti a rofi invariati, quindi sostituisce completamente
-# il binario rofi nei keybind senza cambiare la logica di nessuna chiamata.
+# rofi-launcher — Cyber-Anime App Drawer & Launcher wrapper.
+# Dynamically selects a random Wallpaper Engine background (pre-adjusted 980x620)
+# on EVERY launch, ensuring zero pixelation and fresh aesthetics every time.
 
 export PATH="$HOME/.local/bin:$PATH"
 
-WALL_DIR=$(cat "$HOME/.config/rofi/.wall_dir" 2>/dev/null || echo "$HOME/.config/assets/backgrounds/whitehat")
+WPE_CACHE="$HOME/.cache/rofi-wpe-wallpapers"
+CURRENT_PNG="$HOME/.config/rofi/.current_wallpaper.png"
 CURRENT_LINK="$HOME/.config/rofi/.current_wallpaper"
 
-target=$(find "$WALL_DIR" -maxdepth 1 -type f \
-    \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.webp" \) 2>/dev/null \
-    | shuf -n1)
+# Select random Wallpaper Engine background from cache
+if [[ -d "$WPE_CACHE" ]]; then
+    target=$(find "$WPE_CACHE" -maxdepth 1 -name "*.png" 2>/dev/null | shuf -n1)
+fi
 
-[[ -n "$target" ]] && ln -sf "$target" "$CURRENT_LINK"
+# Fallback if cache is empty
+if [[ -z "$target" || ! -f "$target" ]]; then
+    WALL_DIR=$(cat "$HOME/.config/rofi/.wall_dir" 2>/dev/null || echo "$HOME/.config/assets/backgrounds/sfondi")
+    target=$(find "$WALL_DIR" -maxdepth 1 -type f \
+        \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.webp" \) 2>/dev/null \
+        | shuf -n1)
+fi
 
+# Update symlinks immediately before launch
+if [[ -n "$target" && -f "$target" ]]; then
+    ln -sf "$target" "$CURRENT_PNG"
+    ln -sf "$target" "$CURRENT_LINK"
+fi
+
+# Pass through arguments or launch default drun mode
 if [[ $# -eq 0 ]]; then
     exec rofi -show drun
 else

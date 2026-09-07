@@ -1,0 +1,315 @@
+#!/usr/bin/env python3
+"""
+volume-popup: Sleek Wayland Layer-Shell audio mixer for Waybar
+"""
+import os
+import sys
+import signal
+import subprocess
+
+LOCK_FILE = f"/tmp/waybar_volume_{os.getuid()}.pid"
+if os.path.exists(LOCK_FILE):
+    try:
+        with open(LOCK_FILE, "r") as f:
+            pid = int(f.read().strip())
+        os.remove(LOCK_FILE)
+        os.kill(pid, signal.SIGTERM)
+        sys.exit(0)
+    except Exception:
+        if os.path.exists(LOCK_FILE):
+            os.remove(LOCK_FILE)
+
+with open(LOCK_FILE, "w") as f:
+    f.write(str(os.getpid()))
+
+import gi
+gi.require_version("Gtk", "3.0")
+gi.require_version("GtkLayerShell", "0.1")
+from gi.repository import Gtk, Gdk, GtkLayerShell, GLib
+
+def get_sink_volume():
+    try:
+        out = subprocess.check_output(["wpctl", "get-volume", "@DEFAULT_AUDIO_SINK@"]).decode()
+        # Format: Volume: 0.85 [MUTED]
+        parts = out.strip().split()
+        vol = float(parts[1]) if len(parts) > 1 else 1.0
+        muted = "[MUTED]" in out
+        return int(vol * 100), muted
+    except Exception:
+        return 100, False
+
+def get_source_volume():
+    try:
+        out = subprocess.check_output(["wpctl", "get-volume", "@DEFAULT_AUDIO_SOURCE@"]).decode()
+        parts = out.strip().split()
+        vol = float(parts[1]) if len(parts) > 1 else 1.0
+        muted = "[MUTED]" in out
+        return int(vol * 100), muted
+    except Exception:
+        return 100, False
+
+def get_sink_name():
+    try:
+        out = subprocess.check_output(["wpctl", "inspect", "@DEFAULT_AUDIO_SINK@"]).decode()
+        for line in out.splitlines():
+            if "node.description" in line:
+                return line.split("=", 1)[1].strip().strip('"')
+    except Exception:
+        pass
+    return "Altavoces / Auriculares"
+
+CSS = b"""
+window {
+    background: transparent;
+}
+
+.volume-card {
+    background-color: rgba(14, 17, 26, 0.96);
+    border: 1px solid #00f0ff;
+    border-radius: 14px;
+    padding: 16px 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 240, 255, 0.25);
+    min-width: 320px;
+}
+
+.title {
+    font-family: 'JetBrainsMono Nerd Font', monospace;
+    font-size: 15px;
+    font-weight: 800;
+    color: #00f0ff;
+}
+
+.device-desc {
+    font-size: 11px;
+    color: #8fa8b8;
+    margin-bottom: 8px;
+}
+
+.section-label {
+    font-family: 'JetBrainsMono Nerd Font', monospace;
+    font-size: 12px;
+    color: #cad3f5;
+    font-weight: bold;
+}
+
+.vol-val {
+    font-family: 'JetBrainsMono Nerd Font', monospace;
+    font-size: 12px;
+    font-weight: bold;
+    color: #00f0ff;
+}
+
+scale trough {
+    background-color: rgba(91, 96, 120, 0.35);
+    border-radius: 6px;
+    min-height: 8px;
+}
+
+scale highlight {
+    background-color: #00f0ff;
+    border-radius: 6px;
+}
+
+.mute-btn {
+    background: rgba(30, 32, 48, 0.8);
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    border-radius: 8px;
+    color: #00f0ff;
+    padding: 4px 10px;
+    font-size: 14px;
+}
+
+.mute-btn.muted {
+    background: rgba(237, 135, 150, 0.2);
+    border-color: #ed8796;
+    color: #ed8796;
+}
+
+.close-btn {
+    background: transparent;
+    color: #8fa8b8;
+    border: none;
+    font-size: 16px;
+}
+.close-btn:hover {
+    color: #ff007f;
+}
+
+.pavu-btn {
+    background: rgba(0, 240, 255, 0.1);
+    border: 1px solid #00f0ff;
+    border-radius: 8px;
+    color: #00f0ff;
+    padding: 6px 12px;
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 12px;
+}
+.pavu-btn:hover {
+    background: #00f0ff;
+    color: #08090d;
+}
+"""
+
+class VolumePopup(Gtk.Window):
+    def __init__(self):
+        super().__init__()
+        
+        GtkLayerShell.init_for_window(self)
+        GtkLayerShell.set_layer(self, GtkLayerShell.Layer.TOP)
+        GtkLayerShell.set_anchor(self, GtkLayerShell.Edge.TOP, True)
+        GtkLayerShell.set_anchor(self, GtkLayerShell.Edge.RIGHT, True)
+        GtkLayerShell.set_margin(self, GtkLayerShell.Edge.TOP, 44)
+        GtkLayerShell.set_margin(self, GtkLayerShell.Edge.RIGHT, 120)
+        GtkLayerShell.set_keyboard_mode(self, GtkLayerShell.KeyboardMode.ON_DEMAND)
+        
+        provider = Gtk.CssProvider()
+        provider.load_from_data(CSS)
+        Gtk.StyleContext.add_provider_for_screen(
+            Gdk.Screen.get_default(),
+            provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        )
+        
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+        box.get_style_context().add_class("volume-card")
+        
+        # Header
+        hdr = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        title = Gtk.Label(label="󰕾 Control de Audio", xalign=0)
+        title.get_style_context().add_class("title")
+        hdr.pack_start(title, True, True, 0)
+        
+        close = Gtk.Button(label="󰅖")
+        close.get_style_context().add_class("close-btn")
+        close.connect("clicked", lambda w: self.destroy())
+        hdr.pack_end(close, False, False, 0)
+        box.pack_start(hdr, False, False, 0)
+        
+        desc = Gtk.Label(label=get_sink_name(), xalign=0)
+        desc.get_style_context().add_class("device-desc")
+        box.pack_start(desc, False, False, 0)
+        
+        # SINK Volume Slider
+        sink_vol, sink_muted = get_sink_volume()
+        
+        s_lbl_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        s_lbl = Gtk.Label(label="Salida (Altavoces)", xalign=0)
+        s_lbl.get_style_context().add_class("section-label")
+        s_lbl_box.pack_start(s_lbl, True, True, 0)
+        self.sink_val_lbl = Gtk.Label(label=f"{sink_vol}%")
+        self.sink_val_lbl.get_style_context().add_class("vol-val")
+        s_lbl_box.pack_end(self.sink_val_lbl, False, False, 0)
+        box.pack_start(s_lbl_box, False, False, 0)
+        
+        s_ctrl = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        self.sink_mute_btn = Gtk.Button(label="󰝟" if sink_muted else "󰕾")
+        self.sink_mute_btn.get_style_context().add_class("mute-btn")
+        if sink_muted:
+            self.sink_mute_btn.get_style_context().add_class("muted")
+        self.sink_mute_btn.connect("clicked", self.toggle_sink_mute)
+        s_ctrl.pack_start(self.sink_mute_btn, False, False, 0)
+        
+        self.sink_scale = Gtk.Scale.new_with_range(Gtk.Orientation.HORIZONTAL, 0, 150, 1)
+        self.sink_scale.set_value(sink_vol)
+        self.sink_scale.set_draw_value(False)
+        self.sink_scale.connect("value-changed", self.on_sink_scale_change)
+        s_ctrl.pack_start(self.sink_scale, True, True, 0)
+        box.pack_start(s_ctrl, False, False, 0)
+        
+        # SOURCE (Mic) Volume Slider
+        src_vol, src_muted = get_source_volume()
+        
+        m_lbl_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        m_lbl = Gtk.Label(label="Entrada (Micrófono)", xalign=0)
+        m_lbl.get_style_context().add_class("section-label")
+        m_lbl_box.pack_start(m_lbl, True, True, 0)
+        self.src_val_lbl = Gtk.Label(label=f"{src_vol}%")
+        self.src_val_lbl.get_style_context().add_class("vol-val")
+        m_lbl_box.pack_end(self.src_val_lbl, False, False, 0)
+        box.pack_start(m_lbl_box, False, False, 0)
+        
+        m_ctrl = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        self.src_mute_btn = Gtk.Button(label="󰍭" if src_muted else "󰍬")
+        self.src_mute_btn.get_style_context().add_class("mute-btn")
+        if src_muted:
+            self.src_mute_btn.get_style_context().add_class("muted")
+        self.src_mute_btn.connect("clicked", self.toggle_src_mute)
+        m_ctrl.pack_start(self.src_mute_btn, False, False, 0)
+        
+        self.src_scale = Gtk.Scale.new_with_range(Gtk.Orientation.HORIZONTAL, 0, 100, 1)
+        self.src_scale.set_value(src_vol)
+        self.src_scale.set_draw_value(False)
+        self.src_scale.connect("value-changed", self.on_src_scale_change)
+        m_ctrl.pack_start(self.src_scale, True, True, 0)
+        box.pack_start(m_ctrl, False, False, 0)
+        
+        # Extra button
+        if os.path.exists("/usr/bin/pavucontrol"):
+            btn = Gtk.Button(label="Abrir Mezclador Avanzado (Pavucontrol)")
+            btn.get_style_context().add_class("pavu-btn")
+            btn.connect("clicked", lambda w: (subprocess.Popen(["pavucontrol"]), self.destroy()))
+            box.pack_start(btn, False, False, 0)
+            
+        self.add(box)
+        self.connect("key-press-event", self.on_key_press)
+        self.connect("destroy", self.on_destroy)
+        
+    def on_sink_scale_change(self, scale):
+        val = int(scale.get_value())
+        self.sink_val_lbl.set_text(f"{val}%")
+        subprocess.run(["wpctl", "set-volume", "-l", "1.5", "@DEFAULT_AUDIO_SINK@", f"{val/100:.2f}"])
+
+    def on_src_scale_change(self, scale):
+        val = int(scale.get_value())
+        self.src_val_lbl.set_text(f"{val}%")
+        subprocess.run(["wpctl", "set-volume", "@DEFAULT_AUDIO_SOURCE@", f"{val/100:.2f}"])
+
+    def toggle_sink_mute(self, btn):
+        subprocess.run(["wpctl", "set-mute", "@DEFAULT_AUDIO_SINK@", "toggle"])
+        _, muted = get_sink_volume()
+        btn.set_label("󰝟" if muted else "󰕾")
+        ctx = btn.get_style_context()
+        if muted:
+            ctx.add_class("muted")
+        else:
+            ctx.remove_class("muted")
+
+    def toggle_src_mute(self, btn):
+        subprocess.run(["wpctl", "set-mute", "@DEFAULT_AUDIO_SOURCE@", "toggle"])
+        _, muted = get_source_volume()
+        btn.set_label("󰍭" if muted else "󰍬")
+        ctx = btn.get_style_context()
+        if muted:
+            ctx.add_class("muted")
+        else:
+            ctx.remove_class("muted")
+
+    def on_key_press(self, widget, event):
+        if event.keyval == Gdk.KEY_Escape:
+            self.destroy()
+            return True
+        return False
+
+    def on_destroy(self, widget):
+        if os.path.exists(LOCK_FILE):
+            try:
+                os.remove(LOCK_FILE)
+            except Exception:
+                pass
+        Gtk.main_quit()
+
+def sigterm_handler(signum, frame):
+    if os.path.exists(LOCK_FILE):
+        try:
+            os.remove(LOCK_FILE)
+        except Exception:
+            pass
+    Gtk.main_quit()
+
+signal.signal(signal.SIGTERM, sigterm_handler)
+signal.signal(signal.SIGINT, sigterm_handler)
+
+win = VolumePopup()
+win.show_all()
+Gtk.main()

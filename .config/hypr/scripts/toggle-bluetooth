@@ -1,9 +1,17 @@
 #!/bin/sh
 
-if bluetoothctl show | grep -q "Powered: yes"; then
-  bluetoothctl power off
-  notify-send -e -a "System" -t 1200 "Bluetooth" "Disabled"
+if rfkill list bluetooth | grep -q "Soft blocked: yes"; then
+  rfkill unblock bluetooth
+  sleep 0.3
+  bluetoothctl power on 2>/dev/null || true
+  notify-send -e -a "System" -t 1200 "Bluetooth" "Activado"
+elif bluetoothctl show 2>/dev/null | grep -q "Powered: yes"; then
+  bluetoothctl power off 2>/dev/null || true
+  rfkill block bluetooth 2>/dev/null || true
+  notify-send -e -a "System" -t 1200 "Bluetooth" "Desactivado"
 else
-  bluetoothctl power on
-  notify-send -e -a "System" -t 1200 "Bluetooth" "Enabled"
+  rfkill unblock bluetooth
+  sleep 0.3
+  bluetoothctl power on 2>/dev/null || true
+  notify-send -e -a "System" -t 1200 "Bluetooth" "Activado"
 fi

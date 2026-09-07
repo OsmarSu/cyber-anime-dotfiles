@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# toggle-nightlight: Alterna el filtro de luz nocturna en Hyprland
+SHADER="$HOME/.config/hypr/shaders/night-light.glsl"
+CURRENT=$(hyprctl getoption decoration:screen_shader -j 2>/dev/null | grep -o '"str": "[^"]*"' | cut -d'"' -f4)
+
+if [[ -n "$CURRENT" && "$CURRENT" != "[[EMPTY]]" ]]; then
+    hyprctl keyword decoration:screen_shader "[[EMPTY]]" >/dev/null 2>&1
+    notify-send -a "Sistema" -i "display-brightness-symbolic" "Luz Nocturna" "Filtro cálido desactivado" -t 1500
+else
+    hyprctl keyword decoration:screen_shader "$SHADER" >/dev/null 2>&1
+    notify-send -a "Sistema" -i "display-brightness-symbolic" "Luz Nocturna" "Filtro cálido activado (Cuidado visual)" -t 1500
+fi
