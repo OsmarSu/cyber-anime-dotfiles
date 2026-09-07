@@ -176,3 +176,9 @@ hl.bind(mainMod .. " + I",           hl.dsp.exec_cmd(
     "kitty --class keybind-help --override font_size=10 -e " ..
     home .. "/.config/hypr/scripts/keybind-help.sh"
 ))
+
+-- Cargar atajos personalizados del usuario gestionados por Cyber Settings
+pcall(function()
+    require("conf.custom_keybinds")
+end)
+

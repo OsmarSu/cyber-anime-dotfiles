@@ -37,14 +37,41 @@ KEYBINDS=(
     "󰌌 [CTRL + ESCAPE]         Mostrar / Ocultar barra superior (Waybar)"
 )
 
+CUSTOM_JSON="$HOME/.config/hypr/custom_keybinds.json"
+
 if [ -z "$1" ]; then
-    # Output list for Rofi
+    # Output custom keybinds first if present
+    if [ -f "$CUSTOM_JSON" ]; then
+        python3 -c "
+import json
+try:
+    with open('$CUSTOM_JSON') as f:
+        data = json.load(f)
+        for kb in data:
+            keys = kb.get('keys', '').strip()
+            desc = kb.get('desc', '').strip()
+            cmd = kb.get('cmd', '').strip()
+            if keys and cmd:
+                print(f'󰌌 [{keys}]   {desc}  [CUSTOM: {cmd}]')
+except Exception:
+    pass
+" 2>/dev/null
+    fi
+
+    # Output default list for Rofi
     for k in "${KEYBINDS[@]}"; do
         echo "$k"
     done
 else
     # Action when selected
     SELECTED="$1"
+    if [[ "$SELECTED" =~ "CUSTOM: " ]]; then
+        CMD=$(echo "$SELECTED" | sed -n 's/.*\[CUSTOM: \(.*\)\]/\1/p')
+        if [[ -n "$CMD" ]]; then
+            eval "$CMD" &
+            exit 0
+        fi
+    fi
     if [[ "$SELECTED" =~ "Cyber Settings" ]]; then
         exec "$HOME/.local/bin/cyber-settings"
     elif [[ "$SELECTED" =~ "Terminal Kitty" ]]; then

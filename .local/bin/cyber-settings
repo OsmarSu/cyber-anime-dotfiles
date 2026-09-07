@@ -7,6 +7,8 @@ import os
 import sys
 import signal
 import subprocess
+import json
+import time
 
 LOCK_FILE = f"/tmp/cyber_settings_{os.getuid()}.pid"
 if os.path.exists(LOCK_FILE):
@@ -319,7 +321,108 @@ entry:focus, search-entry:focus, .search-entry:focus {
     color: #ff007f;
     font-weight: bold;
 }
+
+.custom-badge {
+    background-color: rgba(255, 0, 127, 0.18);
+    border: 1px solid rgba(255, 0, 127, 0.5);
+    border-radius: 6px;
+    color: #ff007f;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 6px;
+}
+
+.form-label {
+    font-size: 11px;
+    font-weight: bold;
+    color: #8fa8b8;
+}
+
+.chip-btn {
+    background-color: rgba(14, 17, 26, 0.9);
+    border: 1px solid rgba(0, 240, 255, 0.25);
+    border-radius: 6px;
+    color: #00f0ff;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 3px 8px;
+    margin-right: 4px;
+}
+
+.chip-btn:hover {
+    background-color: rgba(0, 240, 255, 0.2);
+    border-color: #00f0ff;
+}
+
+.del-btn {
+    background-color: transparent;
+    border: 1px solid rgba(255, 0, 85, 0.35);
+    border-radius: 6px;
+    color: #ff0055;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 4px 10px;
+    transition: all 0.15s ease;
+}
+
+.del-btn:hover {
+    background-color: #ff0055;
+    color: #ffffff;
+    box-shadow: 0 0 8px rgba(255, 0, 85, 0.5);
+}
+
+combobox button.combo {
+    background-color: rgba(14, 17, 26, 0.9);
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    border-radius: 8px;
+    color: #e2f1f8;
+    padding: 6px 10px;
+}
 """
+
+CUSTOM_KEYBINDS_JSON = os.path.expanduser("~/.config/hypr/custom_keybinds.json")
+CUSTOM_KEYBINDS_LUA = os.path.expanduser("~/.config/hypr/conf/custom_keybinds.lua")
+
+def load_custom_keybinds():
+    if os.path.isfile(CUSTOM_KEYBINDS_JSON):
+        try:
+            with open(CUSTOM_KEYBINDS_JSON, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return []
+
+def save_custom_keybinds(keybinds):
+    try:
+        with open(CUSTOM_KEYBINDS_JSON, "w", encoding="utf-8") as f:
+            json.dump(keybinds, f, indent=2, ensure_ascii=False)
+        generate_custom_lua(keybinds)
+        spawn_cmd("hyprctl reload")
+    except Exception as e:
+        print(f"Error saving custom keybinds: {e}", file=sys.stderr)
+
+def generate_custom_lua(keybinds):
+    lines = [
+        "-- conf/custom_keybinds.lua",
+        "-- Atajos personalizados gestionados automáticamente por Cyber Settings.",
+        "local hl = hl or {}",
+        "local home = os.getenv(\"HOME\")",
+        ""
+    ]
+    for kb in keybinds:
+        keys = kb.get("keys", "").strip()
+        cmd = kb.get("cmd", "").strip()
+        if keys and cmd:
+            esc_cmd = cmd.replace('\\', '\\\\').replace('"', '\\"')
+            esc_keys = keys.replace('\\', '\\\\').replace('"', '\\"')
+            lines.append(f'hl.bind("{esc_keys}", hl.dsp.exec_cmd("{esc_cmd}"))')
+
+    try:
+        with open(CUSTOM_KEYBINDS_LUA, "w", encoding="utf-8") as f:
+            f.write("\n".join(lines) + "\n")
+    except Exception as e:
+        print(f"Error writing custom_keybinds.lua: {e}", file=sys.stderr)
+
 
 def run_cmd(cmd):
     try:
@@ -709,15 +812,135 @@ class CyberSettingsWindow(Gtk.Window):
         scroll.add(box)
         return scroll
 
-    def build_keybinds_page(self):
-        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
-        box.get_style_context().add_class("content-page")
+    def delete_custom_keybind(self, kb_id, keys):
+        custom_list = load_custom_keybinds()
+        custom_list = [item for item in custom_list if item.get("id") != kb_id]
+        save_custom_keybinds(custom_list)
+        spawn_cmd(f"notify-send -a 'Cyber Control' '󰅖 Atajo eliminado' '{keys}'")
 
-        # Search bar
+    def build_keybinds_page(self):
+        page_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        page_box.get_style_context().add_class("content-page")
+
+        # Top control bar: Search bar + Add Shortcut button
+        top_bar = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+
         search_entry = Gtk.SearchEntry()
         search_entry.set_placeholder_text("󰍉 Filtrar atajos de teclado (escribe para buscar)...")
         search_entry.get_style_context().add_class("search-entry")
-        box.pack_start(search_entry, False, False, 0)
+        top_bar.pack_start(search_entry, True, True, 0)
+
+        btn_add = Gtk.Button(label="󰐕 Agregar Atajo")
+        btn_add.get_style_context().add_class("cyber-btn")
+        top_bar.pack_start(btn_add, False, False, 0)
+
+        page_box.pack_start(top_bar, False, False, 0)
+
+        # Collapsible Card to Add New Shortcut
+        revealer = Gtk.Revealer()
+        revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN)
+        revealer.set_transition_duration(250)
+
+        add_card = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        add_card.get_style_context().add_class("card")
+
+        form_title = Gtk.Label(label="󰐕 CONFIGURAR NUEVO ATAJO DE TECLADO", xalign=0)
+        form_title.get_style_context().add_class("card-title")
+        add_card.pack_start(form_title, False, False, 0)
+
+        # Form Fields Grid
+        grid = Gtk.Grid()
+        grid.set_column_spacing(16)
+        grid.set_row_spacing(10)
+
+        # Field 1: Combinación de Teclas + Modifier chips
+        keys_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+        lbl_keys = Gtk.Label(label="Combinación de teclas (ej: SUPER + M, SUPER + SHIFT + X):", xalign=0)
+        lbl_keys.get_style_context().add_class("form-label")
+        entry_keys = Gtk.Entry()
+        entry_keys.set_placeholder_text("SUPER + ")
+        entry_keys.get_style_context().add_class("search-entry")
+
+        chips_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        for mod in ["SUPER + ", "SHIFT + ", "CTRL + ", "ALT + "]:
+            chip = Gtk.Button(label=f"+{mod.strip()}")
+            chip.get_style_context().add_class("chip-btn")
+            def on_chip(btn, m=mod):
+                cur = entry_keys.get_text().strip()
+                if not cur:
+                    entry_keys.set_text(m)
+                elif m not in cur:
+                    entry_keys.set_text(m + cur)
+                entry_keys.grab_focus()
+                entry_keys.set_position(-1)
+            chip.connect("clicked", on_chip)
+            chips_box.pack_start(chip, False, False, 0)
+
+        keys_box.pack_start(lbl_keys, False, False, 0)
+        keys_box.pack_start(entry_keys, False, False, 0)
+        keys_box.pack_start(chips_box, False, False, 0)
+        grid.attach(keys_box, 0, 0, 1, 1)
+
+        # Field 2: Descripción
+        desc_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+        lbl_desc = Gtk.Label(label="Nombre o Descripción del atajo:", xalign=0)
+        lbl_desc.get_style_context().add_class("form-label")
+        entry_desc = Gtk.Entry()
+        entry_desc.set_placeholder_text("Ej: Abrir Spotify, Editor de Notas...")
+        entry_desc.get_style_context().add_class("search-entry")
+        desc_box.pack_start(lbl_desc, False, False, 0)
+        desc_box.pack_start(entry_desc, False, False, 0)
+        grid.attach(desc_box, 1, 0, 1, 1)
+
+        # Field 3: Comando a ejecutar
+        cmd_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+        lbl_cmd = Gtk.Label(label="Comando a ejecutar en el sistema:", xalign=0)
+        lbl_cmd.get_style_context().add_class("form-label")
+        entry_cmd = Gtk.Entry()
+        entry_cmd.set_placeholder_text("Ej: spotify, obsidian, kitty -e btop, pavucontrol...")
+        entry_cmd.get_style_context().add_class("search-entry")
+        cmd_box.pack_start(lbl_cmd, False, False, 0)
+        cmd_box.pack_start(entry_cmd, False, False, 0)
+        grid.attach(cmd_box, 0, 1, 1, 1)
+
+        # Field 4: Categoría
+        cat_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+        lbl_cat = Gtk.Label(label="Categoría:", xalign=0)
+        lbl_cat.get_style_context().add_class("form-label")
+        entry_cat = Gtk.ComboBoxText()
+        for c in ["Personalizado", "Lanzador", "Aplicaciones", "Scripts", "Ventanas", "Audio"]:
+            entry_cat.append_text(c)
+        entry_cat.set_active(0)
+        cat_box.pack_start(lbl_cat, False, False, 0)
+        cat_box.pack_start(entry_cat, False, False, 0)
+        grid.attach(cat_box, 1, 1, 1, 1)
+
+        grid.set_hexpand(True)
+        keys_box.set_hexpand(True)
+        desc_box.set_hexpand(True)
+        cmd_box.set_hexpand(True)
+        cat_box.set_hexpand(True)
+        add_card.pack_start(grid, False, False, 0)
+
+        # Action buttons
+        btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+        btn_box.set_halign(Gtk.Align.END)
+
+        btn_cancel = Gtk.Button(label="󰅖 Cancelar")
+        btn_cancel.get_style_context().add_class("cyber-btn-magenta")
+        btn_cancel.connect("clicked", lambda b: revealer.set_reveal_child(False))
+
+        btn_save = Gtk.Button(label="󰄬 Guardar y Activar Atajo")
+        btn_save.get_style_context().add_class("cyber-btn")
+
+        btn_box.pack_start(btn_cancel, False, False, 0)
+        btn_box.pack_start(btn_save, False, False, 0)
+        add_card.pack_start(btn_box, False, False, 0)
+
+        revealer.add(add_card)
+        page_box.pack_start(revealer, False, False, 0)
+
+        btn_add.connect("clicked", lambda b: revealer.set_reveal_child(not revealer.get_reveal_child()))
 
         scroll = Gtk.ScrolledWindow()
         scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
@@ -726,7 +949,118 @@ class CyberSettingsWindow(Gtk.Window):
         list_box.set_selection_mode(Gtk.SelectionMode.NONE)
         list_box.get_style_context().add_class("keybind-list")
 
-        keybinds = [
+        self.keybind_rows = []
+
+        def add_keybind_row(cat, keys, desc, cmd=None, is_custom=False, kb_id=None, prepend=False):
+            row = Gtk.ListBoxRow()
+            row.get_style_context().add_class("keybind-row")
+            r_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=14)
+            r_box.set_margin_top(6)
+            r_box.set_margin_bottom(6)
+            r_box.set_margin_start(4)
+            r_box.set_margin_end(4)
+
+            cat_lbl = Gtk.Label(label=cat, xalign=0)
+            cat_lbl.get_style_context().add_class("category-tag")
+            cat_lbl.set_size_request(85, -1)
+
+            key_lbl = Gtk.Label(label=keys, xalign=0)
+            key_lbl.get_style_context().add_class("key-badge")
+            key_lbl.set_size_request(220, -1)
+
+            full_desc = desc + (f"  →  {cmd}" if (cmd and cmd != desc) else "")
+            desc_lbl = Gtk.Label(label=full_desc, xalign=0)
+            desc_lbl.get_style_context().add_class("key-desc")
+
+            r_box.pack_start(cat_lbl, False, False, 0)
+            r_box.pack_start(key_lbl, False, False, 0)
+            r_box.pack_start(desc_lbl, True, True, 0)
+
+            if is_custom:
+                badge = Gtk.Label(label="CUSTOM")
+                badge.get_style_context().add_class("custom-badge")
+                r_box.pack_start(badge, False, False, 0)
+
+                del_btn = Gtk.Button(label="󰅖 Eliminar")
+                del_btn.get_style_context().add_class("del-btn")
+                del_btn.set_tooltip_text(f"Eliminar atajo {keys}")
+                def on_del(b, kid=kb_id, r=row, k_str=keys):
+                    self.delete_custom_keybind(kid, k_str)
+                    list_box.remove(r)
+                    self.keybind_rows = [(rw, txt) for rw, txt in self.keybind_rows if rw != r]
+                del_btn.connect("clicked", on_del)
+                r_box.pack_start(del_btn, False, False, 0)
+
+            row.add(r_box)
+            row.show_all()
+            if prepend:
+                list_box.prepend(row)
+            else:
+                list_box.add(row)
+
+            search_text = f"{cat.lower()} {keys.lower()} {desc.lower()} {cmd.lower() if cmd else ''}"
+            if prepend:
+                self.keybind_rows.insert(0, (row, search_text))
+            else:
+                self.keybind_rows.append((row, search_text))
+            return row
+
+        def on_save_clicked(b):
+            raw_keys = entry_keys.get_text().strip()
+            raw_desc = entry_desc.get_text().strip()
+            raw_cmd = entry_cmd.get_text().strip()
+            raw_cat = entry_cat.get_active_text() or "Personalizado"
+
+            if not raw_keys:
+                spawn_cmd("notify-send -a 'Cyber Control' -u critical 'Atajo incompleto' 'Debes especificar una combinación de teclas'")
+                return
+            if not raw_cmd:
+                spawn_cmd("notify-send -a 'Cyber Control' -u critical 'Atajo incompleto' 'Debes especificar el comando a ejecutar'")
+                return
+
+            if not raw_desc:
+                raw_desc = raw_cmd
+
+            kb_id = f"custom_{int(time.time())}"
+            new_item = {
+                "id": kb_id,
+                "cat": raw_cat,
+                "keys": raw_keys,
+                "desc": raw_desc,
+                "cmd": raw_cmd
+            }
+
+            custom_list = load_custom_keybinds()
+            custom_list.append(new_item)
+            save_custom_keybinds(custom_list)
+
+            # Add to list_box at the top
+            add_keybind_row(raw_cat, raw_keys, raw_desc, cmd=raw_cmd, is_custom=True, kb_id=kb_id, prepend=True)
+
+            # Reset form & close
+            entry_keys.set_text("")
+            entry_desc.set_text("")
+            entry_cmd.set_text("")
+            revealer.set_reveal_child(False)
+
+            spawn_cmd(f"notify-send -a 'Cyber Control' '󰄬 Atajo guardado' '{raw_keys} 󰁔 {raw_desc}'")
+
+        btn_save.connect("clicked", on_save_clicked)
+
+        # 1. Load user custom keybinds first
+        custom_kbs = load_custom_keybinds()
+        for kb in custom_kbs:
+            add_keybind_row(
+                kb.get("cat", "Personalizado"),
+                kb.get("keys", ""),
+                kb.get("desc", ""),
+                cmd=kb.get("cmd", ""),
+                is_custom=True,
+                kb_id=kb.get("id")
+            )
+
+        # 2. System default keybinds
+        default_keybinds = [
             ("Lanzador", "Super + A", "Caja de aplicaciones (Rofi)"),
             ("Lanzador", "Super + Enter / Super + T", "Terminal Kitty"),
             ("Lanzador", "Super + E", "Gestor de archivos (Dolphin)"),
@@ -757,34 +1091,8 @@ class CyberSettingsWindow(Gtk.Window):
             ("Audio", "Volumen / Brillo", "Teclas multimedia del teclado (OSD)"),
         ]
 
-        self.keybind_rows = []
-        for cat, keys, desc in keybinds:
-            row = Gtk.ListBoxRow()
-            row.get_style_context().add_class("keybind-row")
-            r_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=14)
-            r_box.set_margin_top(6)
-            r_box.set_margin_bottom(6)
-            r_box.set_margin_start(4)
-            r_box.set_margin_end(4)
-
-            cat_lbl = Gtk.Label(label=cat, xalign=0)
-            cat_lbl.get_style_context().add_class("category-tag")
-            cat_lbl.set_size_request(80, -1)
-
-            key_lbl = Gtk.Label(label=keys, xalign=0)
-            key_lbl.get_style_context().add_class("key-badge")
-            key_lbl.set_size_request(220, -1)
-
-            desc_lbl = Gtk.Label(label=desc, xalign=0)
-            desc_lbl.get_style_context().add_class("key-desc")
-
-            r_box.pack_start(cat_lbl, False, False, 0)
-            r_box.pack_start(key_lbl, False, False, 0)
-            r_box.pack_start(desc_lbl, True, True, 0)
-
-            row.add(r_box)
-            list_box.add(row)
-            self.keybind_rows.append((row, cat.lower() + " " + keys.lower() + " " + desc.lower()))
+        for cat, keys, desc in default_keybinds:
+            add_keybind_row(cat, keys, desc, is_custom=False)
 
         def filter_keybinds(entry):
             query = entry.get_text().lower().strip()
@@ -793,8 +1101,8 @@ class CyberSettingsWindow(Gtk.Window):
 
         search_entry.connect("search-changed", filter_keybinds)
         scroll.add(list_box)
-        box.pack_start(scroll, True, True, 0)
-        return box
+        page_box.pack_start(scroll, True, True, 0)
+        return page_box
 
     def build_tools_page(self):
         scroll = Gtk.ScrolledWindow()
