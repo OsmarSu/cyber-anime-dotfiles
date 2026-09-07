@@ -40,3 +40,8 @@ imv
 ncdu
 iotop
 vimix-cursors
+
+# wallpaper engine live runners
+mpvpaper
+linux-wallpaperengine-git
+

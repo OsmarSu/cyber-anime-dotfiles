@@ -30,6 +30,10 @@ wlogout
 grimblast-git
 wtype
 swappy
+gtk-layer-shell
+python-gobject
+python-pillow
+ffmpeg
 
 # audio
 pipewire

@@ -199,9 +199,9 @@ echo "    yay -S tela-circle-icon-theme-dracula-git"
 echo "    yay -S catppuccin-gtk-theme-mocha"
 
 # ── Step 6: Initialize theme ──────────────────────────────────────────────────
-step "6/6  Initializing macchiato theme"
-echo "  Running theme-switch.sh macchiato (safe outside Hyprland)..."
-bash "$DOTFILES/.config/waybar/scripts/theme-switch.sh" macchiato 2>/dev/null || true
+step "6/6  Initializing cyber-anime theme"
+echo "  Running theme-switch.sh cyber-anime (safe outside Hyprland)..."
+bash "$DOTFILES/.config/waybar/scripts/theme-switch.sh" cyber-anime 2>/dev/null || true
 info "theme initialized"
 
 echo

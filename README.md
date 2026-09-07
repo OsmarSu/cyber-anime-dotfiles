@@ -1,217 +1,133 @@
-# my-hyprland-dotfiles
+# Cyber-Anime Dotfiles 󱗼
 
-[![CI](https://github.com/Kernel236/my-hyprland-dotfiles/actions/workflows/ci.yml/badge.svg)](https://github.com/Kernel236/my-hyprland-dotfiles/actions/workflows/ci.yml)
-[![Stars](https://img.shields.io/github/stars/Kernel236/my-hyprland-dotfiles?label=thanks%20for%20the%20%E2%AD%90&color=grey)](https://github.com/Kernel236/my-hyprland-dotfiles/stargazers)
-[![Made with love](https://img.shields.io/badge/made%20with-%E2%9D%A4-red)](https://github.com/Kernel236/my-hyprland-dotfiles)
+[![Arch Linux](https://img.shields.io/badge/Arch%20Linux-Hyprland%200.56+-00f0ff?logo=archlinux&logoColor=white)](https://archlinux.org)
+[![Theme](https://img.shields.io/badge/Theme-Cyber%20Anime%20Neon-ff007f)](https://github.com)
+[![Status](https://img.shields.io/badge/Status-Personal%20Daily%20Driver-00ff9f)](#)
 
-Hyprland rice for Arch Linux with a dual-theme system: **Catppuccin Macchiato** for daily use and **red-on-black**, for when the mood calls for it. Theme switching is live with one click in the bar or a keyboard shortcut, and every component updates without restarting anything.
-
-The goal is a Hyprland setup that is ready for daily use out of a fresh Arch install. The architecture is modular without becoming overly complex: no config overrides, no duplicate files, and no need to rebuild everything just to customize it. 
-It sits between a minimal base dotfile and a fully-featured rice like the most popular ones. Almost every config file includes inline comments pulled from the official documentation, so experimenting with options is quick and low-friction.
-The aim is not just to look polished, but to stay practical, readable, and easy to extend.
+Entorno de escritorio cyberpunk y anime de alto rendimiento para **Arch Linux** y **Hyprland** (configuración modular en **Lua**), diseñado para ser estético, rápido y completamente interactivo sin necesidad de widgets pesados en el escritorio.
 
 ---
 
-## Preview
+## 󰀻 Características Principales
 
-![preview](screenshots/preview.gif)
-
-## Workflow demo
-
-Full workflow demo on r/unixporn: [My first Hyprland full dual setup, no preconfig](https://www.reddit.com/r/unixporn/comments/1t1uams/my_first_hyprland_full_dual_setup_no_preconfig_no/) 
-- New features have been added since that video.
-
----
-
-## Screenshots
-
-<table>
-  <tr>
-    <th>Catppuccin Macchiato</th>
-    <th>Red on Black</th>
-  </tr>
-  <tr>
-    <td><img src="screenshots/btop_catppuccin.png"/></td>
-    <td><img src="screenshots/btop_matrix.png"/></td>
-  </tr>
-  <tr>
-    <td><img src="screenshots/rofi_wallpaper_catppuccin.png"/></td>
-    <td><img src="screenshots/rofi_wallpaper_matrix.png"/></td>
-  </tr>
-  <tr>
-    <td><img src="screenshots/rofi_on_yazi_catppuccin.png"/></td>
-    <td><img src="screenshots/rofi_on_yazi_matrix.png"/></td>
-  </tr>
-</table>
+- **Estética Cyber-Anime (Tokyo Night Neon):**
+  - Paleta de color basada en Cyan Eléctrico (`#00f0ff`), Magenta Neón (`#ff007f`), Negro Obsidiana (`#08090d`) y Verde Matrix (`#00ff9f`).
+  - Curvas de aceleración ergonómicas estilo Material 3, desenfoque dual de ventanas y resplandor sutil sin fatiga visual.
+- **Centro de Control y Configuración (`cyber-settings`):**
+  - Panel flotante GTK3 Layer-Shell accesible con `Super + ,` o `Super + S`.
+  - Pestaña de **Apariencia**: Opacidad, desenfoque y filtro de luz nocturna cálida en tiempo real.
+  - Pestaña de **Hardware y Sistema**: Monitoreo de CPU, GPU (Nvidia GTX / AMD iGPU), Memoria RAM y Batería.
+  - Pestaña de **Audio y Red**: Control de volumen por software y gestión de Wi-Fi.
+  - Pestaña de **Atajos Dinámicos**: Visor de atajos del sistema con creador interactivo de nuevos atajos (con asignación en vivo en Hyprland y borrado instantáneo).
+- **Cajón de Aplicaciones Amplio (`Super + A`):**
+  - Ventana amplia de 980x620px con íconos prominentes de 3.2em (~48px) y tipografía nítida JetBrainsMono Nerd Font.
+  - **Fondo dinámico Wallpaper Engine**: Cada vez que abres el cajón de apps, se selecciona un fondo aleatorio de Wallpaper Engine recortado a escala 1:1 sin pixelado.
+- **Integración Nativa con Wallpaper Engine (`wpe-picker`):**
+  - Selector interactivo en Rofi (`Super + W`) que escanea automáticamente tus fondos descargados de Steam Workshop (`431960`).
+  - Reproducción de fondos de video mediante `mpvpaper`.
+  - Soporte de fondos 3D y escenas interactivas con `linux-wallpaperengine`.
+  - Menú de ajuste de efectos (partículas, efecto parallax, velocidad, shaders) en vivo.
+- **Terminal Kitty & Fastfetch (Alya Kujou):**
+  - Terminal GPU Kitty configurada con colores neón.
+  - Saludo al abrir la terminal con imagen fija y cuadrada ($n \times n$) en alta definición de **Alya Kujou** (*Roshidere*) renderizada vía `kitty-icat`.
+- **Barra Waybar Flotante:**
+  - Diseño modular con píldoras de cristal translúcido, puente dinámico IPC con Hyprland, indicadores de audio, red, batería y menú de energía.
+- **Centro de Notificaciones SwayNC (`Super + N`):**
+  - Panel deslizante con controles rápidos, control multimedia y no molestar.
+- **Bloqueo y Energía:**
+  - `hyprlock` con reloj cyberpunk y desenfoque dinámico.
+  - `wlogout` con botones translúcidos y efecto neón.
 
 ---
 
-## Components
+## ⌨ Atajos de Teclado Esenciales
 
-| Role | Tool |
+| Combinación | Acción |
 |---|---|
-| Compositor | Hyprland 0.55+ (Lua config) |
-| Bar | Waybar |
-| Terminal | Kitty |
-| Notification center | sway-notification-center |
-| App launcher | Rofi (Wayland) |
-| Fetch | Fastfetch |
-| Logout screen | wlogout |
-| System monitor | btop |
-| Wallpaper daemon | awww |
-| Lock / idle | hyprlock + hypridle |
-| Clipboard | cliphist + wl-paste |
-| Editor | Neovim (lazy.nvim, LSP, Treesitter) |
-| Shell | Zsh + Oh My Zsh + Powerlevel10k |
-| File manager | yazi |
+| `Super + A` | Cajón de aplicaciones (Rofi amplio + fondo dinámico) |
+| `Super + Enter` / `Super + T` | Terminal Kitty |
+| `Super + S` / `Super + ,` | Centro de Control y Ajustes (`cyber-settings`) |
+| `Super + /` | Hoja interactiva de atajos de teclado (Rofi) |
+| `Super + W` | Selector Wallpaper Engine (Steam Workshop) |
+| `Super + Shift + W` | Selector de Fondos Estáticos |
+| `Super + E` | Gestor de archivos gráfico (Dolphin) |
+| `Super + Y` | Gestor de archivos de terminal (Yazi) |
+| `Super + B` | Navegador Web (Brave / Firefox) |
+| `Super + C` | Editor de Código (VS Code) |
+| `Super + V` | Historial del Portapapeles (Cliphist + Rofi) |
+| `Super + Q` | Cerrar ventana activa |
+| `Super + F` | Alternar pantalla completa |
+| `Super + Shift + F` | Alternar ventana flotante |
+| `Super + Space` | Centrar ventana activa |
+| `Super + N` | Centro de Control & Notificaciones (SwayNC) |
+| `Super + Escape` | Menú de energía y apagado (Wlogout) |
+| `Super + L` | Bloquear pantalla (Hyprlock) |
+| `Super + Shift + S` | Captura de pantalla de área (Swappy) |
+| `Print` | Captura de pantalla completa al portapapeles |
+| `Ctrl + Escape` | Ocultar / Mostrar barra superior (Waybar) |
 
-**Font:** JetBrainsMono Nerd Font  
-**Icons:** Tela-circle-dracula — `yay -S tela-circle-icon-theme-dracula-git`  
-**GTK theme:** Catppuccin Macchiato — `yay -S catppuccin-gtk-theme-mocha`
+> 💡 *Puedes añadir más atajos personalizados en cualquier momento abriendo `cyber-settings` (`Super + ,`) en la pestaña "Atajos".*
 
 ---
 
-## Installation
+## 📦 Componentes y Dependencias
 
-> Arch Linux only. This setup assumes a mostly clean Arch base install with internet access and yay available or installable.
+| Rol | Paquete / Herramienta |
+|---|---|
+| Compositor | Hyprland 0.56+ (Configuración en Lua) |
+| Bar | Waybar |
+| Panel de Ajustes | `cyber-settings` (GTK3 + Layer Shell + Python) |
+| Terminal | Kitty |
+| Lanzador | Rofi (Wayland fork) |
+| Notificaciones | SwayNC (sway-notification-center) |
+| Fetch | Fastfetch |
+| Lockscreen | Hyprlock |
+| Live Wallpapers | mpvpaper + linux-wallpaperengine |
+| Fondos estáticos | awww |
+| Capturas | Grimblast + Slurp + Swappy |
+| Portapapeles | Cliphist + wl-clipboard |
+| Fuentes | JetBrainsMono Nerd Font |
 
-1. Clone the repo:
+---
+
+## 🚀 Instalación Rápida
+
+1. Clonar el repositorio en tu máquina:
    ```bash
-   git clone https://github.com/Kernel236/my-hyprland-dotfiles ~/my-hyprland-dotfiles
+   git clone <URL_DE_TU_REPOSITORIO> ~/.dotfiles-profiles/cyber-anime
    ```
 
-2. Run the installer:
+2. Ejecutar el instalador automático:
    ```bash
-   cd ~/my-hyprland-dotfiles
+   cd ~/.dotfiles-profiles/cyber-anime
    bash install.sh
    ```
 
-   The installer will:
-   - Check and install missing packages via `yay`
-   - Ask whether to install optional components: **Kitty**, **Zsh + Oh My Zsh**, **Neovim**. Answering `n` skips the packages and the symlink for that component
-   - Create symlinks from `~/.config/` into the repo
-   - Copy wallpapers and assets to `~/.config/assets`
-   - Initialize the macchiato theme
-
-3. Log out and back in, then start Hyprland:
-   ```bash
-   uwsm start hyprland
-   ```
-
-Any future edit to the repo is reflected immediately. Symlinks keep `~/.config/` in sync with the repo.
-
-To add the BlackArch repository (optional), follow the official instructions at https://blackarch.org/downloads.html#install-repo
-
-If something does not work after install, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
+3. El script se encargará de:
+   - Verificar e instalar las dependencias necesarias mediante `yay`.
+   - Crear los enlaces simbólicos en `~/.config/` y `~/.local/bin/`.
+   - Inicializar el tema Cyber-Anime.
 
 ---
 
-## Uninstallation
-
-`uninstall.sh` reverses everything the installer did while leaving the system bootable.
-
-```bash
-bash ~/my-hyprland-dotfiles/uninstall.sh
-```
-
-What it removes:
-- Config symlinks in `~/.config/` (only if they point into this repo)
-- Scripts in `~/.local/bin/` (same guard)
-- `~/.config/assets`
-- `~/.zshrc` symlink, `~/.oh-my-zsh`, restores default shell to bash
-
-What it keeps:
-- `sddm`, `hyprland`, `uwsm`, `kitty`, `yay`, `pacman-contrib`, so the system stays bootable
-
-Packages from packages-core.txt and packages-optional.txt are listed before removal and require a second confirmation. Once you install another DE you can cleanly remove Hyprland with:
-
-```bash
-yay -Rns hyprland uwsm xdg-desktop-portal-hyprland
-```
-
----
-
-## Theme switching
-
-Switch theme from the bar (click the theme indicator) or directly from a terminal:
-
-```bash
-~/.config/waybar/scripts/theme-switch.sh macchiato
-~/.config/waybar/scripts/theme-switch.sh matrix
-```
-
-The script swaps symlinks for Hyprland, Waybar, Kitty, swaync, Rofi, Fastfetch, and hyprlock simultaneously. No restart needed.
-
----
-
-## Neovim
-
-Config lives in `.config/nvim/` and is symlinked to `~/.config/nvim` by the installer.
-
-**Plugin manager:** lazy.nvim (auto-bootstrapped on first launch)
-
-**LSP servers** (auto-installed via Mason on first launch):
-
-| Language | Server |
-|---|---|
-| Python | pyright |
-| Lua | lua-language-server |
-| Bash | bash-language-server |
-| C / C++ | clangd |
-| HTML | html-lsp |
-| CSS | css-lsp |
-| Rust | rust-analyzer |
-
-Remove the languages you do not use.
-
-**Plugins:** Telescope, nvim-treesitter, nvim-cmp + LuaSnip, lualine, indent-blankline, nvim-autopairs, nvim-surround, catppuccin
-
-**Theme:** Catppuccin Macchiato with transparent background. Opacity and blur are managed by Hyprland on the Kitty window.
-
-**First launch:** Mason installs all LSP servers automatically (takes ~1-2 min on first launch).
-
----
-
-## Wallpapers
-
-Wallpapers are split by theme in `assets/backgrounds/`:
-
-- `whitehat/` — used with macchiato (anime, landscapes, Studio Ghibli)
-- `blackhat/` — used with matrix (dark Arch, Uchiha, BlackArch)
-
-The wallpaper picker (`Super + Shift + W`) opens a Rofi gallery. A random wallpaper from the active theme folder is also set automatically on login.
-
----
-
-## Keybinds
-
-A cheatsheet overlay is available at any time with `Super + I`. All bindings are defined in `.config/hypr/conf/keybinds.lua`.
-
----
-
-## Structure
+## 🛠 Estructura del Repositorio
 
 ```
-my-hyprland-dotfiles/
-├── .config/                mirrors ~/.config/ - each subdirectory is symlinked by install.sh
-│   ├── hypr/               Hyprland config (Lua), hypridle, hyprlock, scripts, themes
-│   ├── waybar/             bar config, per-module CSS, scripts, themes
-│   ├── kitty/              terminal config and themes
-│   ├── swaync/             notification center config and themes
-│   ├── rofi/               launcher, wallpaper picker, themes
-│   ├── fastfetch/          per-theme fetch configs
-│   ├── wlogout/            logout screen layout and icons
-│   ├── btop/               system monitor config
-│   └── nvim/               Neovim config (lazy.nvim, LSP, Treesitter, catppuccin)
-├── .zshrc                  Zsh config (Oh My Zsh, powerlevel10k, autosuggestions)
+cyber-anime/
+├── .config/
+│   ├── hypr/               Configuración Hyprland en Lua, shaders, hyprlock, scripts
+│   ├── waybar/             Barra superior, módulos CSS, puente hyprland-waybar
+│   ├── rofi/               Lanzador amplio, selector wallpaper, colores neón
+│   ├── fastfetch/          Configuración de fetch con imagen fija de Alya Kujou
+│   ├── swaync/             Centro de notificaciones
+│   ├── kitty/              Temas y configuración de terminal
+│   ├── wlogout/            Menú de sesión y apagado
+│   ├── btop/               Monitor de sistema
+│   └── swappy/             Editor de capturas
 ├── .local/
-│   └── bin/                rofi-launcher, rofi-wallpaper, rofi-clipboard
-├── assets/                 wallpapers, icon pack archive, GTK theme archive
-├── screenshots/            preview GIFs for the README
-├── packages-core.txt       required packages (always installed)
-├── packages-optional.txt   optional packages (Kitty, Zsh, Neovim - installer asks)
-├── install.sh              installer - symlinks, packages, optional components
-├── uninstall.sh            uninstaller - removes symlinks, assets, packages
-├── README.md
-└── TROUBLESHOOTING.md      common issues and fixes
+│   └── bin/                cyber-settings, wpe-picker, rofi-launcher, rofi-keybinds...
+├── assets/                 Fondos e íconos
+├── install.sh              Script de instalación automatizado
+├── uninstall.sh            Script de desinstalación limpia
+└── README.md
 ```
