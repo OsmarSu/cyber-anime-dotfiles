@@ -39,6 +39,10 @@ KEYBINDS=(
 
 CUSTOM_JSON="$HOME/.config/hypr/custom_keybinds.json"
 
+if [[ -z "${ROFI_RETV:-}" ]] && [[ $# -eq 0 ]]; then
+    exec rofi -modi "keys:$HOME/.local/bin/rofi-keybinds" -theme "$HOME/.config/rofi/dialog.rasi" -p "⌨ Atajos" -show keys
+fi
+
 if [ -z "$1" ]; then
     # Output custom keybinds first if present
     if [ -f "$CUSTOM_JSON" ]; then

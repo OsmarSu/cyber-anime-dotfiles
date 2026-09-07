@@ -6,15 +6,23 @@ if command -v blueman-manager >/dev/null 2>&1; then
     exec blueman-manager
 fi
 
+THEME="$HOME/.config/rofi/dialog.rasi"
+
 rofi_cmd() {
-    rofi -dmenu -i -p "󰂯 Bluetooth" -theme-str 'window { width: 450px; }'
+    local prompt="${1:-󰂯 Bluetooth}"
+    shift || true
+    if [[ -f "$THEME" ]]; then
+        rofi -dmenu -i -p "$prompt" -theme "$THEME" "$@"
+    else
+        rofi -dmenu -i -p "$prompt" -theme-str 'window { width: min(760px, 85%); border-radius: 16px; } listview { lines: 8; }' "$@"
+    fi
 }
 
 # Check status
-status=$(bluetoothctl show | grep "Powered:" | awk '{print $2}')
+status=$(bluetoothctl show 2>/dev/null | grep "Powered:" | awk '{print $2}')
 
 if [[ "$status" != "yes" ]]; then
-    choice=$(echo -e "󰂯 Encender Bluetooth\n󰅖 Cancelar" | rofi_cmd)
+    choice=$(echo -e "󰂯  Encender Bluetooth\n󰅖  Cancelar" | rofi_cmd "󰂲 Bluetooth Apagado" -theme-str 'window { width: min(540px, 80%); } listview { lines: 3; }')
     if [[ "$choice" =~ "Encender" ]]; then
         bluetoothctl power on
         notify-send -a "Bluetooth" "Bluetooth Activado"
@@ -22,36 +30,37 @@ if [[ "$status" != "yes" ]]; then
     exit 0
 fi
 
-# Powered ON: Build menu
-devices=$(bluetoothctl devices | while read -r _ mac name; do
-    info=$(bluetoothctl info "$mac")
+# Powered ON: Build menu with formatted entries
+devices=$(bluetoothctl devices 2>/dev/null | while read -r _ mac name; do
+    [[ -z "$mac" ]] && continue
+    info=$(bluetoothctl info "$mac" 2>/dev/null)
     if echo "$info" | grep -q "Connected: yes"; then
-        echo "󰂱 $name [Conectado] :: $mac"
+        echo "󰂱  $name    [Conectado]  :: $mac"
     else
-        echo "󰂲 $name :: $mac"
+        echo "󰂲  $name  :: $mac"
     fi
 done)
 
-menu="󰂲 Apagar Bluetooth\n󰑐 Escanear dispositivos (5s)\n$devices\n󰅖 Salir"
+menu="󰂲  Apagar Bluetooth\n󰑐  Escanear nuevos dispositivos (5s)\n$devices\n󰅖  Cerrar menú"
 
-chosen=$(echo -e "$menu" | rofi_cmd)
+chosen=$(echo -e "$menu" | rofi_cmd "󰂯 Dispositivos Bluetooth")
 
-[[ -z "$chosen" || "$chosen" =~ "Salir" ]] && exit 0
+[[ -z "$chosen" || "$chosen" =~ "Cerrar" || "$chosen" =~ "Salir" ]] && exit 0
 
 if [[ "$chosen" =~ "Apagar" ]]; then
     bluetoothctl power off
     notify-send -a "Bluetooth" "Bluetooth Desactivado"
     exit 0
 elif [[ "$chosen" =~ "Escanear" ]]; then
-    notify-send -a "Bluetooth" "Buscando dispositivos..."
+    notify-send -a "Bluetooth" -i "bluetooth" "Buscando dispositivos..." "Escaneando durante 5 segundos..."
     bluetoothctl --timeout 5 scan on >/dev/null 2>&1
     exec "$0"
 elif [[ "$chosen" =~ "::" ]]; then
-    mac=$(echo "$chosen" | awk -F ':: ' '{print $2}')
-    name=$(echo "$chosen" | awk -F ' ::' '{print $1}' | sed 's/^[󰂱󰂲] //')
+    mac=$(echo "$chosen" | awk -F ':: ' '{print $2}' | tr -d ' ')
+    name=$(echo "$chosen" | awk -F '::' '{print $1}' | sed 's/^[󰂱󰂲] *//' | sed 's/ *\[Conectado\].*//' | xargs)
     
     if echo "$chosen" | grep -q "\[Conectado\]"; then
-        action=$(echo -e "󰌹 Desconectar\n󰆴 Desvincular\n󰅖 Volver" | rofi -dmenu -i -p "$name" -theme-str 'window { width: 350px; }')
+        action=$(echo -e "󰌹  Desconectar\n󰆴  Desvincular y Olvidar\n󰅖  Volver" | rofi_cmd "$name" -theme-str 'window { width: min(540px, 80%); } listview { lines: 4; }')
         case "$action" in
             *"Desconectar"*)
                 bluetoothctl disconnect "$mac"
@@ -64,6 +73,6 @@ elif [[ "$chosen" =~ "::" ]]; then
         esac
     else
         notify-send -a "Bluetooth" "Conectando a $name..."
-        bluetoothctl connect "$mac" && notify-send -a "Bluetooth" "Conectado a $name" || notify-send -u critical -a "Bluetooth" "Error al conectar a $name"
+        bluetoothctl connect "$mac" && notify-send -a "Bluetooth" "Conectado a $name con éxito" || notify-send -u critical -a "Bluetooth" "Error al conectar a $name"
     fi
 fi

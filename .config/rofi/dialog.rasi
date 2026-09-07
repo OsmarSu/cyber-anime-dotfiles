@@ -1,0 +1,105 @@
+/* dialog.rasi — Shared Responsive Dialog / Popup Theme for Rofi
+ * Used by rofi-bluetooth, system prompts, confirmations, etc.
+ */
+
+@import "colors.rasi"
+
+* {
+    background-color: transparent;
+    text-color:       @fg;
+    font:             "JetBrainsMono Nerd Font 13";
+}
+
+window {
+    transparency:     "real";
+    location:         center;
+    anchor:           center;
+    width:            min(760px, 85%);
+    background-color: @bg;
+    border:           2px solid;
+    border-color:     @accent;
+    border-radius:    @border-r;
+    padding:          16px;
+}
+
+mainbox {
+    orientation:      vertical;
+    children:         [ "inputbar", "message", "listview" ];
+    spacing:          12px;
+    padding:          0px;
+    background-color: transparent;
+}
+
+inputbar {
+    children:         [ "prompt", "entry" ];
+    spacing:          10px;
+    padding:          10px 14px;
+    background-color: @bg-alt;
+    border:           1px solid;
+    border-color:     @surface;
+    border-radius:    @border-r-inner;
+}
+
+prompt {
+    text-color: @accent;
+    font:       "JetBrainsMono Nerd Font Bold 14";
+}
+
+entry {
+    placeholder:        "Filtrar opciones...";
+    placeholder-color:  @fg-dim;
+    text-color:         @fg;
+    font:               "JetBrainsMono Nerd Font 13";
+}
+
+message {
+    padding:          8px 12px;
+    border-radius:    @border-r-inner;
+    background-color: @bg-alt;
+    text-color:       @fg-alt;
+}
+
+textbox {
+    text-color:       @fg-alt;
+}
+
+listview {
+    columns:          1;
+    lines:            8;
+    cycle:            true;
+    dynamic:          true;
+    scrollbar:        false;
+    layout:           vertical;
+    spacing:          6px;
+    padding:          4px 0px;
+    background-color: transparent;
+}
+
+element {
+    orientation:      horizontal;
+    children:         [ "element-icon", "element-text" ];
+    spacing:          12px;
+    padding:          10px 14px;
+    border-radius:    @border-r-element;
+    background-color: transparent;
+    cursor:           pointer;
+    border:           1px solid transparent;
+}
+
+element selected {
+    background-color: @bg-selected;
+    text-color:       @accent;
+    border-color:     @accent;
+}
+
+element-icon {
+    size:             24px;
+    cursor:           inherit;
+}
+
+element-text {
+    vertical-align:   0.5;
+    text-color:       inherit;
+    cursor:           inherit;
+    font:             "JetBrainsMono Nerd Font 13";
+}

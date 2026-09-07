@@ -100,25 +100,36 @@ hl.window_rule({
     match  = { class = "^(nm-connection-editor|Nm-connection-editor)$" },
     float  = true,
     center = true,
-    size   = { 920, 640 },
+    size   = { 980, 680 },
+    min_size = { 740, 480 },
+})
+
+-- Estándar general de tamaño mínimo para ventanas flotantes
+hl.window_rule({
+    name     = "floating-standard-min-size",
+    match    = { float = true },
+    min_size = { 560, 380 },
 })
 
 -- Generic floating terminal tools and popups
 hl.window_rule({
-    name   = "floating-terminal-tools",
-    match  = { class = "^(floating-tool|nmtui|bluetoothctl|btop-float)$" },
-    float  = true,
-    center = true,
-    size   = { 900, 620 },
+    name        = "floating-terminal-tools",
+    match       = { class = "^(floating-tool|nmtui|bluetoothctl|btop-float)$" },
+    float       = true,
+    center      = true,
+    size        = { 1000, 680 },
+    min_size    = { 760, 480 },
+    no_max_size = true,
 })
 
 -- Pavucontrol audio mixer popup
 hl.window_rule({
-    name   = "pavucontrol-float",
-    match  = { class = "^(pavucontrol|org.pulseaudio.pavucontrol)$" },
-    float  = true,
-    center = true,
-    size   = { 850, 580 },
+    name     = "pavucontrol-float",
+    match    = { class = "^(pavucontrol|org.pulseaudio.pavucontrol)$" },
+    float    = true,
+    center   = true,
+    size     = { 960, 640 },
+    min_size = { 760, 480 },
 })
 
 -- Swappy screenshot annotation tool
@@ -131,12 +142,13 @@ hl.window_rule({
 
 -- Keybind cheat sheet: floating, pinned, centered
 hl.window_rule({
-    name   = "keybind-help",
-    match  = { class = "^(keybind-help)$" },
-    float  = true,
-    center = true,
-    size   = { 880, 840 },
-    pin    = true,
+    name     = "keybind-help",
+    match    = { class = "^(keybind-help)$" },
+    float    = true,
+    center   = true,
+    size     = { 960, 840 },
+    min_size = { 780, 560 },
+    pin      = true,
 })
 
 -- Polkit authentication agent dialogs
@@ -149,11 +161,12 @@ hl.window_rule({
 
 -- Portal file pickers and dialogs
 hl.window_rule({
-    name   = "portal-dialogs",
-    match  = { class = "^(xdg-desktop-portal-gtk|xdg-desktop-portal-hyprland|xdg-desktop-portal-kde)$" },
-    float  = true,
-    center = true,
-    size   = { 900, 600 },
+    name     = "portal-dialogs",
+    match    = { class = "^(xdg-desktop-portal-gtk|xdg-desktop-portal-hyprland|xdg-desktop-portal-kde)$" },
+    float    = true,
+    center   = true,
+    size     = { 1000, 680 },
+    min_size = { 760, 500 },
 })
 
 -- Steam auxiliary dialogs
@@ -168,19 +181,22 @@ hl.window_rule({
 
 -- Media viewers (imv, mpv floating by default)
 hl.window_rule({
-    name   = "media-viewers",
-    match  = { class = "^(imv|mpv)$" },
-    float  = true,
-    center = true,
+    name     = "media-viewers",
+    match    = { class = "^(imv|mpv)$" },
+    float    = true,
+    center   = true,
+    min_size = { 640, 400 },
 })
 
 -- Cyber settings and control panels
 hl.window_rule({
-    name   = "cyber-settings-float",
-    match  = { class = "^(cyber-settings|CyberSettings)$" },
-    float  = true,
-    center = true,
-    size   = { 940, 680 },
-    pin    = false,
+    name        = "cyber-settings-float",
+    match       = { class = "^(cyber-settings|CyberSettings)$" },
+    float       = true,
+    center      = true,
+    size        = { 1180, 780 },
+    min_size    = { 960, 620 },
+    no_max_size = true,
+    pin         = false,
 })
 

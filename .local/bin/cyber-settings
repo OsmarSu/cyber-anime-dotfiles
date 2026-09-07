@@ -28,7 +28,8 @@ with open(LOCK_FILE, "w") as f:
 import gi
 gi.require_version("Gtk", "3.0")
 gi.require_version("GtkLayerShell", "0.1")
-from gi.repository import Gtk, Gdk, GtkLayerShell, GLib
+gi.require_version("Pango", "1.0")
+from gi.repository import Gtk, Gdk, GtkLayerShell, GLib, Pango
 
 CSS = b"""
 * {
@@ -45,8 +46,6 @@ window {
     border: 1px solid rgba(0, 240, 255, 0.4);
     border-radius: 18px;
     box-shadow: 0 16px 48px rgba(0, 0, 0, 0.85), 0 0 24px rgba(0, 240, 255, 0.2);
-    min-width: 820px;
-    min-height: 540px;
     padding: 0;
 }
 
@@ -447,6 +446,23 @@ class CyberSettingsWindow(Gtk.Window):
         GtkLayerShell.set_keyboard_mode(self, GtkLayerShell.KeyboardMode.ON_DEMAND)
         GtkLayerShell.set_namespace(self, "cyber-settings")
 
+        # Determine dynamic monitor resolution
+        display = Gdk.Display.get_default()
+        monitor = display.get_primary_monitor() or (display.get_monitor(0) if display and display.get_n_monitors() > 0 else None)
+        if monitor:
+            geom = monitor.get_geometry()
+            screen_w = geom.width
+            screen_h = geom.height
+        else:
+            screen = Gdk.Screen.get_default()
+            screen_w = screen.get_width() if screen else 1920
+            screen_h = screen.get_height() if screen else 1080
+
+        target_w = min(screen_w - 60, max(960, min(1180, int(screen_w * 0.65))))
+        target_h = min(screen_h - 80, max(640, min(800, int(screen_h * 0.75))))
+
+        self.set_default_size(target_w, target_h)
+
         provider = Gtk.CssProvider()
         provider.load_from_data(CSS)
         Gtk.StyleContext.add_provider_for_screen(
@@ -457,6 +473,7 @@ class CyberSettingsWindow(Gtk.Window):
 
         main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         main_box.get_style_context().add_class("main-panel")
+        main_box.set_size_request(target_w, target_h)
 
         # Top Header
         header = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
@@ -542,6 +559,9 @@ class CyberSettingsWindow(Gtk.Window):
     # ────────────────────────── PAGES ──────────────────────────
     def build_appearance_page(self):
         scroll = Gtk.ScrolledWindow()
+        scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        scroll.set_hexpand(True)
+        scroll.set_vexpand(True)
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=14)
         box.get_style_context().add_class("content-page")
 
@@ -552,6 +572,7 @@ class CyberSettingsWindow(Gtk.Window):
         c1_title.get_style_context().add_class("card-title")
         c1_desc = Gtk.Label(label="Cambia de forma instantánea el tema visual de Hyprland, Waybar, SwayNC y Kitty.", xalign=0)
         c1_desc.get_style_context().add_class("card-desc")
+        c1_desc.set_line_wrap(True)
         c1.pack_start(c1_title, False, False, 0)
         c1.pack_start(c1_desc, False, False, 0)
 
@@ -581,6 +602,7 @@ class CyberSettingsWindow(Gtk.Window):
         c2_title.get_style_context().add_class("card-title")
         c2_desc = Gtk.Label(label="Fondos interactivos animados de Steam Wallpaper Engine o galerías estáticas.", xalign=0)
         c2_desc.get_style_context().add_class("card-desc")
+        c2_desc.set_line_wrap(True)
         c2.pack_start(c2_title, False, False, 0)
         c2.pack_start(c2_desc, False, False, 0)
 
@@ -614,6 +636,7 @@ class CyberSettingsWindow(Gtk.Window):
         row_blur = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
         lbl_blur = Gtk.Label(label="Desenfocado de Fondo (Dual-Kawase Blur)", xalign=0)
         lbl_blur.get_style_context().add_class("card-desc")
+        lbl_blur.set_line_wrap(True)
         sw_blur = Gtk.Switch()
         sw_blur.set_active(True)
         sw_blur.connect("notify::active", lambda s, p: spawn_cmd(f"hyprctl keyword decoration:blur:enabled {'1' if s.get_active() else '0'}"))
@@ -625,6 +648,7 @@ class CyberSettingsWindow(Gtk.Window):
         row_anim = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
         lbl_anim = Gtk.Label(label="Animaciones Fluidas (Curvas Bezier)", xalign=0)
         lbl_anim.get_style_context().add_class("card-desc")
+        lbl_anim.set_line_wrap(True)
         sw_anim = Gtk.Switch()
         sw_anim.set_active(True)
         sw_anim.connect("notify::active", lambda s, p: spawn_cmd(f"hyprctl keyword animations:enabled {'1' if s.get_active() else '0'}"))
@@ -636,6 +660,7 @@ class CyberSettingsWindow(Gtk.Window):
         row_shdw = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
         lbl_shdw = Gtk.Label(label="Sombras y Resplandor Neon de Ventanas", xalign=0)
         lbl_shdw.get_style_context().add_class("card-desc")
+        lbl_shdw.set_line_wrap(True)
         sw_shdw = Gtk.Switch()
         sw_shdw.set_active(True)
         sw_shdw.connect("notify::active", lambda s, p: spawn_cmd(f"hyprctl keyword decoration:shadow:enabled {'1' if s.get_active() else '0'}"))
@@ -652,6 +677,7 @@ class CyberSettingsWindow(Gtk.Window):
         c4_title.get_style_context().add_class("card-title")
         c4_desc = Gtk.Label(label="Controla la tarjeta informativa con especificaciones y el retrato de Alya Kujou al abrir la terminal.", xalign=0)
         c4_desc.get_style_context().add_class("card-desc")
+        c4_desc.set_line_wrap(True)
         c4.pack_start(c4_title, False, False, 0)
         c4.pack_start(c4_desc, False, False, 0)
 
@@ -660,6 +686,7 @@ class CyberSettingsWindow(Gtk.Window):
         row_fetch = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
         lbl_fetch = Gtk.Label(label="Mostrar banner de Fastfetch al abrir la terminal", xalign=0)
         lbl_fetch.get_style_context().add_class("card-desc")
+        lbl_fetch.set_line_wrap(True)
         sw_fetch = Gtk.Switch()
         sw_fetch.set_active(not os.path.exists(fastfetch_disabled_file))
 
@@ -706,6 +733,9 @@ class CyberSettingsWindow(Gtk.Window):
 
     def build_system_page(self):
         scroll = Gtk.ScrolledWindow()
+        scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        scroll.set_hexpand(True)
+        scroll.set_vexpand(True)
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=14)
         box.get_style_context().add_class("content-page")
 
@@ -716,6 +746,7 @@ class CyberSettingsWindow(Gtk.Window):
         c1_title.get_style_context().add_class("card-title")
         c1_desc = Gtk.Label(label="Ajusta los estados de energía de la CPU y GPU según la carga de trabajo.", xalign=0)
         c1_desc.get_style_context().add_class("card-desc")
+        c1_desc.set_line_wrap(True)
         c1.pack_start(c1_title, False, False, 0)
         c1.pack_start(c1_desc, False, False, 0)
 
@@ -747,6 +778,7 @@ class CyberSettingsWindow(Gtk.Window):
         row_idle = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
         lbl_idle = Gtk.Label(label="Inhibir reposo automático (Mantener sistema y pantalla despiertos)", xalign=0)
         lbl_idle.get_style_context().add_class("card-desc")
+        lbl_idle.set_line_wrap(True)
         sw_idle = Gtk.Switch()
         sw_idle.set_active(run_cmd("pgrep -x hypridle") == "")
         sw_idle.connect("notify::active", lambda s, p: spawn_cmd("~/.config/waybar/scripts/idle-toggle.sh"))
@@ -774,6 +806,7 @@ class CyberSettingsWindow(Gtk.Window):
         )
         info_lbl = Gtk.Label(label=info_text, xalign=0)
         info_lbl.get_style_context().add_class("card-desc")
+        info_lbl.set_line_wrap(True)
         c3.pack_start(info_lbl, False, False, 0)
 
         btop_btn = Gtk.Button(label="󰻠 Abrir Monitor de Procesos (Btop)")
@@ -787,6 +820,9 @@ class CyberSettingsWindow(Gtk.Window):
 
     def build_audio_page(self):
         scroll = Gtk.ScrolledWindow()
+        scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        scroll.set_hexpand(True)
+        scroll.set_vexpand(True)
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=14)
         box.get_style_context().add_class("content-page")
 
@@ -909,6 +945,8 @@ class CyberSettingsWindow(Gtk.Window):
         grid = Gtk.Grid()
         grid.set_column_spacing(16)
         grid.set_row_spacing(10)
+        grid.set_column_homogeneous(True)
+        grid.set_hexpand(True)
 
         # Field 1: Combinación de Teclas + Modifier chips
         keys_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
@@ -1001,6 +1039,8 @@ class CyberSettingsWindow(Gtk.Window):
 
         scroll = Gtk.ScrolledWindow()
         scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        scroll.set_hexpand(True)
+        scroll.set_vexpand(True)
 
         list_box = Gtk.ListBox()
         list_box.set_selection_mode(Gtk.SelectionMode.NONE)
@@ -1023,11 +1063,15 @@ class CyberSettingsWindow(Gtk.Window):
 
             key_lbl = Gtk.Label(label=keys, xalign=0)
             key_lbl.get_style_context().add_class("key-badge")
-            key_lbl.set_size_request(220, -1)
+            key_lbl.set_size_request(190, -1)
+            key_lbl.set_ellipsize(Pango.EllipsizeMode.MIDDLE)
 
             full_desc = desc + (f"  →  {cmd}" if (cmd and cmd != desc) else "")
             desc_lbl = Gtk.Label(label=full_desc, xalign=0)
             desc_lbl.get_style_context().add_class("key-desc")
+            desc_lbl.set_line_wrap(True)
+            desc_lbl.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
+            desc_lbl.set_hexpand(True)
 
             r_box.pack_start(cat_lbl, False, False, 0)
             r_box.pack_start(key_lbl, False, False, 0)
@@ -1163,6 +1207,9 @@ class CyberSettingsWindow(Gtk.Window):
 
     def build_tools_page(self):
         scroll = Gtk.ScrolledWindow()
+        scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        scroll.set_hexpand(True)
+        scroll.set_vexpand(True)
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=14)
         box.get_style_context().add_class("content-page")
 
