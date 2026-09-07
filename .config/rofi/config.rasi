@@ -4,8 +4,7 @@
  */
 
 configuration {
-    /* path assoluto: Hyprland non eredita ~/.local/bin nel PATH */
-    modi: "drun,run,window,clipboard:/home/oswi/.local/bin/rofi-clipboard,keys:/home/oswi/.local/bin/rofi-keybinds";
+    modi: "drun,run,window,clipboard:rofi-clipboard,keys:rofi-keybinds";
 
     /* drun behavior */
     show-icons: true;

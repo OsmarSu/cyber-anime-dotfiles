@@ -1,6 +1,6 @@
 {
     "label" : "lock",
-    "action" : "/home/oswi/.local/bin/hypr-lock",
+    "action" : "hypr-lock",
     "text" : "Bloquear",
     "keybind" : "l"
 }

@@ -71,4 +71,4 @@ require("conf.keybinds")
 require("conf.windowrules")
 
 -- Overrides locales de hardware
-pcall(dofile, '/home/oswi/.dotfiles-profiles/.hardware/persistent.lua')
+pcall(dofile, (os.getenv("HOME") or "") .. "/.dotfiles-profiles/.hardware/persistent.lua")

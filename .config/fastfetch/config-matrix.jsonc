@@ -3,7 +3,7 @@
 
   "logo": {
     "type": "kitty-direct",
-    "source": "/home/kernel_x23_6/.config/fastfetch/my-avatar-blackhat-fastfetch-transparent.png",
+    "source": "~/.config/fastfetch/my-avatar-blackhat-fastfetch-transparent.png",
     "width": 38,
     "height": 20
   },

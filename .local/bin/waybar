@@ -13,7 +13,7 @@ if [ -n "$HYPRLAND_INSTANCE_SIGNATURE" ]; then
     # Check if bridge is actually responsive
     if ! python3 -c "import socket; s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM); s.settimeout(0.2); s.connect('$BRIDGE_SOCK'); s.close()" 2>/dev/null; then
         rm -f "$BRIDGE_SOCK"
-        setsid python3 /home/oswi/.local/bin/waybar-hypr-bridge.py >/dev/null 2>&1 &
+        setsid python3 "$HOME/.local/bin/waybar-hypr-bridge.py" >/dev/null 2>&1 &
         for i in {1..40}; do
             if python3 -c "import socket; s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM); s.settimeout(0.2); s.connect('$BRIDGE_SOCK'); s.close()" 2>/dev/null; then
                 break

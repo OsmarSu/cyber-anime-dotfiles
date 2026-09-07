@@ -258,6 +258,6 @@
     "format": "⏻",
     "tooltip": true,
     "tooltip-format": "Menú de apagado y sesión (Super + Esc)",
-    "on-click": "/home/oswi/.local/bin/hypr-power-menu"
+    "on-click": "hypr-power-menu"
   }
 }

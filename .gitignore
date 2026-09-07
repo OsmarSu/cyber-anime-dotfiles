@@ -1,8 +1,25 @@
+# Python cache & bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Machine-local runtime state & user cache
 .wall_dir_cache
+.current_wallpaper
+.current_wallpaper.png
+.current_wpe
+.wall_dir
+wpe_properties.json
+*.pid
+*.log
+
+# Editor & OS temporary files
 *.swp
 *.swo
 *~
 .DS_Store
-.current_wallpaper
+.directory
+
+# Assets cache
 assets/icons/
 assets/themes/

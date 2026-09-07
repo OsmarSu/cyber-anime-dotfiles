@@ -1,5 +1,5 @@
 [Default]
-save_dir=/home/oswi/Imágenes/Capturas
+save_dir=~/Imágenes/Capturas
 save_filename_format=captura-%Y%m%d-%H%M%S.png
 show_panel=false
 line_size=5
