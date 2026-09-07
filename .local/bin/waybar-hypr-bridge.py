@@ -13,10 +13,22 @@ import select
 
 signal.signal(signal.SIGHUP, signal.SIG_IGN)
 
+LOG_FILE = "/tmp/waybar-bridge.log"
+
+def log(msg):
+    try:
+        with open(LOG_FILE, "a") as f:
+            f.write(f"{msg}\n")
+    except Exception:
+        pass
+
 def get_hypr_sig():
     sig = os.environ.get('HYPRLAND_INSTANCE_SIGNATURE')
-    if sig and os.path.exists(f'/run/user/{os.getuid()}/hypr/{sig}/.socket.sock'):
-        return sig
+    if sig:
+        if sig.endswith('-wb'):
+            sig = sig[:-3]
+        if os.path.exists(f'/run/user/{os.getuid()}/hypr/{sig}/.socket.sock'):
+            return sig
     base = f'/run/user/{os.getuid()}/hypr'
     if not os.path.isdir(base):
         return None
@@ -37,7 +49,7 @@ def get_hypr_sig():
 
 sig = get_hypr_sig()
 if not sig:
-    print("Could not find active Hyprland instance signature", file=sys.stderr)
+    log("Could not find active Hyprland instance signature")
     sys.exit(1)
 
 real_dir = f'/run/user/{os.getuid()}/hypr/{sig}'
@@ -95,26 +107,52 @@ def translate(raw: bytes) -> bytes:
     except Exception:
         return raw
 
+    orig = text
+
+    def clean_ws(ws):
+        if ws.startswith('name:'):
+            return ws[5:]
+        return ws
+
     # Replace /dispatch workspace <id> or dispatch workspace <id>
     def repl_ws(m):
         prefix = m.group(1) # e.g. '/dispatch ' or 'dispatch '
-        ws = m.group(2)
+        ws = clean_ws(m.group(2))
         return f'{prefix}hl.dsp.focus({{ workspace = "{ws}" }})'
 
     text = re.sub(r'(/??dispatch\s+)workspace\s+([^\s;]+)', repl_ws, text)
     text = re.sub(r'(/??dispatch\s+)focusworkspaceoncurrentmonitor\s+([^\s;]+)', repl_ws, text)
 
+    # Window move to workspace
+    def repl_move(m):
+        prefix = m.group(1)
+        ws = clean_ws(m.group(2))
+        return f'{prefix}hl.dsp.window.move({{ workspace = "{ws}" }})'
+    text = re.sub(r'(/??dispatch\s+)movetoworkspace\s+([^\s;]+)', repl_move, text)
+
+    def repl_movesilent(m):
+        prefix = m.group(1)
+        ws = clean_ws(m.group(2))
+        return f'{prefix}hl.dsp.window.move({{ workspace = "{ws}", follow = false }})'
+    text = re.sub(r'(/??dispatch\s+)movetoworkspacesilent\s+([^\s;]+)', repl_movesilent, text)
+
     # Special workspaces
     def repl_special(m):
         prefix = m.group(1)
-        name = m.group(2) or ""
+        name = clean_ws(m.group(2) or "")
         return f'{prefix}hl.dsp.workspace.toggle_special("{name}")'
     text = re.sub(r'(/??dispatch\s+)togglespecialworkspace\s*([^\s;]*)', repl_special, text)
+
+    if text != orig:
+        log(f"TRANSLATED: {orig.strip()} -> {text.strip()}")
+    else:
+        log(f"PASSTHROUGH: {orig.strip()}")
 
     return text.encode('utf-8')
 
 # Event loop
 inputs = [server]
+log("Bridge started successfully")
 while True:
     try:
         readable, _, _ = select.select(inputs, [], [], 10.0)
@@ -145,8 +183,8 @@ while True:
                             break
                     real.close()
                     client.sendall(res)
-                except Exception:
-                    pass
+                except Exception as e:
+                    log(f"Handler error: {e}")
                 finally:
                     try:
                         client.close()
@@ -154,7 +192,7 @@ while True:
                         pass
     except KeyboardInterrupt:
         break
-    except Exception:
-        pass
+    except Exception as e:
+        log(f"Loop error: {e}")
 
 cleanup()
