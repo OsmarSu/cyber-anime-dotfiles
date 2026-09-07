@@ -1,16 +1,19 @@
 #!/usr/bin/env bash
-# fastfetch wrapper: picks a random anime/cyber artwork on every terminal open
+# fastfetch wrapper: displays a fixed square (N*N) artwork of Alya Kujou
 export PATH="$HOME/.local/bin:/usr/bin:$PATH"
 
-ARTS_DIR="$HOME/.config/fastfetch/cyber-arts"
+ALYA_ART="$HOME/.config/fastfetch/alya_kujou.png"
 CONFIG_FILE="$HOME/.config/fastfetch/config-cyber-anime.jsonc"
 [[ ! -f "$CONFIG_FILE" ]] && CONFIG_FILE="$HOME/.config/fastfetch/config.jsonc"
 
-if [[ -d "$ARTS_DIR" ]] && [[ "$TERM" =~ "kitty" || -n "$KITTY_PID" || -n "$KITTY_WINDOW_ID" ]]; then
-    RANDOM_ART=$(find "$ARTS_DIR" -type f \( -iname "*.jpg" -o -iname "*.png" -o -iname "*.webp" \) 2>/dev/null | shuf -n1)
-    if [[ -n "$RANDOM_ART" ]]; then
-        exec /usr/bin/fastfetch -c "$CONFIG_FILE" --logo "$RANDOM_ART" --logo-type kitty-icat --logo-width 32 --logo-height 16 "$@"
-    fi
+if [[ -f "$ALYA_ART" ]] && [[ "$TERM" =~ "kitty" || -n "$KITTY_PID" || -n "$KITTY_WINDOW_ID" ]]; then
+    exec /usr/bin/fastfetch -c "$CONFIG_FILE" \
+        --logo "$ALYA_ART" \
+        --logo-type kitty-icat \
+        --logo-width 30 \
+        --logo-height 15 \
+        --logo-preserve-aspect-ratio true \
+        "$@"
 fi
 
 exec /usr/bin/fastfetch -c "$CONFIG_FILE" "$@"
