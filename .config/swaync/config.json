@@ -66,15 +66,10 @@
       "text": "No Molestar"
     },
     "buttons-grid": {
-      "buttons-per-row": 4,
+      "buttons-per-row": 3,
       "actions": [
-        { "label": "󰤨", "command": "kitty --class floating-tool -e nmtui" },
-        { "label": "󰂯", "command": "$HOME/.local/bin/rofi-bluetooth" },
-        { "label": "󰕾", "command": "$HOME/.local/bin/volume-popup" },
         { "label": "󰃞", "command": "$HOME/.local/bin/toggle-nightlight" },
         { "label": "󰄀", "command": "sh -c 'if command -v swappy >/dev/null 2>&1; then grim -g \"$(slurp)\" - | swappy -f -; else grimblast --notify copysave area; fi'" },
-        { "label": "󰸉", "command": "$HOME/.local/bin/wpe-picker" },
-        { "label": "󰒓", "command": "$HOME/.local/bin/cyber-settings" },
         { "label": "󰌾", "command": "$HOME/.local/bin/hypr-lock" }
       ]
     },

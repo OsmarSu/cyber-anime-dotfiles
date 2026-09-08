@@ -1,0 +1,38 @@
+/* Theme — Carlotta Ocean (Deep Sea Emerald & Aquamarine) */
+@define-color base       #040f0e;
+@define-color mantle     #020807;
+@define-color crust      #010404;
+@define-color surface0   #081a18;
+@define-color surface1   #0f2926;
+@define-color surface2   #153b37;
+@define-color text       #ecfdf5;
+@define-color subtext0   #a7f3d0;
+@define-color subtext1   #d1fae5;
+@define-color overlay0   #065f46;
+@define-color overlay1   #047857;
+@define-color overlay2   #064e3b;
+@define-color rosewater  #d1fae5;
+@define-color flamingo   #a7f3d0;
+@define-color pink       #f472b6;
+@define-color mauve      #818cf8;
+@define-color red        #f43f5e;
+@define-color maroon     #fb7185;
+@define-color peach      #fb923c;
+@define-color yellow     #ffd166;
+@define-color green      #10b981;
+@define-color teal       #06b6d4;
+@define-color sky        #22d3ee;
+@define-color sapphire   #059669;
+@define-color blue       #0284c7;
+@define-color lavender   #a7f3d0;
+
+@define-color bar-bg          rgba(4, 15, 14, 0.76);
+@define-color pill-bg         rgba(8, 26, 24, 0.74);
+@define-color pill-bg-hover   rgba(15, 41, 38, 0.90);
+@define-color text-fg         @text;
+@define-color text-dim        @overlay0;
+@define-color accent-active   #10b981;
+@define-color accent-hover    #06b6d4;
+@define-color accent-warning  #ffd166;
+@define-color accent-critical #f43f5e;
+@define-color accent-good     #10b981;

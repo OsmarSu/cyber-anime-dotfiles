@@ -1,0 +1,23 @@
+/* colors-carlotta-ocean.rasi — Carlotta & Cartethyia (Wuthering Waves / Sea Emerald & Teal) */
+* {
+    bg          : #040f0ee8;   /* Abyssal Emerald 91%            */
+    bg-alt      : #081a18f2;   /* Deep Sea Surface               */
+    bg-selected : #0f2926f4;   /* Selected element               */
+    surface     : #153b37;     /* Border                         */
+
+    fg          : #ecfdf5;     /* Foam White                     */
+    fg-alt      : #a7f3d0;     /* Seafoam                        */
+    fg-dim      : #065f46;     /* Deep Overlay                   */
+
+    accent      : #10b981;     /* Ocean Emerald                  */
+    accent-dim  : #06b6d4;     /* Aquamarine Teal                */
+
+    urgent      : #f43f5e;
+    warning     : #ffd166;
+
+    font-family : "JetBrainsMono Nerd Font";
+    font-size   : 12;
+    border-r    : 18px;
+    border-r-inner   : 12px;
+    border-r-element : 8px;
+}

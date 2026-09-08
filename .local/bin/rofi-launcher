@@ -1,36 +1,25 @@
 #!/usr/bin/env bash
 # rofi-launcher — Cyber-Anime App Drawer & Launcher wrapper.
-# Dynamically selects a random Wallpaper Engine background (pre-adjusted 980x620)
-# on EVERY launch, ensuring zero pixelation and fresh aesthetics every time.
+# Opens the unified Rofi app drawer (matching size & aesthetics with wallpaper picker)
 
 export PATH="$HOME/.local/bin:$PATH"
 
-WPE_CACHE="$HOME/.cache/rofi-wpe-wallpapers"
 CURRENT_PNG="$HOME/.config/rofi/.current_wallpaper.png"
 CURRENT_LINK="$HOME/.config/rofi/.current_wallpaper"
 
-# Select random Wallpaper Engine background from cache
-if [[ -d "$WPE_CACHE" ]]; then
-    target=$(find "$WPE_CACHE" -maxdepth 1 -name "*.png" 2>/dev/null | shuf -n1)
+# If symlinks do not exist yet, initialize with fallback
+if [[ ! -f "$CURRENT_PNG" && ! -f "$CURRENT_LINK" ]]; then
+    WALL_DIR=$(cat "$HOME/.config/rofi/.wall_dir" 2>/dev/null || echo "$HOME/.config/assets/backgrounds/whitehat")
+    fallback=$(find "$WALL_DIR" -maxdepth 1 -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" \) 2>/dev/null | head -n1)
+    if [[ -n "$fallback" ]]; then
+        ln -sf "$fallback" "$CURRENT_PNG"
+        ln -sf "$fallback" "$CURRENT_LINK"
+    fi
 fi
 
-# Fallback if cache is empty
-if [[ -z "$target" || ! -f "$target" ]]; then
-    WALL_DIR=$(cat "$HOME/.config/rofi/.wall_dir" 2>/dev/null || echo "$HOME/.config/assets/backgrounds/sfondi")
-    target=$(find "$WALL_DIR" -maxdepth 1 -type f \
-        \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.webp" \) 2>/dev/null \
-        | shuf -n1)
-fi
-
-# Update symlinks immediately before launch
-if [[ -n "$target" && -f "$target" ]]; then
-    ln -sf "$target" "$CURRENT_PNG"
-    ln -sf "$target" "$CURRENT_LINK"
-fi
-
-# Pass through arguments or launch default drun mode
+# Launch rofi with launcher theme
 if [[ $# -eq 0 ]]; then
-    exec rofi -show drun
+    exec rofi -show drun -theme "$HOME/.config/rofi/launcher.rasi"
 else
-    exec rofi "$@"
+    exec rofi -theme "$HOME/.config/rofi/launcher.rasi" "$@"
 fi

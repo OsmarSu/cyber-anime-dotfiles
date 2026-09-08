@@ -195,14 +195,17 @@
   },
 
   "network": {
+    "interface": "wlp*",
     "format-wifi": "󰤨 {essid}",
     "format-ethernet": "󰈀 Conectado",
     "format-linked": "󰈀 {ifname} (Sin red)",
     "format-disconnected": "󰤭 Desconectado",
-    "format-alt": "󰈀 {ipaddr}/{cidr}",
-    "tooltip-format": "Red: {ifname}\nIP: {ipaddr}\nPuerta de enlace: {gwaddr}\n\nClic izq: Gestor Wi-Fi (nmtui)\nClic der: Conexiones avanzadas",
-    "on-click": "kitty --class floating-tool -e nmtui",
-    "on-click-right": "nm-connection-editor"
+    "format-disabled": "󰤮 Desactivado",
+    "tooltip-format-wifi": "Wi-Fi: {essid} ({signalStrength}%)\n\nClic izq: Gestor Wi-Fi (Rofi)\nClic der: Apagar Wi-Fi",
+    "tooltip-format-disconnected": "Wi-Fi: Desconectado\n\nClic izq: Gestor Wi-Fi (Rofi)\nClic der: Encender Wi-Fi",
+    "tooltip-format-disabled": "Wi-Fi: Desactivado\n\nClic izq: Gestor Wi-Fi (Rofi)\nClic der: Encender Wi-Fi",
+    "on-click": "$HOME/.local/bin/rofi-wifi",
+    "on-click-right": "$HOME/.config/hypr/scripts/toggle-wifi"
   },
 
   "bluetooth": {

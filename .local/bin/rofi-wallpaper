@@ -14,10 +14,15 @@ THEME="$HOME/.config/rofi/wallpaper.rasi"
 
 apply_wall() {
     local path="$1"
+    ln -sf "$path" "$CURRENT_LINK"
+    ln -sf "$path" "$HOME/.config/rofi/.current_wallpaper.png" 2>/dev/null || true
+    awww img "$path" \
+        --resize crop --filter Lanczos3 \
+        --transition-type grow --transition-pos center \
+        --transition-step 90 --transition-fps 120 --transition-duration 1.0 \
+        --transition-bezier .43,1.19,1,1.01
     pkill -f mpvpaper 2>/dev/null || true
     pkill -f linux-wallpaperengine 2>/dev/null || true
-    awww img "$path" --transition-type random --transition-fps 255 --transition-duration 0.8
-    ln -sf "$path" "$CURRENT_LINK"
 }
 
 # --random: usato dall'autostart per inizializzare il symlink all'avvio

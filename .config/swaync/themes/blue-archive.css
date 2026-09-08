@@ -1,0 +1,262 @@
+/* ─────────────────────────────────────────────────────────
+   SwayNC — Blue Archive (Kivotos Azure & Halo Gold)
+   Palette aligned with Waybar, Hyprland and Rofi cyber-anime themes.
+   ───────────────────────────────────────────────────────── */
+
+/* Palette */
+@define-color base       #060e1a;
+@define-color mantle     #050608;
+@define-color crust      #020305;
+@define-color surface0   #0e1c30;
+@define-color surface1   #142944;
+@define-color surface2   #1d3b61;
+@define-color text       #f0f9ff;
+@define-color subtext0   #93c5fd;
+@define-color overlay0   #3b82f6;
+@define-color pink       #ffd166;
+@define-color mauve      #c678dd;
+@define-color red        #ff0055;
+@define-color maroon     #e06c75;
+@define-color peach      #ff9e64;
+@define-color yellow     #fcee0a;
+@define-color green      #00ff9f;
+@define-color teal       #38bdf8;
+@define-color sky        #7dcfff;
+@define-color sapphire   #2ac3de;
+@define-color blue       #00b4d8;
+@define-color lavender   #b4befe;
+
+* {
+  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-size: 13px;
+}
+
+scrollbar,
+scrollbar contents,
+scrollbar trough,
+scrollbar slider {
+  min-width: 0;
+  min-height: 0;
+  opacity: 0;
+  background: transparent;
+  border: none;
+}
+
+/* Notification toast */
+.notification-row {
+  outline: none;
+  background: transparent;
+  padding: 4px;
+}
+
+.notification-row:focus,
+.notification-row:hover {
+  background: transparent;
+}
+
+.notification {
+  background: rgba(6, 14, 26, 0.94);
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin: 0px 4px 8px 4px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75), 0 0 14px rgba(56, 189, 248, 0.25);
+}
+
+.notification-content {
+  background: transparent;
+}
+
+.close-button {
+  background: transparent;
+  color: @subtext0;
+  text-shadow: none;
+  padding: 0;
+  border-radius: 50%;
+  margin-top: 5px;
+  margin-right: 5px;
+  box-shadow: none;
+  border: none;
+  min-width: 24px;
+  min-height: 24px;
+}
+
+.close-button:hover {
+  box-shadow: none;
+  background: #ff0055;
+  transition: all 0.18s ease-in-out;
+  border: none;
+  color: #ffffff;
+}
+
+.notification-default-action,
+.notification-action {
+  padding: 6px 12px;
+  margin: 0;
+  border-radius: 8px;
+  box-shadow: none;
+  background: @surface0;
+  border: 1px solid @surface1;
+  color: @text;
+  transition: all 0.15s ease-in-out;
+}
+
+.notification-default-action:hover,
+.notification-action:hover {
+  background: @surface1;
+  border-color: #38bdf8;
+  color: #38bdf8;
+}
+
+.summary {
+  font-size: 14px;
+  font-weight: bold;
+  background: transparent;
+  color: #38bdf8;
+  text-shadow: none;
+}
+
+.time {
+  font-size: 11px;
+  color: @subtext0;
+  text-shadow: none;
+  margin-right: 18px;
+}
+
+.body {
+  font-size: 12px;
+  font-weight: normal;
+  background: transparent;
+  color: @text;
+  text-shadow: none;
+}
+
+/* Control Center */
+.control-center {
+  background: rgba(8, 9, 13, 0.94);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  border-radius: 18px;
+  padding: 18px;
+  margin: 8px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.88), 0 0 24px rgba(56, 189, 248, 0.25);
+}
+
+.control-center-list {
+  background: transparent;
+}
+
+.widget-title {
+  color: #38bdf8;
+  font-size: 15px;
+  font-weight: 800;
+  padding: 4px;
+  margin-bottom: 8px;
+}
+
+.widget-title > button {
+  font-size: 12px;
+  color: @subtext0;
+  text-shadow: none;
+  background: @surface0;
+  border: 1px solid @surface1;
+  box-shadow: none;
+  border-radius: 8px;
+  padding: 4px 10px;
+}
+
+.widget-title > button:hover {
+  background: @surface1;
+  border-color: #ffd166;
+  color: #ffd166;
+}
+
+.widget-dnd {
+  color: @text;
+  padding: 4px;
+  margin-bottom: 8px;
+}
+
+.widget-dnd > switch {
+  font-size: 13px;
+  border-radius: 12px;
+  background: @surface0;
+  border: 1px solid @surface1;
+  box-shadow: none;
+}
+
+.widget-dnd > switch:checked {
+  background: #ffd166;
+  border-color: #ffd166;
+}
+
+.widget-dnd > switch slider {
+  background: @text;
+  border-radius: 12px;
+}
+
+/* Sliders */
+.widget-volume,
+.widget-backlight {
+  background: rgba(14, 17, 26, 0.85);
+  padding: 10px 14px;
+  margin: 6px 0;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 240, 255, 0.18);
+}
+
+.widget-volume > trough > highlight {
+  background: linear-gradient(90deg, #38bdf8, #ffd166);
+}
+
+.widget-backlight > trough > highlight {
+  background: linear-gradient(90deg, #fcee0a, #38bdf8);
+}
+
+/* Buttons grid */
+.widget-buttons-grid {
+  padding: 8px 0;
+}
+
+.widget-buttons-grid > flowbox > flowboxchild > button {
+  background: rgba(14, 17, 26, 0.85);
+  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  color: @text;
+  min-width: 52px;
+  min-height: 52px;
+  margin: 4px;
+  font-size: 18px;
+  transition: all 180ms ease;
+}
+
+.widget-buttons-grid > flowbox > flowboxchild > button:hover {
+  background: rgba(22, 27, 40, 0.95);
+  border-color: #38bdf8;
+  color: #38bdf8;
+  box-shadow: 0 0 14px rgba(0, 240, 255, 0.35);
+}
+
+/* Media player */
+.widget-mpris {
+  background: rgba(14, 17, 26, 0.85);
+  padding: 14px;
+  margin: 8px 0;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 240, 255, 0.28);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
+}
+
+.widget-mpris-player {
+  padding: 6px;
+}
+
+.widget-mpris-title {
+  font-weight: bold;
+  font-size: 14px;
+  color: #38bdf8;
+}
+
+.widget-mpris-subtitle {
+  font-size: 12px;
+  color: @subtext0;
+}

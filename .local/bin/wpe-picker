@@ -88,6 +88,81 @@ def scan_wallpapers():
 
 import time
 
+def get_highres_frame(wpid, file_path, preview_path):
+    """
+    Extracts or retrieves a cached 1080p pristine frame from the video
+    or upscales static thumbnails cleanly with Lanczos to eliminate pixelation.
+    """
+    hq_dir = os.path.expanduser("~/.cache/rofi-wpe-wallpapers/hq_frames")
+    os.makedirs(hq_dir, exist_ok=True)
+    hq_file = os.path.join(hq_dir, f"{wpid}.jpg")
+    if os.path.isfile(hq_file) and os.path.getsize(hq_file) > 1000:
+        return hq_file
+
+    # 1. Video extraction (instant keyframe decode, ~150ms)
+    if file_path and os.path.isfile(file_path):
+        lower = file_path.lower()
+        if any(lower.endswith(ext) for ext in [".mp4", ".mkv", ".webm", ".avi", ".mov"]):
+            try:
+                res = subprocess.run([
+                    "ffmpeg", "-y", "-i", file_path,
+                    "-vframes", "1", "-update", "1", "-q:v", "2", hq_file
+                ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=4)
+                if res.returncode == 0 and os.path.isfile(hq_file) and os.path.getsize(hq_file) > 1000:
+                    return hq_file
+            except Exception:
+                pass
+
+    # 2. If scene / web / fallback: upscale preview with PIL Lanczos to 1920x1080
+    if preview_path and os.path.isfile(preview_path):
+        try:
+            from PIL import Image
+            with Image.open(preview_path) as im:
+                im.seek(0)
+                if im.mode != "RGB":
+                    im = im.convert("RGB")
+                w, h = im.size
+                if w < 1920 or h < 1080:
+                    scale = max(1920 / w, 1080 / h)
+                    nw, nh = int(w * scale), int(h * scale)
+                    im_resized = im.resize((nw, nh), Image.Resampling.LANCZOS)
+                    left = (nw - 1920) // 2
+                    top = (nh - 1080) // 2
+                    im_cropped = im_resized.crop((left, top, left + 1920, top + 1080))
+                    im_cropped.save(hq_file, format="JPEG", quality=95)
+                    return hq_file
+                else:
+                    im.save(hq_file, format="JPEG", quality=95)
+                    return hq_file
+        except Exception:
+            pass
+
+    return preview_path if (preview_path and os.path.isfile(preview_path)) else None
+
+def detect_theme_for_wallpaper(title, folder):
+    text = (title + " " + folder).lower()
+    if any(k in text for k in ["silver wolf", "silverwolf"]):
+        return "silver-wolf"
+    elif any(k in text for k in ["blue archive", "yuuka", "azusa", "serika", "shiroko", "arona", "plana", "millenium"]):
+        return "blue-archive"
+    elif any(k in text for k in ["kurumi", "zaphakiel", "date a live"]):
+        return "kurumi-tokisaki"
+    elif any(k in text for k in ["camellya", "zero two", "phut hon", "blood"]):
+        return "crimson-rose"
+    elif any(k in text for k in ["furina", "fontaine", "focalors"]):
+        return "furina-hydro"
+    elif any(k in text for k in ["firefly"]):
+        return "firefly-starlight"
+    elif any(k in text for k in ["keqing", "fischl", "electro", "raiden"]):
+        return "keqing-electro"
+    elif any(k in text for k in ["carlotta", "cartethyia", "iuno"]):
+        return "carlotta-ocean"
+    elif any(k in text for k in ["alya", "roshidere", "kujou"]):
+        return "alya-sakura"
+    elif any(k in text for k in ["matrix", "blackhat", "hacker"]):
+        return "matrix"
+    return None
+
 def apply_wallpaper(wp):
     monitor = get_active_monitor()
     wtype = wp["type"]
@@ -95,40 +170,44 @@ def apply_wallpaper(wp):
     preview_path = wp["preview"]
     folder = wp["folder"]
     title = wp["title"]
+    wpid = wp.get("id", os.path.basename(os.path.abspath(folder)))
 
-    # Kill running live wallpaper engines cleanly
-    subprocess.run(["pkill", "-f", "mpvpaper"], capture_output=True)
-    subprocess.run(["pkill", "-f", "linux-wallpaperengine"], capture_output=True)
-    time.sleep(0.15)
+    # 1. Obtain high-res static image (zero pixelation!)
+    static_img = get_highres_frame(wpid, file_path, preview_path)
 
-    has_mpvpaper = shutil.which("mpvpaper") is not None
-    has_linux_wpe = shutil.which("linux-wallpaperengine") is not None
-
-    applied_live = False
-
-    # Always set static wallpaper / preview via awww and update rofi symlink
-    # This provides seamless fallback, instant feedback, and themes rofi/hyprlock
-    if preview_path and os.path.isfile(preview_path):
-        subprocess.run([
-            "awww", "img", preview_path,
-            "--resize", "crop",
-            "--filter", "Lanczos3",
-            "--transition-type", "fade",
-            "--transition-duration", "0.5"
-        ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        wpid = wp.get("id", os.path.basename(os.path.abspath(folder)))
-        cached_wpe = os.path.expanduser(f"~/.cache/rofi-wpe-wallpapers/{wpid}.png")
-        rofi_source = cached_wpe if os.path.isfile(cached_wpe) else preview_path
-
+    # 2. Trigger End-4 dots fluid elastic grow transition with awww
+    if static_img and os.path.isfile(static_img):
         for link_name in [".current_wallpaper", ".current_wallpaper.png"]:
             symlink_path = os.path.expanduser(f"~/.config/rofi/{link_name}")
             try:
                 if os.path.islink(symlink_path) or os.path.exists(symlink_path):
                     os.remove(symlink_path)
-                if rofi_source and os.path.isfile(rofi_source):
-                    os.symlink(rofi_source, symlink_path)
+                os.symlink(static_img, symlink_path)
             except Exception:
                 pass
+
+        # End-4 dots fluid elastic grow transition (120fps, custom bezier curve)
+        subprocess.run([
+            "awww", "img", static_img,
+            "--resize", "crop",
+            "--filter", "Lanczos3",
+            "--transition-type", "grow",
+            "--transition-pos", "center",
+            "--transition-step", "90",
+            "--transition-fps", "120",
+            "--transition-duration", "1.0",
+            "--transition-bezier", ".43,1.19,1,1.01"
+        ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+    # Kill running live wallpaper engines cleanly
+    subprocess.run(["pkill", "-f", "mpvpaper"], capture_output=True)
+    subprocess.run(["pkill", "-f", "linux-wallpaperengine"], capture_output=True)
+    time.sleep(0.05)
+
+    has_mpvpaper = shutil.which("mpvpaper") is not None
+    has_linux_wpe = shutil.which("linux-wallpaperengine") is not None
+
+    applied_live = False
 
     # Video wallpapers
     if wtype == "video" and os.path.isfile(file_path):
@@ -143,7 +222,6 @@ def apply_wallpaper(wp):
 
     # Scene / 3D wallpapers
     elif (wtype in ["scene", "web"]) and has_linux_wpe:
-        # Explicitly specify layer 'background' so it never obscures waybar or windows
         cmd = [
             "linux-wallpaperengine",
             "--screen-root", monitor,
@@ -157,7 +235,7 @@ def apply_wallpaper(wp):
 
         # Apply saved user property overrides
         all_props = load_properties()
-        wp_props = all_props.get(wp.get("id", os.path.basename(os.path.abspath(folder))), {})
+        wp_props = all_props.get(wpid, {})
         for prop_k, prop_v in wp_props.items():
             if prop_k == "disable_particles" and prop_v:
                 cmd.append("--disable-particles")
@@ -173,6 +251,17 @@ def apply_wallpaper(wp):
         wpe_env["SDL_AUDIODRIVER"] = "dummy"
         subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True, env=wpe_env)
         applied_live = True
+
+    # Check auto sync theme
+    all_props = load_properties()
+    auto_theme = all_props.get("global_settings", {}).get("auto_sync_theme", True)
+    matched_theme = detect_theme_for_wallpaper(title, folder)
+    if auto_theme and matched_theme:
+        subprocess.Popen([
+            os.path.expanduser("~/.config/waybar/scripts/theme-switch.sh"),
+            matched_theme,
+            "--keep-wallpaper"
+        ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
 
     # Ensure waybar is running and visible
     try:
@@ -190,7 +279,8 @@ def apply_wallpaper(wp):
     except Exception:
         pass
 
-    subprocess.run(["notify-send", "-a", "Wallpaper Engine", f"Fondo aplicado: {title}", f"Tipo: {wtype.upper()} ({'En vivo' if applied_live else 'Vista previa'})"])
+    theme_info = f" · Tema: {matched_theme.replace('-', ' ').title()}" if (auto_theme and matched_theme) else ""
+    subprocess.run(["notify-send", "-a", "Wallpaper Engine", f"Fondo aplicado: {title}", f"Tipo: {wtype.upper()} ({'En vivo' if applied_live else 'Vista previa'}){theme_info}"])
 
 def configure_properties(wp=None):
     if wp is None:
@@ -281,6 +371,11 @@ def configure_properties(wp=None):
         menu_items.append(f"{'🔴 [✗]' if m_dis else '🟢 [✓]'}  Interacción con ratón ({'DESACTIVADO' if m_dis else 'ACTIVO'})")
         actions.append({"type": "engine_toggle", "key": "disable_mouse"})
 
+        # 2.5 Auto theme sync
+        auto_theme = all_props.get("global_settings", {}).get("auto_sync_theme", True)
+        menu_items.append(f"{'🟢 [✓]' if auto_theme else '🔴 [✗]'}  Auto-sincronizar tema de color al cambiar fondo ({'ACTIVO' if auto_theme else 'DESACTIVADO'})")
+        actions.append({"type": "toggle_auto_theme"})
+
         # 3. Acciones
         menu_items.append("🔄  Restablecer efectos por defecto")
         actions.append({"type": "reset"})
@@ -366,6 +461,18 @@ def configure_properties(wp=None):
                     except Exception:
                         pass
 
+            elif act["type"] == "toggle_auto_theme":
+                g_settings = all_props.setdefault("global_settings", {})
+                g_settings["auto_sync_theme"] = not g_settings.get("auto_sync_theme", True)
+                save_properties(all_props)
+                status = "ACTIVADA" if g_settings["auto_sync_theme"] else "DESACTIVADA"
+                subprocess.run(["notify-send", "-a", "Wallpaper Engine", "Tema Automático", f"Sincronización de color {status}."])
+                # If activated, apply right now
+                if g_settings["auto_sync_theme"] and wp:
+                    m_theme = detect_theme_for_wallpaper(wp.get("title", ""), wp.get("folder", ""))
+                    if m_theme:
+                        subprocess.Popen([os.path.expanduser("~/.config/waybar/scripts/theme-switch.sh"), m_theme])
+
         except Exception as e:
             print(f"Error in configure_properties: {e}", file=sys.stderr)
             break
@@ -407,13 +514,15 @@ def main():
 
     rofi_input = "\n".join(rofi_lines).encode("utf-8")
 
+    wpe_theme = os.path.expanduser("~/.config/rofi/wpe.rasi")
     rofi_cmd = [
         "rofi",
         "-dmenu",
         "-i",
         "-p", "󰸉 Wallpaper Engine",
         "-format", "i",
-        "-theme-str", "window { width: 750px; } listview { lines: 8; columns: 1; }"
+        "-show-icons",
+        "-theme", wpe_theme
     ]
 
     try:

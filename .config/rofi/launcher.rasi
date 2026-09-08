@@ -1,6 +1,5 @@
 /* launcher.rasi — Cyber-Anime App Drawer (Super + A)
- * Layout: 980x620px spacious window, 3.2em prominent icons, 2 columns.
- * Dynamic Wallpaper Engine background integration with high-res 1:1 scaling.
+ * Spacious 1140x700px window with dynamic wallpaper integration and translucent glass.
  */
 
 @import "colors.rasi"
@@ -11,27 +10,27 @@
     font:             "JetBrainsMono Nerd Font 13";
 }
 
-/* ---- Window ---- */
+/* ---- Window: 1140x700px Unified Spacious Canvas ---- */
 window {
     transparency:     "real";
     location:         center;
     anchor:           center;
-    width:            980px;
-    height:           620px;
+    width:            1140px;
+    height:           700px;
     background-color: @bg;
     border:           2px solid;
     border-color:     @accent;
-    border-radius:    @border-r;
+    border-radius:    18px;
     padding:          0px;
 }
 
-/* ---- Mainbox: horizontal layout with Wallpaper Engine dynamic background ---- */
+/* ---- Mainbox: horizontal layout with Wallpaper dynamic background ---- */
 mainbox {
     orientation:      horizontal;
     children:         [ "mode-switcher", "listbox" ];
     spacing:          0px;
     padding:          0px;
-    border-radius:    @border-r;
+    border-radius:    18px;
     background-image: url("/home/oswi/.config/rofi/.current_wallpaper.png", both);
 }
 
@@ -39,16 +38,16 @@ mainbox {
 mode-switcher {
     orientation:      vertical;
     expand:           false;
-    width:            76px;
-    spacing:          0.8em;
-    padding:          1.2em 0.4em;
-    background-color: @bg-alt;
-    border-radius:    @border-r;
+    width:            82px;
+    spacing:          1em;
+    padding:          1.5em 0.5em;
+    background-color: rgba(10, 13, 20, 0.88);
+    border-radius:    18px 0px 0px 18px;
 }
 
 button {
-    padding:          0.9em 0.3em;
-    border-radius:    @border-r-inner;
+    padding:          1em 0.4em;
+    border-radius:    12px;
     background-color: transparent;
     text-color:       @fg-dim;
     cursor:           pointer;
@@ -60,26 +59,28 @@ button {
 button selected {
     background-color: @bg-selected;
     text-color:       @accent;
+    border:           0px 0px 0px 3px;
+    border-color:     @accent;
 }
 
 /* ---- Content Area: Search Bar + App Grid ---- */
 listbox {
     orientation:      vertical;
     children:         [ "inputbar", "listview" ];
-    spacing:          0.8em;
-    padding:          1.2em;
-    background-color: transparent;
+    spacing:          1em;
+    padding:          1.4em;
+    background-color: rgba(8, 9, 13, 0.45);
 }
 
 /* ---- Search bar ---- */
 inputbar {
     children:         [ "prompt", "entry" ];
     spacing:          0.8em;
-    padding:          0.7em 1.2em;
-    background-color: @bg-alt;
+    padding:          0.8em 1.2em;
+    background-color: rgba(14, 17, 26, 0.88);
     border:           1px solid;
     border-color:     @surface;
-    border-radius:    @border-r-inner;
+    border-radius:    12px;
 }
 
 prompt {
@@ -95,29 +96,29 @@ entry {
     font:               "JetBrainsMono Nerd Font 13";
 }
 
-/* ---- Results: 2 columns with spacious app cards ---- */
+/* ---- Results: 2 columns with spacious translucent app cards ---- */
 listview {
     columns:          2;
-    lines:            5;
-    spacing:          0.6em;
+    lines:            6;
+    spacing:          0.7em;
     cycle:            true;
     scrollbar:        false;
     fixed-height:     true;
-    background-color: #08090db8;
+    background-color: rgba(8, 9, 13, 0.68);
     border:           1px solid;
     border-color:     @surface;
-    border-radius:    @border-r-inner;
-    padding:          0.6em;
+    border-radius:    14px;
+    padding:          0.8em;
 }
 
 /* ---- App Card Element ---- */
 element {
     padding:          0.8em 1em;
-    border-radius:    @border-r-element;
+    border-radius:    10px;
     spacing:          1em;
     children:         [ "element-icon", "element-text" ];
     cursor:           pointer;
-    background-color: #0e111a88;
+    background-color: rgba(14, 17, 26, 0.60);
 }
 
 element normal.normal {

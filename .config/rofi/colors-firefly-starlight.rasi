@@ -1,0 +1,23 @@
+/* colors-firefly-starlight.rasi — Firefly (Honkai: Star Rail / Starlight Mint & Twilight) */
+* {
+    bg          : #071113e8;   /* Twilight Dark 91%              */
+    bg-alt      : #0d1e22f2;   /* Deep Teal Surface              */
+    bg-selected : #152e34f4;   /* Selected Element               */
+    surface     : #1f424a;     /* Border                         */
+
+    fg          : #f0fdfa;     /* Starlight Ice                  */
+    fg-alt      : #99f6e4;     /* Mint highlight                 */
+    fg-dim      : #115e59;     /* Dim Overlay                    */
+
+    accent      : #2dd4bf;     /* Bioluminescent Mint            */
+    accent-dim  : #fb923c;     /* Twilight Amber                 */
+
+    urgent      : #f43f5e;
+    warning     : #fde047;
+
+    font-family : "JetBrainsMono Nerd Font";
+    font-size   : 12;
+    border-r    : 18px;
+    border-r-inner   : 12px;
+    border-r-element : 8px;
+}

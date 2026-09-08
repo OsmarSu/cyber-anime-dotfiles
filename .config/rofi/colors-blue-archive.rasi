@@ -1,0 +1,33 @@
+/* colors-blue-archive.rasi — Blue Archive (Kivotos Azure & Halo Gold)
+ * Palette: Kivotos Sky Cyan (#38bdf8) & Halo Gold (#ffd166) on Oceanic Navy.
+ */
+
+* {
+    /* ── Base ── */
+    bg          : #060e1ae6;   /* Oceanic Navy 90%               */
+    bg-alt      : #0e1c30f0;   /* Surface 94% — input/sidebar    */
+    bg-selected : #142944f0;   /* Item selected                  */
+    surface     : #1d3b61;     /* Surface borders                */
+
+    /* ── Foreground ── */
+    fg          : #f0f9ff;     /* Kivotos White text             */
+    fg-alt      : #93c5fd;     /* Sky text                       */
+    fg-dim      : #3b82f6;     /* Overlay                        */
+
+    /* ── Accent ── */
+    accent      : #38bdf8;     /* Kivotos Azure                  */
+    accent-dim  : #ffd166;     /* Halo Gold                      */
+
+    /* ── Semantic ── */
+    urgent      : #f43f5e;     /* Crimson Red                    */
+    warning     : #ffd166;     /* Warning Gold                   */
+
+    /* ── Typography ── */
+    font-family : "JetBrainsMono Nerd Font";
+    font-size   : 12;
+
+    /* ── Border radius ── */
+    border-r         : 16px;
+    border-r-inner   : 12px;
+    border-r-element : 8px;
+}

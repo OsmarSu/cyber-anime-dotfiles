@@ -1,0 +1,44 @@
+/* ─────────────────────────────────────────────────────────
+   Theme — Crimson Rose (Camellya / Kurumi / Zero Two)
+   Palette: Crimson Blood Red (#ff0055) & Sakura Pink (#ff758f) on Velvet Obsidian.
+   ───────────────────────────────────────────────────────── */
+
+/* ── Palette ── */
+@define-color base       #0d0609;
+@define-color mantle     #080305;
+@define-color crust      #040102;
+@define-color surface0   #180b12;
+@define-color surface1   #24101b;
+@define-color surface2   #361628;
+@define-color text       #ffe4e6;
+@define-color subtext0   #fda4af;
+@define-color subtext1   #fecdd3;
+@define-color overlay0   #881337;
+@define-color overlay1   #9f1239;
+@define-color overlay2   #be123c;
+@define-color rosewater  #ffe4e6;
+@define-color flamingo   #fda4af;
+@define-color pink       #ff758f;
+@define-color mauve      #e879f9;
+@define-color red        #ff0055;
+@define-color maroon     #e11d48;
+@define-color peach      #fb7185;
+@define-color yellow     #ffb703;
+@define-color green      #4ade80;
+@define-color teal       #2dd4bf;
+@define-color sky        #38bdf8;
+@define-color sapphire   #f43f5e;
+@define-color blue       #e11d48;
+@define-color lavender   #fda4af;
+
+/* ── Role mapping ── */
+@define-color bar-bg          rgba(13, 6, 9, 0.76);
+@define-color pill-bg         rgba(24, 11, 18, 0.74);
+@define-color pill-bg-hover   rgba(36, 16, 27, 0.90);
+@define-color text-fg         @text;
+@define-color text-dim        @overlay0;
+@define-color accent-active   #ff0055;
+@define-color accent-hover    #ff758f;
+@define-color accent-warning  #ffb703;
+@define-color accent-critical #ff0033;
+@define-color accent-good     #4ade80;

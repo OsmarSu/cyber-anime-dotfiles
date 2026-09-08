@@ -85,6 +85,9 @@
 #network.disconnected {
   color: @accent-critical;
 }
+#network.disabled {
+  color: @overlay0;
+}
 
 #bluetooth {
   color: @blue;

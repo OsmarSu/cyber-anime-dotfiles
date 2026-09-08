@@ -1,0 +1,38 @@
+/* Theme — Keqing Electro (Deep Electro Violet & Electric Orchid) */
+@define-color base       #0a0614;
+@define-color mantle     #06030d;
+@define-color crust      #030107;
+@define-color surface0   #130c26;
+@define-color surface1   #1e133c;
+@define-color surface2   #2c1a56;
+@define-color text       #faf5ff;
+@define-color subtext0   #d8b4fe;
+@define-color subtext1   #f3e8ff;
+@define-color overlay0   #581c87;
+@define-color overlay1   #6b21a8;
+@define-color overlay2   #7e22ce;
+@define-color rosewater  #f5d0fe;
+@define-color flamingo   #e879f9;
+@define-color pink       #d946ef;
+@define-color mauve      #c084fc;
+@define-color red        #ff007f;
+@define-color maroon     #f43f5e;
+@define-color peach      #fb923c;
+@define-color yellow     #facc15;
+@define-color green      #06d6a0;
+@define-color teal       #00f0ff;
+@define-color sky        #38bdf8;
+@define-color sapphire   #a855f7;
+@define-color blue       #8b5cf6;
+@define-color lavender   #d8b4fe;
+
+@define-color bar-bg          rgba(10, 6, 20, 0.76);
+@define-color pill-bg         rgba(19, 12, 38, 0.74);
+@define-color pill-bg-hover   rgba(30, 19, 60, 0.90);
+@define-color text-fg         @text;
+@define-color text-dim        @overlay0;
+@define-color accent-active   #8b5cf6;
+@define-color accent-hover    #d946ef;
+@define-color accent-warning  #facc15;
+@define-color accent-critical #ff007f;
+@define-color accent-good     #06d6a0;

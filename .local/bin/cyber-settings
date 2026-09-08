@@ -184,6 +184,159 @@ window {
     box-shadow: 0 0 12px rgba(255, 0, 127, 0.4);
 }
 
+.cyber-btn-violet {
+    background: rgba(26, 16, 42, 0.9);
+    border: 1px solid rgba(168, 85, 247, 0.4);
+    border-radius: 8px;
+    color: #c084fc;
+    font-weight: bold;
+    font-size: 12px;
+    padding: 8px 14px;
+    transition: all 0.2s ease;
+}
+
+.cyber-btn-violet:hover {
+    background: #a855f7;
+    color: #0a0814;
+    box-shadow: 0 0 12px rgba(168, 85, 247, 0.5);
+}
+
+.cyber-btn-azure {
+    background: rgba(14, 28, 48, 0.9);
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    border-radius: 8px;
+    color: #38bdf8;
+    font-weight: bold;
+    font-size: 12px;
+    padding: 8px 14px;
+    transition: all 0.2s ease;
+}
+
+.cyber-btn-azure:hover {
+    background: #38bdf8;
+    color: #060e1a;
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
+}
+
+.cyber-btn-crimson {
+    background: rgba(36, 14, 22, 0.9);
+    border: 1px solid rgba(255, 0, 85, 0.4);
+    border-radius: 8px;
+    color: #ff0055;
+    font-weight: bold;
+    font-size: 12px;
+    padding: 8px 14px;
+    transition: all 0.2s ease;
+}
+
+.cyber-btn-crimson:hover {
+    background: #ff0055;
+    color: #ffffff;
+    box-shadow: 0 0 12px rgba(255, 0, 85, 0.5);
+}
+
+.cyber-btn-hydro {
+    background: rgba(12, 28, 42, 0.9);
+    border: 1px solid rgba(0, 194, 203, 0.4);
+    border-radius: 8px;
+    color: #00c2cb;
+    font-weight: bold;
+    font-size: 12px;
+    padding: 8px 14px;
+    transition: all 0.2s ease;
+}
+
+.cyber-btn-hydro:hover {
+    background: #00c2cb;
+    color: #050a14;
+    box-shadow: 0 0 12px rgba(0, 194, 203, 0.5);
+}
+
+.cyber-btn-amber {
+    background: rgba(36, 24, 10, 0.9);
+    border: 1px solid rgba(251, 191, 36, 0.4);
+    border-radius: 8px;
+    color: #fbbf24;
+    font-weight: bold;
+    font-size: 12px;
+    padding: 8px 14px;
+    transition: all 0.2s ease;
+}
+
+.cyber-btn-amber:hover {
+    background: #fbbf24;
+    color: #090507;
+    box-shadow: 0 0 12px rgba(251, 191, 36, 0.5);
+}
+
+.cyber-btn-mint {
+    background: rgba(13, 36, 34, 0.9);
+    border: 1px solid rgba(45, 212, 191, 0.4);
+    border-radius: 8px;
+    color: #2dd4bf;
+    font-weight: bold;
+    font-size: 12px;
+    padding: 8px 14px;
+    transition: all 0.2s ease;
+}
+
+.cyber-btn-mint:hover {
+    background: #2dd4bf;
+    color: #071113;
+    box-shadow: 0 0 12px rgba(45, 212, 191, 0.5);
+}
+
+.cyber-btn-electro {
+    background: rgba(26, 16, 48, 0.9);
+    border: 1px solid rgba(139, 92, 246, 0.4);
+    border-radius: 8px;
+    color: #a78bfa;
+    font-weight: bold;
+    font-size: 12px;
+    padding: 8px 14px;
+    transition: all 0.2s ease;
+}
+
+.cyber-btn-electro:hover {
+    background: #8b5cf6;
+    color: #0a0614;
+    box-shadow: 0 0 12px rgba(139, 92, 246, 0.5);
+}
+
+.cyber-btn-emerald {
+    background: rgba(8, 36, 30, 0.9);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    border-radius: 8px;
+    color: #10b981;
+    font-weight: bold;
+    font-size: 12px;
+    padding: 8px 14px;
+    transition: all 0.2s ease;
+}
+
+.cyber-btn-emerald:hover {
+    background: #10b981;
+    color: #040f0e;
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+}
+
+.cyber-btn-sakura {
+    background: rgba(38, 16, 32, 0.9);
+    border: 1px solid rgba(244, 114, 182, 0.4);
+    border-radius: 8px;
+    color: #f472b6;
+    font-weight: bold;
+    font-size: 12px;
+    padding: 8px 14px;
+    transition: all 0.2s ease;
+}
+
+.cyber-btn-sakura:hover {
+    background: #f472b6;
+    color: #12080f;
+    box-shadow: 0 0 12px rgba(244, 114, 182, 0.5);
+}
+
 .cyber-btn-active {
     background: rgba(0, 240, 255, 0.2);
     border-color: #00f0ff;
@@ -568,15 +721,20 @@ class CyberSettingsWindow(Gtk.Window):
         # 1. Perfiles de Tema
         c1 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
         c1.get_style_context().add_class("card")
-        c1_title = Gtk.Label(label="󰏘 Perfil de Tema Activo", xalign=0)
+        c1_title = Gtk.Label(label="󰏘 Perfiles de Tema Estéticos (Neon, Anime & Games)", xalign=0)
         c1_title.get_style_context().add_class("card-title")
-        c1_desc = Gtk.Label(label="Cambia de forma instantánea el tema visual de Hyprland, Waybar, SwayNC y Kitty.", xalign=0)
+        c1_desc = Gtk.Label(label="Cambia de forma instantánea la paleta global de Hyprland, Waybar, SwayNC, Rofi y Kitty.", xalign=0)
         c1_desc.get_style_context().add_class("card-desc")
         c1_desc.set_line_wrap(True)
         c1.pack_start(c1_title, False, False, 0)
         c1.pack_start(c1_desc, False, False, 0)
 
-        theme_btns = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+        # Fila 1: Temas Base del Sistema
+        t_lbl1 = Gtk.Label(label="Estilos del Sistema:", xalign=0)
+        t_lbl1.get_style_context().add_class("form-label")
+        c1.pack_start(t_lbl1, False, False, 2)
+
+        theme_btns = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
         b_anime = Gtk.Button(label="󰄛 Cyber Anime (Tokyo Neon)")
         b_anime.get_style_context().add_class("cyber-btn")
         b_anime.connect("clicked", lambda w: spawn_cmd("~/.config/waybar/scripts/theme-switch.sh cyber-anime"))
@@ -592,7 +750,69 @@ class CyberSettingsWindow(Gtk.Window):
         theme_btns.pack_start(b_anime, True, True, 0)
         theme_btns.pack_start(b_matrix, True, True, 0)
         theme_btns.pack_start(b_macchiato, True, True, 0)
-        c1.pack_start(theme_btns, False, False, 6)
+        c1.pack_start(theme_btns, False, False, 4)
+
+        # Fila 2: Temas Wallpaper Engine (Violet, Azure, Hydro & Electro)
+        t_lbl2 = Gtk.Label(label="Inspirados en Wallpaper Engine (Cyan, Violet & Azure):", xalign=0)
+        t_lbl2.get_style_context().add_class("form-label")
+        c1.pack_start(t_lbl2, False, False, 2)
+
+        wpe_themes_box1 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        b_wolf = Gtk.Button(label="🐺 Silver Wolf (Cyber Violet)")
+        b_wolf.get_style_context().add_class("cyber-btn-violet")
+        b_wolf.connect("clicked", lambda w: spawn_cmd("~/.config/waybar/scripts/theme-switch.sh silver-wolf"))
+
+        b_ba = Gtk.Button(label="🕊️ Blue Archive (Kivotos Azure)")
+        b_ba.get_style_context().add_class("cyber-btn-azure")
+        b_ba.connect("clicked", lambda w: spawn_cmd("~/.config/waybar/scripts/theme-switch.sh blue-archive"))
+
+        b_furina = Gtk.Button(label="💧 Furina (Fontaine Hydro)")
+        b_furina.get_style_context().add_class("cyber-btn-hydro")
+        b_furina.connect("clicked", lambda w: spawn_cmd("~/.config/waybar/scripts/theme-switch.sh furina-hydro"))
+
+        b_keqing = Gtk.Button(label="⚡ Keqing (Electro Violet)")
+        b_keqing.get_style_context().add_class("cyber-btn-electro")
+        b_keqing.connect("clicked", lambda w: spawn_cmd("~/.config/waybar/scripts/theme-switch.sh keqing-electro"))
+
+        wpe_themes_box1.pack_start(b_wolf, True, True, 0)
+        wpe_themes_box1.pack_start(b_ba, True, True, 0)
+        wpe_themes_box1.pack_start(b_furina, True, True, 0)
+        wpe_themes_box1.pack_start(b_keqing, True, True, 0)
+        c1.pack_start(wpe_themes_box1, False, False, 4)
+
+        # Fila 3: Temas Wallpaper Engine (Crimson, Gold, Mint & Sakura)
+        t_lbl3 = Gtk.Label(label="Inspirados en Wallpaper Engine (Crimson, Gold, Mint & Sakura):", xalign=0)
+        t_lbl3.get_style_context().add_class("form-label")
+        c1.pack_start(t_lbl3, False, False, 2)
+
+        wpe_themes_box2 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        b_rose = Gtk.Button(label="🌹 Camellya (Crimson Rose)")
+        b_rose.get_style_context().add_class("cyber-btn-crimson")
+        b_rose.connect("clicked", lambda w: spawn_cmd("~/.config/waybar/scripts/theme-switch.sh crimson-rose"))
+
+        b_kurumi = Gtk.Button(label="⏳ Kurumi (Crimson & Gold)")
+        b_kurumi.get_style_context().add_class("cyber-btn-amber")
+        b_kurumi.connect("clicked", lambda w: spawn_cmd("~/.config/waybar/scripts/theme-switch.sh kurumi-tokisaki"))
+
+        b_firefly = Gtk.Button(label="✨ Firefly (Starlight Mint)")
+        b_firefly.get_style_context().add_class("cyber-btn-mint")
+        b_firefly.connect("clicked", lambda w: spawn_cmd("~/.config/waybar/scripts/theme-switch.sh firefly-starlight"))
+
+        b_carlotta = Gtk.Button(label="🌿 Carlotta (Sea Emerald)")
+        b_carlotta.get_style_context().add_class("cyber-btn-emerald")
+        b_carlotta.connect("clicked", lambda w: spawn_cmd("~/.config/waybar/scripts/theme-switch.sh carlotta-ocean"))
+
+        b_alya = Gtk.Button(label="🌸 Alya (Pastel Sakura)")
+        b_alya.get_style_context().add_class("cyber-btn-sakura")
+        b_alya.connect("clicked", lambda w: spawn_cmd("~/.config/waybar/scripts/theme-switch.sh alya-sakura"))
+
+        wpe_themes_box2.pack_start(b_rose, True, True, 0)
+        wpe_themes_box2.pack_start(b_kurumi, True, True, 0)
+        wpe_themes_box2.pack_start(b_firefly, True, True, 0)
+        wpe_themes_box2.pack_start(b_carlotta, True, True, 0)
+        wpe_themes_box2.pack_start(b_alya, True, True, 0)
+        c1.pack_start(wpe_themes_box2, False, False, 4)
+
         box.pack_start(c1, False, False, 0)
 
         # 2. Fondos de Pantalla

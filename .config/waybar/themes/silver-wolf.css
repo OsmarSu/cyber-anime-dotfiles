@@ -1,0 +1,44 @@
+/* ─────────────────────────────────────────────────────────
+   Theme — Silver Wolf (Honkai: Star Rail / Cyber-Violet)
+   Palette: Electric Violet (#a855f7) & Cyber Cyan (#00f0ff) on Deep Void.
+   ───────────────────────────────────────────────────────── */
+
+/* ── Palette ── */
+@define-color base       #0a0814;
+@define-color mantle     #07050e;
+@define-color crust      #040308;
+@define-color surface0   #120e24;
+@define-color surface1   #1b1536;
+@define-color surface2   #261e4c;
+@define-color text       #f3e8ff;
+@define-color subtext0   #bca7e8;
+@define-color subtext1   #d8b4fe;
+@define-color overlay0   #5d4d80;
+@define-color overlay1   #7c69a5;
+@define-color overlay2   #9b87c7;
+@define-color rosewater  #f5d0fe;
+@define-color flamingo   #f472b6;
+@define-color pink       #e879f9;
+@define-color mauve      #c084fc;
+@define-color red        #ff007f;
+@define-color maroon     #f43f5e;
+@define-color peach      #fb923c;
+@define-color yellow     #facc15;
+@define-color green      #06d6a0;
+@define-color teal       #00f0ff;
+@define-color sky        #38bdf8;
+@define-color sapphire   #818cf8;
+@define-color blue       #6366f1;
+@define-color lavender   #a855f7;
+
+/* ── Role mapping ── */
+@define-color bar-bg          rgba(10, 8, 20, 0.74);
+@define-color pill-bg         rgba(18, 14, 36, 0.72);
+@define-color pill-bg-hover   rgba(27, 21, 54, 0.88);
+@define-color text-fg         @text;
+@define-color text-dim        @overlay0;
+@define-color accent-active   #a855f7;
+@define-color accent-hover    #00f0ff;
+@define-color accent-warning  #facc15;
+@define-color accent-critical #ff007f;
+@define-color accent-good     #06d6a0;

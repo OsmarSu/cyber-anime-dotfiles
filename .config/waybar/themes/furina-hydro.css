@@ -1,0 +1,44 @@
+/* ─────────────────────────────────────────────────────────
+   Theme — Furina Hydro (Fontaine Blue & Opera Gold)
+   Palette: Fontaine Hydro Blue (#00c2cb) & Royal Gold (#ffd166) on Abyssal Indigo.
+   ───────────────────────────────────────────────────────── */
+
+/* ── Palette ── */
+@define-color base       #050a14;
+@define-color mantle     #03070d;
+@define-color crust      #010306;
+@define-color surface0   #0c172a;
+@define-color surface1   #142440;
+@define-color surface2   #1e365e;
+@define-color text       #f0f8ff;
+@define-color subtext0   #a5d8ff;
+@define-color subtext1   #d0ebff;
+@define-color overlay0   #339af0;
+@define-color overlay1   #4dabf7;
+@define-color overlay2   #74c0fc;
+@define-color rosewater  #e7f5ff;
+@define-color flamingo   #d0ebff;
+@define-color pink       #fcc2d7;
+@define-color mauve      #9775fa;
+@define-color red        #ff4d6d;
+@define-color maroon     #fa5252;
+@define-color peach      #ffa94d;
+@define-color yellow     #ffd166;
+@define-color green      #2ec4b6;
+@define-color teal       #00c2cb;
+@define-color sky        #22b8cf;
+@define-color sapphire   #1d8cf8;
+@define-color blue       #1971c2;
+@define-color lavender   #b197fc;
+
+/* ── Role mapping ── */
+@define-color bar-bg          rgba(5, 10, 20, 0.75);
+@define-color pill-bg         rgba(12, 23, 42, 0.72);
+@define-color pill-bg-hover   rgba(20, 36, 64, 0.88);
+@define-color text-fg         @text;
+@define-color text-dim        @overlay0;
+@define-color accent-active   #00c2cb;
+@define-color accent-hover    #ffd166;
+@define-color accent-warning  #ffd166;
+@define-color accent-critical #ff4d6d;
+@define-color accent-good     #2ec4b6;

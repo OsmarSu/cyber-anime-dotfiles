@@ -23,6 +23,7 @@ hl.bind(mainMod .. " + E",           hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + Y",           hl.dsp.exec_cmd(termFileManager))
 
 -- Panel de Control y Configuración (Cyber Settings)
+hl.bind(mainMod .. " + I",           hl.dsp.exec_cmd(home .. "/.local/bin/cyber-settings"))
 hl.bind(mainMod .. " + S",           hl.dsp.exec_cmd(home .. "/.local/bin/cyber-settings"))
 hl.bind(mainMod .. " + comma",       hl.dsp.exec_cmd(home .. "/.local/bin/cyber-settings"))
 
@@ -171,8 +172,12 @@ hl.bind("XF86AudioPrev",             hl.dsp.exec_cmd("playerctl previous"),   { 
 hl.bind("XF86MonBrightnessUp",       hl.dsp.exec_cmd(home .. "/.config/hypr/scripts/osd-brightness up"),   { locked = true, repeating = true })
 hl.bind("XF86MonBrightnessDown",     hl.dsp.exec_cmd(home .. "/.config/hypr/scripts/osd-brightness down"), { locked = true, repeating = true })
 
--- Hoja de trucos de atajos
-hl.bind(mainMod .. " + I",           hl.dsp.exec_cmd(
+-- Hoja de trucos de atajos (Cheatsheet)
+hl.bind(mainMod .. " + H",           hl.dsp.exec_cmd(
+    "kitty --class keybind-help --override font_size=10 -e " ..
+    home .. "/.config/hypr/scripts/keybind-help.sh"
+))
+hl.bind(mainMod .. " + F1",          hl.dsp.exec_cmd(
     "kitty --class keybind-help --override font_size=10 -e " ..
     home .. "/.config/hypr/scripts/keybind-help.sh"
 ))

@@ -1,0 +1,23 @@
+/* colors-alya-sakura.rasi — Alya Kujou & Zero Two (Pastel Sakura Pink & Frost Ice) */
+* {
+    bg          : #12080fe8;   /* Dark Rose Slate 91%            */
+    bg-alt      : #1c0e18f2;   /* Sakura Shadow Surface          */
+    bg-selected : #291523f4;   /* Selected element               */
+    surface     : #3b1e33;     /* Border                         */
+
+    fg          : #fdf2f8;     /* Silk White                     */
+    fg-alt      : #fbcfe8;     /* Soft Sakura                    */
+    fg-dim      : #831843;     /* Plum Overlay                   */
+
+    accent      : #f472b6;     /* Pastel Sakura Pink             */
+    accent-dim  : #f8fafc;     /* Platinum Ice White             */
+
+    urgent      : #ff0055;
+    warning     : #fbbf24;
+
+    font-family : "JetBrainsMono Nerd Font";
+    font-size   : 12;
+    border-r    : 18px;
+    border-r-inner   : 12px;
+    border-r-element : 8px;
+}

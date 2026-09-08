@@ -1,0 +1,33 @@
+/* colors-silver-wolf.rasi — Silver Wolf (Honkai: Star Rail / Cyber-Violet)
+ * Palette: Electric Violet (#a855f7) & Cyber Cyan (#00f0ff) on Deep Indigo.
+ */
+
+* {
+    /* ── Base ── */
+    bg          : #0a0814e6;   /* Deep Void Indigo 90%           */
+    bg-alt      : #120e24f0;   /* Surface 94% — input/sidebar    */
+    bg-selected : #1b1536f0;   /* Item selected                  */
+    surface     : #261e4c;     /* Surface borders                */
+
+    /* ── Foreground ── */
+    fg          : #f3e8ff;     /* Pale Amethyst text             */
+    fg-alt      : #bca7e8;     /* Dim Violet text                */
+    fg-dim      : #5d4d80;     /* Overlay                        */
+
+    /* ── Accent ── */
+    accent      : #a855f7;     /* Electric Violet                */
+    accent-dim  : #00f0ff;     /* Cyber Cyan                     */
+
+    /* ── Semantic ── */
+    urgent      : #ff007f;     /* Neon Pink                      */
+    warning     : #facc15;     /* Amber Gold                     */
+
+    /* ── Typography ── */
+    font-family : "JetBrainsMono Nerd Font";
+    font-size   : 12;
+
+    /* ── Border radius ── */
+    border-r         : 16px;
+    border-r-inner   : 12px;
+    border-r-element : 8px;
+}

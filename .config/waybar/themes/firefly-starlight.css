@@ -1,0 +1,38 @@
+/* Theme — Firefly Starlight (Bioluminescent Mint & Twilight Amber) */
+@define-color base       #071113;
+@define-color mantle     #040a0c;
+@define-color crust      #020506;
+@define-color surface0   #0d1e22;
+@define-color surface1   #152e34;
+@define-color surface2   #1f424a;
+@define-color text       #f0fdfa;
+@define-color subtext0   #99f6e4;
+@define-color subtext1   #ccfbf1;
+@define-color overlay0   #115e59;
+@define-color overlay1   #0f766e;
+@define-color overlay2   #134e4a;
+@define-color rosewater  #fef08a;
+@define-color flamingo   #fed7aa;
+@define-color pink       #f472b6;
+@define-color mauve      #a78bfa;
+@define-color red        #f43f5e;
+@define-color maroon     #e11d48;
+@define-color peach      #fb923c;
+@define-color yellow     #fde047;
+@define-color green      #2dd4bf;
+@define-color teal       #14b8a6;
+@define-color sky        #38bdf8;
+@define-color sapphire   #06b6d4;
+@define-color blue       #0284c7;
+@define-color lavender   #99f6e4;
+
+@define-color bar-bg          rgba(7, 17, 19, 0.76);
+@define-color pill-bg         rgba(13, 30, 34, 0.74);
+@define-color pill-bg-hover   rgba(21, 46, 52, 0.90);
+@define-color text-fg         @text;
+@define-color text-dim        @overlay0;
+@define-color accent-active   #2dd4bf;
+@define-color accent-hover    #fb923c;
+@define-color accent-warning  #fde047;
+@define-color accent-critical #f43f5e;
+@define-color accent-good     #2dd4bf;

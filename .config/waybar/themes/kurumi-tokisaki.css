@@ -1,0 +1,38 @@
+/* Theme — Kurumi Tokisaki (Gothic Crimson & Clockface Gold) */
+@define-color base       #090507;
+@define-color mantle     #060305;
+@define-color crust      #030102;
+@define-color surface0   #140a0f;
+@define-color surface1   #1f0e17;
+@define-color surface2   #301322;
+@define-color text       #fef2f2;
+@define-color subtext0   #fca5a5;
+@define-color subtext1   #fecaca;
+@define-color overlay0   #881337;
+@define-color overlay1   #9f1239;
+@define-color overlay2   #be123c;
+@define-color rosewater  #ffe4e6;
+@define-color flamingo   #fda4af;
+@define-color pink       #ff758f;
+@define-color mauve      #e11d48;
+@define-color red        #dc2626;
+@define-color maroon     #b91c1c;
+@define-color peach      #fb923c;
+@define-color yellow     #fbbf24;
+@define-color green      #4ade80;
+@define-color teal       #2dd4bf;
+@define-color sky        #38bdf8;
+@define-color sapphire   #dc2626;
+@define-color blue       #991b1b;
+@define-color lavender   #fca5a5;
+
+@define-color bar-bg          rgba(9, 5, 7, 0.76);
+@define-color pill-bg         rgba(20, 10, 15, 0.74);
+@define-color pill-bg-hover   rgba(31, 14, 23, 0.90);
+@define-color text-fg         @text;
+@define-color text-dim        @overlay0;
+@define-color accent-active   #dc2626;
+@define-color accent-hover    #fbbf24;
+@define-color accent-warning  #fbbf24;
+@define-color accent-critical #ff0033;
+@define-color accent-good     #4ade80;

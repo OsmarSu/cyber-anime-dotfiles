@@ -148,3 +148,29 @@ rm -rf ~/.config/hypr.bak
 ```
 
 The uninstaller does not touch `~/.p10k.zsh` or any file not created by the installer.
+
+---
+
+## Gestor Wi-Fi (`rofi-wifi`) no detecta redes o no conecta
+
+- **Servicio NetworkManager inactivo**: Verifica que el demonio del sistema esté corriendo:
+  ```bash
+  systemctl status NetworkManager
+  ```
+  Si está detenido: `sudo systemctl enable --now NetworkManager`.
+- **Radio inalámbrica apagada**: Asegúrate de que no esté bloqueada por hardware o software (`rfkill list`):
+  ```bash
+  nmcli radio wifi on
+  ```
+- **Re-escaneo manual**: Si una red recién creada no aparece en la lista, selecciona la opción `󰑐 Escanear redes` al final del menú o ejecuta `nmcli dev wifi rescan`.
+
+---
+
+## Fondos animados (`wpe-picker`) o transiciones estáticas (`awww`)
+
+- **Demonio `awww` ausente**: `awww` es el gestor encargado del renderizado y las transiciones elásticas. Si el fondo no cambia:
+  ```bash
+  pgrep awww || awww-daemon &
+  ```
+- **Extracción de fotogramas**: `wpe-picker` genera automáticamente miniaturas en 1080p en `~/.cache/rofi-wpe-wallpapers/hq_frames/`. Si falta `ffmpeg`, instálalo con `sudo pacman -S ffmpeg`.
+- **Cambio de tema sin alterar el fondo**: El script `theme-switch.sh` mantiene intacto tu fondo actual por defecto gracias al argumento `--keep-wallpaper`. Si deseas que aplique un fondo aleatorio del tema, pasa `--set-wallpaper`.

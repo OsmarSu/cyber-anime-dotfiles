@@ -1,0 +1,23 @@
+/* colors-kurumi-tokisaki.rasi — Kurumi Tokisaki (Date A Live / Gothic Crimson & Gold) */
+* {
+    bg          : #090507e8;   /* Gothic Obsidian 91%            */
+    bg-alt      : #140a0ff2;   /* Deep Velvet                    */
+    bg-selected : #1f0e17f4;   /* Selected element               */
+    surface     : #301322;     /* Surface border                 */
+
+    fg          : #fef2f2;     /* Pale Porcelain                 */
+    fg-alt      : #fca5a5;     /* Rose tint                      */
+    fg-dim      : #881337;     /* Wine Overlay                   */
+
+    accent      : #dc2626;     /* Gothic Crimson Blood           */
+    accent-dim  : #fbbf24;     /* Clockface Gold                 */
+
+    urgent      : #ff0033;
+    warning     : #fbbf24;
+
+    font-family : "JetBrainsMono Nerd Font";
+    font-size   : 12;
+    border-r    : 18px;
+    border-r-inner   : 12px;
+    border-r-element : 8px;
+}

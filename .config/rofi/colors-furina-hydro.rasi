@@ -1,0 +1,33 @@
+/* colors-furina-hydro.rasi — Furina Hydro (Fontaine Blue & Opera Gold)
+ * Palette: Fontaine Hydro Blue (#00c2cb) & Royal Gold (#ffd166) on Abyssal Indigo.
+ */
+
+* {
+    /* ── Base ── */
+    bg          : #050a14e6;   /* Abyssal Fontaine Blue 90%      */
+    bg-alt      : #0c172af0;   /* Surface 94% — input/sidebar    */
+    bg-selected : #142440f0;   /* Item selected                  */
+    surface     : #1e365e;     /* Surface borders                */
+
+    /* ── Foreground ── */
+    fg          : #f0f8ff;     /* Pure Opera White text          */
+    fg-alt      : #a5d8ff;     /* Fontaine Stream text           */
+    fg-dim      : #339af0;     /* Overlay                        */
+
+    /* ── Accent ── */
+    accent      : #00c2cb;     /* Fontaine Hydro Cyan            */
+    accent-dim  : #ffd166;     /* Opera Gold                     */
+
+    /* ── Semantic ── */
+    urgent      : #ff4d6d;     /* Deep Coral                     */
+    warning     : #ffd166;     /* Amber Gold                     */
+
+    /* ── Typography ── */
+    font-family : "JetBrainsMono Nerd Font";
+    font-size   : 12;
+
+    /* ── Border radius ── */
+    border-r         : 16px;
+    border-r-inner   : 12px;
+    border-r-element : 8px;
+}

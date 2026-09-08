@@ -1,0 +1,44 @@
+/* ─────────────────────────────────────────────────────────
+   Theme — Blue Archive (Kivotos Azure & Halo Gold)
+   Palette: Kivotos Sky Cyan (#38bdf8) & Halo Gold (#ffd166) on Oceanic Navy.
+   ───────────────────────────────────────────────────────── */
+
+/* ── Palette ── */
+@define-color base       #060e1a;
+@define-color mantle     #040a12;
+@define-color crust      #020509;
+@define-color surface0   #0e1c30;
+@define-color surface1   #142944;
+@define-color surface2   #1d3b61;
+@define-color text       #f0f9ff;
+@define-color subtext0   #93c5fd;
+@define-color subtext1   #bfdbfe;
+@define-color overlay0   #3b82f6;
+@define-color overlay1   #60a5fa;
+@define-color overlay2   #93c5fd;
+@define-color rosewater  #e0f2fe;
+@define-color flamingo   #bae6fd;
+@define-color pink       #f472b6;
+@define-color mauve      #818cf8;
+@define-color red        #f43f5e;
+@define-color maroon     #fb7185;
+@define-color peach      #f97316;
+@define-color yellow     #ffd166;
+@define-color green      #10b981;
+@define-color teal       #06b6d4;
+@define-color sky        #38bdf8;
+@define-color sapphire   #0ea5e9;
+@define-color blue       #0284c7;
+@define-color lavender   #c7d2fe;
+
+/* ── Role mapping ── */
+@define-color bar-bg          rgba(6, 14, 26, 0.75);
+@define-color pill-bg         rgba(14, 28, 48, 0.72);
+@define-color pill-bg-hover   rgba(20, 41, 68, 0.88);
+@define-color text-fg         @text;
+@define-color text-dim        @overlay0;
+@define-color accent-active   #38bdf8;
+@define-color accent-hover    #ffd166;
+@define-color accent-warning  #ffd166;
+@define-color accent-critical #f43f5e;
+@define-color accent-good     #10b981;

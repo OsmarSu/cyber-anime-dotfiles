@@ -1,6 +1,5 @@
-/* wallpaper.rasi — galleria picker per rofi-wallpaper.
- * Layout: 6 colonne × 2 righe, thumbnail orizzontali.
- * Non importa launcher.rasi: usa solo colors.rasi per la palette.
+/* wallpaper.rasi — Galleria Picker per rofi-wallpaper.
+ * Spacious 1140x700px canvas matching launcher.rasi with dynamic wallpaper background.
  */
 
 @import "colors.rasi"
@@ -11,73 +10,84 @@
     font:             "JetBrainsMono Nerd Font 10";
 }
 
-/* ---- Window ---- */
+/* ---- Window: 1140x700px Unified Spacious Canvas ---- */
 window {
     transparency:     "real";
     location:         center;
     anchor:           center;
-    width:            92%;
+    width:            1140px;
+    height:           700px;
     background-color: @bg;
     border:           2px solid;
     border-color:     @accent;
-    border-radius:    @border-r;
-    padding:          0.8em;
+    border-radius:    18px;
+    padding:          0px;
 }
 
-/* ---- Mainbox ---- */
+/* ---- Mainbox: dynamic wallpaper background with glass overlay ---- */
 mainbox {
+    orientation:      vertical;
     children:         [ "inputbar", "listview" ];
-    spacing:          0.6em;
-    background-color: transparent;
+    spacing:          1em;
+    padding:          1.4em;
+    border-radius:    18px;
+    background-image: url("/home/oswi/.config/rofi/.current_wallpaper.png", both);
 }
 
 /* ---- Search bar ---- */
 inputbar {
     children:         [ "prompt", "entry" ];
-    spacing:          0.5em;
-    padding:          0.5em 0.8em;
-    background-color: @bg-alt;
-    border-radius:    @border-r-inner;
+    spacing:          0.8em;
+    padding:          0.8em 1.2em;
+    background-color: rgba(14, 17, 26, 0.88);
+    border:           1px solid;
+    border-color:     @surface;
+    border-radius:    12px;
 }
 
 prompt {
     text-color:       @accent;
+    font:             "JetBrainsMono Nerd Font Bold 13";
 }
 
 entry {
-    placeholder:       "🖼️  Cerca wallpaper…";
+    placeholder:       "🖼️  Buscar fondos de pantalla…";
     placeholder-color: @fg-dim;
     text-color:        @fg;
     cursor:            text;
+    font:              "JetBrainsMono Nerd Font 12";
 }
 
-/* ---- Galleria thumbnail ---- */
+/* ---- Galleria thumbnail: 5 colonne x 2 righe spaziose ---- */
 listview {
-    columns:          6;
+    columns:          5;
     lines:            2;
     flow:             horizontal;
     fixed-width:      true;
-    fixed-height:     false;
-    spacing:          10px;
-    padding:          6px;
+    fixed-height:     true;
+    spacing:          14px;
+    padding:          14px;
     cycle:            true;
     scrollbar:        false;
     dynamic:          true;
-    background-color: transparent;
+    background-color: rgba(8, 9, 13, 0.68);
+    border:           1px solid;
+    border-color:     @surface;
+    border-radius:    14px;
 }
 
-/* ---- Singola voce (thumbnail sopra, nome sotto) ---- */
+/* ---- Singola voce (thumbnail grande sopra, nome sotto) ---- */
 element {
     orientation:      vertical;
-    padding:          6px;
-    border-radius:    @border-r-element;
-    background-color: transparent;
+    padding:          10px;
+    border-radius:    10px;
+    background-color: rgba(14, 17, 26, 0.60);
     cursor:           pointer;
-    spacing:          4px;
+    spacing:          8px;
 }
 
 element normal.normal {
-    background-color: transparent;
+    background-color: rgba(14, 17, 26, 0.60);
 }
 
 element selected.normal {
@@ -86,18 +96,18 @@ element selected.normal {
     border-color:     @accent;
 }
 
-/* Thumbnail: path assoluto passato come icon → rofi lo renderizza come immagine */
 element-icon {
-    size:             20%;
+    size:             170px;
     background-color: transparent;
-    border-radius:    @border-r-element;
+    border-radius:    8px;
     cursor:           inherit;
+    horizontal-align: 0.5;
 }
 
 element-text {
     vertical-align:   0.5;
     horizontal-align: 0.5;
-    text-color:       @fg-alt;
-    font:             "JetBrainsMono Nerd Font 8";
-    padding:          2px 0px 0px 0px;
+    text-color:       @fg;
+    font:             "JetBrainsMono Nerd Font SemiBold 10";
+    padding:          4px 0px 0px 0px;
 }

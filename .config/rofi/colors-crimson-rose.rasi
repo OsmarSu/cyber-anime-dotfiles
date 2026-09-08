@@ -1,0 +1,33 @@
+/* colors-crimson-rose.rasi — Crimson Rose (Camellya / Kurumi / Zero Two)
+ * Palette: Crimson Red (#ff0055) & Sakura Pink (#ff758f) on Velvet Obsidian.
+ */
+
+* {
+    /* ── Base ── */
+    bg          : #0d0609e6;   /* Velvet Crimson Obsidian 90%    */
+    bg-alt      : #180b12f0;   /* Surface 94% — input/sidebar    */
+    bg-selected : #24101bf0;   /* Item selected                  */
+    surface     : #361628;     /* Surface borders                */
+
+    /* ── Foreground ── */
+    fg          : #ffe4e6;     /* Rose Ice text                  */
+    fg-alt      : #fda4af;     /* Sakura text                    */
+    fg-dim      : #881337;     /* Overlay                        */
+
+    /* ── Accent ── */
+    accent      : #ff0055;     /* Crimson Blood Red              */
+    accent-dim  : #ff758f;     /* Sakura Pink                    */
+
+    /* ── Semantic ── */
+    urgent      : #ff0033;     /* Alert Red                      */
+    warning     : #ffb703;     /* Amber Flame                    */
+
+    /* ── Typography ── */
+    font-family : "JetBrainsMono Nerd Font";
+    font-size   : 12;
+
+    /* ── Border radius ── */
+    border-r         : 16px;
+    border-r-inner   : 12px;
+    border-r-element : 8px;
+}

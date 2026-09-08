@@ -1,0 +1,23 @@
+/* colors-keqing-electro.rasi — Keqing & Fischl (Electro Amethyst & Orchid) */
+* {
+    bg          : #0a0614e8;   /* Midnight Thunder 91%           */
+    bg-alt      : #130c26f2;   /* Deep Electro Purple            */
+    bg-selected : #1e133cf4;   /* Selected element               */
+    surface     : #2c1a56;     /* Border                         */
+
+    fg          : #faf5ff;     /* Pure Crystal                   */
+    fg-alt      : #d8b4fe;     /* Lavender                       */
+    fg-dim      : #581c87;     /* Dim Overlay                    */
+
+    accent      : #8b5cf6;     /* Electro Amethyst               */
+    accent-dim  : #d946ef;     /* Electric Orchid                */
+
+    urgent      : #ff007f;
+    warning     : #facc15;
+
+    font-family : "JetBrainsMono Nerd Font";
+    font-size   : 12;
+    border-r    : 18px;
+    border-r-inner   : 12px;
+    border-r-element : 8px;
+}

@@ -1,1 +1,1 @@
-/home/oswi/.config/hypr/themes/cyber-anime.lua
+/home/oswi/.config/hypr/themes/alya-sakura.lua

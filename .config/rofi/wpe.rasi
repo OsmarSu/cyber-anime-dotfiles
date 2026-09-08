@@ -1,0 +1,107 @@
+/* wpe.rasi — Wallpaper Engine Selector Theme.
+ * Spacious 1140x700px canvas matching launcher.rasi and wallpaper.rasi with dynamic background.
+ */
+
+@import "colors.rasi"
+
+* {
+    background-color: transparent;
+    text-color:       @fg;
+    font:             "JetBrainsMono Nerd Font 11";
+}
+
+/* ---- Window: 1140x700px Unified Canvas ---- */
+window {
+    transparency:     "real";
+    location:         center;
+    anchor:           center;
+    width:            1140px;
+    height:           700px;
+    background-color: @bg;
+    border:           2px solid;
+    border-color:     @accent;
+    border-radius:    18px;
+    padding:          0px;
+}
+
+/* ---- Mainbox: dynamic wallpaper background with glass overlay ---- */
+mainbox {
+    orientation:      vertical;
+    children:         [ "inputbar", "listview" ];
+    spacing:          1em;
+    padding:          1.4em;
+    border-radius:    18px;
+    background-image: url("/home/oswi/.config/rofi/.current_wallpaper.png", both);
+}
+
+/* ---- Search bar ---- */
+inputbar {
+    children:         [ "prompt", "entry" ];
+    spacing:          0.8em;
+    padding:          0.8em 1.2em;
+    background-color: rgba(14, 17, 26, 0.88);
+    border:           1px solid;
+    border-color:     @surface;
+    border-radius:    12px;
+}
+
+prompt {
+    text-color:       @accent;
+    font:             "JetBrainsMono Nerd Font Bold 13";
+}
+
+entry {
+    placeholder:       "✨  Buscar fondos de Wallpaper Engine...";
+    placeholder-color: @fg-dim;
+    text-color:        @fg;
+    cursor:            text;
+    font:              "JetBrainsMono Nerd Font 12";
+}
+
+/* ---- Results: 2 columns of spacious wallpaper cards ---- */
+listview {
+    columns:          2;
+    lines:            6;
+    spacing:          0.7em;
+    cycle:            true;
+    scrollbar:        false;
+    fixed-height:     true;
+    background-color: rgba(8, 9, 13, 0.68);
+    border:           1px solid;
+    border-color:     @surface;
+    border-radius:    14px;
+    padding:          0.8em;
+}
+
+/* ---- Wallpaper Element Card ---- */
+element {
+    padding:          0.7em 0.9em;
+    border-radius:    10px;
+    spacing:          1em;
+    children:         [ "element-icon", "element-text" ];
+    cursor:           pointer;
+    background-color: rgba(14, 17, 26, 0.60);
+}
+
+element normal.normal {
+    text-color: @fg;
+}
+
+element selected.normal {
+    background-color: @bg-selected;
+    text-color:       @accent;
+    border:           0px 0px 0px 4px;
+    border-color:     @accent;
+}
+
+element-icon {
+    size:             3.0em;
+    background-color: transparent;
+    border-radius:    6px;
+}
+
+element-text {
+    text-color:     inherit;
+    font:           "JetBrainsMono Nerd Font SemiBold 12";
+    vertical-align: 0.5;
+}
