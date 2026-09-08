@@ -174,3 +174,30 @@ The uninstaller does not touch `~/.p10k.zsh` or any file not created by the inst
   ```
 - **Extracción de fotogramas**: `wpe-picker` genera automáticamente miniaturas en 1080p en `~/.cache/rofi-wpe-wallpapers/hq_frames/`. Si falta `ffmpeg`, instálalo con `sudo pacman -S ffmpeg`.
 - **Cambio de tema sin alterar el fondo**: El script `theme-switch.sh` mantiene intacto tu fondo actual por defecto gracias al argumento `--keep-wallpaper`. Si deseas que aplique un fondo aleatorio del tema, pasa `--set-wallpaper`.
+
+---
+
+## Detección Automática de Temas y Armonización Cromática
+
+- **Diagnosticar el tema detectado para una imagen**:
+  Si deseas comprobar qué paleta asigna el algoritmo de cuantización a una imagen o fondo:
+  ```bash
+  theme_utils.py detect /ruta/al/fondo.jpg
+  ```
+- **Comprobar la paleta activa en tiempo real**:
+  ```bash
+  theme_utils.py current
+  theme_utils.py palette
+  ```
+- **Ventana de Cyber Settings o popups desincronizados**:
+  Si cambiaste de tema por consola y `cyber-settings` estaba abierto:
+  ```bash
+  pkill -SIGUSR1 -f cyber-settings
+  ```
+  Esto recarga los estilos CSS en caliente instantáneamente sin cerrar el panel.
+- **Forzar regeneración de miniaturas de Wallpaper Engine**:
+  Si un video se descargó recientemente y no tiene fotograma de alta definición:
+  ```bash
+  rm -rf ~/.cache/rofi-wpe-wallpapers/hq_frames/
+  ```
+  Al abrir `wpe-picker` (`Super + W`), se regenerarán automáticamente los fotogramas en 1080p nítidos.

@@ -1,0 +1,10 @@
+/* wlogout theme — silver-wolf */
+@define-color bg-window rgba(10, 8, 20, 0.88);
+@define-color btn-bg rgba(18, 14, 36, 0.78);
+@define-color btn-bg-hover rgba(27, 21, 54, 0.95);
+@define-color btn-border rgba(168, 85, 247, 0.30);
+@define-color accent #a855f7;
+@define-color accent-alt #00f0ff;
+@define-color accent-glow rgba(168, 85, 247, 0.45);
+@define-color accent-sec-glow rgba(0, 240, 255, 0.25);
+@define-color text-color #f3e8ff;

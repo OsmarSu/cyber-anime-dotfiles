@@ -38,7 +38,7 @@
 @define-color pill-bg-hover   @surface1;
 @define-color text-fg         @text;
 @define-color text-dim        @overlay0;
-@define-color accent-active   @green;
+@define-color accent-active   @lavender;
 @define-color accent-hover    @lavender;
 @define-color accent-warning  @peach;
 @define-color accent-critical @red;

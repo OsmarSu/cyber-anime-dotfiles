@@ -1,0 +1,10 @@
+/* wlogout theme — macchiato */
+@define-color bg-window rgba(36, 39, 58, 0.88);
+@define-color btn-bg rgba(30, 32, 48, 0.78);
+@define-color btn-bg-hover rgba(54, 58, 79, 0.95);
+@define-color btn-border rgba(183, 189, 248, 0.30);
+@define-color accent #b7bdf8;
+@define-color accent-alt #eed49f;
+@define-color accent-glow rgba(183, 189, 248, 0.45);
+@define-color accent-sec-glow rgba(238, 212, 159, 0.25);
+@define-color text-color #cad3f5;

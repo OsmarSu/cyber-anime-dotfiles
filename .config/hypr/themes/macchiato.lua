@@ -35,6 +35,13 @@ hl.config({
             ignore_opacity = false,  -- true = blur anche su finestre opache
             xray           = true,   -- true = blur vede attraverso layer trasparenti
         },
+        shadow = {
+            enabled        = true,
+            range          = 14,
+            render_power   = 2,
+            color          = "rgba(183, 189, 248, 0.20)",
+            color_inactive = "rgba(00000044)",
+        },
     },
 
     animations = { enabled = true },  -- false = disabilita tutte le animazioni

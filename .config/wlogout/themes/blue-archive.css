@@ -1,0 +1,10 @@
+/* wlogout theme — blue-archive */
+@define-color bg-window rgba(6, 14, 26, 0.88);
+@define-color btn-bg rgba(14, 28, 48, 0.78);
+@define-color btn-bg-hover rgba(20, 41, 68, 0.95);
+@define-color btn-border rgba(56, 189, 248, 0.30);
+@define-color accent #38bdf8;
+@define-color accent-alt #ffd166;
+@define-color accent-glow rgba(56, 189, 248, 0.45);
+@define-color accent-sec-glow rgba(255, 209, 102, 0.25);
+@define-color text-color #f0f9ff;

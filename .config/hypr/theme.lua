@@ -1,1 +1,1 @@
-/home/oswi/.config/hypr/themes/alya-sakura.lua
+/home/oswi/.config/hypr/themes/blue-archive.lua

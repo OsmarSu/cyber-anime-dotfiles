@@ -32,6 +32,13 @@ hl.config({
             ignore_opacity = false,
             xray           = true,
         },
+        shadow = {
+            enabled        = true,
+            range          = 14,
+            render_power   = 2,
+            color          = "rgba(255, 68, 85, 0.22)",
+            color_inactive = "rgba(00000044)",
+        },
     },
 
     animations = { enabled = true },

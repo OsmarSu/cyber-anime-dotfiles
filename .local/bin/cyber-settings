@@ -31,143 +31,162 @@ gi.require_version("GtkLayerShell", "0.1")
 gi.require_version("Pango", "1.0")
 from gi.repository import Gtk, Gdk, GtkLayerShell, GLib, Pango
 
-CSS = b"""
-* {
+try:
+    import theme_utils
+except ImportError:
+    sys.path.insert(0, os.path.expanduser("~/.local/bin"))
+    import theme_utils
+
+def build_css(theme_name=None):
+    p = theme_utils.get_palette(theme_name)
+    accent = p["accent"]
+    alt = p["alt"]
+    bg = p["bg"]
+    bg_hex = p["bg_hex"]
+    surface = p["surface"]
+    surface_border = p["surface_border"]
+    fg = p["fg"]
+    fg_dim = p["fg_dim"]
+    glow = p["glow"]
+    glow_alt = p["glow_alt"]
+
+    return f"""
+* {{
     font-family: 'JetBrainsMono Nerd Font', 'Noto Sans', sans-serif;
     -gtk-icon-style: regular;
-}
+}}
 
-window {
+window {{
     background: transparent;
-}
+}}
 
-.main-panel {
-    background-color: rgba(8, 9, 13, 0.95);
-    border: 1px solid rgba(0, 240, 255, 0.4);
+.main-panel {{
+    background-color: {bg};
+    border: 1px solid {surface_border};
     border-radius: 18px;
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.85), 0 0 24px rgba(0, 240, 255, 0.2);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.85), 0 0 24px {glow};
     padding: 0;
-}
+}}
 
-.header-bar {
+.header-bar {{
     background: rgba(14, 17, 26, 0.9);
-    border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+    border-bottom: 1px solid {surface_border};
     border-top-left-radius: 18px;
     border-top-right-radius: 18px;
     padding: 12px 20px;
-}
+}}
 
-.panel-title {
+.panel-title {{
     font-size: 16px;
     font-weight: 900;
-    color: #00f0ff;
-}
+    color: {accent};
+}}
 
-.panel-sub {
+.panel-sub {{
     font-size: 11px;
-    color: #8fa8b8;
-}
+    color: {fg_dim};
+}}
 
-.close-btn {
+.close-btn {{
     background: transparent;
-    color: #8fa8b8;
+    color: {fg_dim};
     border: none;
     font-size: 18px;
     border-radius: 8px;
     padding: 4px 8px;
     transition: all 0.2s ease;
-}
+}}
 
-.close-btn:hover {
+.close-btn:hover {{
     color: #ffffff;
     background: #ff0055;
-}
+}}
 
 /* Sidebar navigation */
-.sidebar {
+.sidebar {{
     background: rgba(11, 14, 22, 0.85);
-    border-right: 1px solid rgba(0, 240, 255, 0.15);
+    border-right: 1px solid {surface_border};
     border-bottom-left-radius: 18px;
     padding: 12px 8px;
     min-width: 190px;
-}
+}}
 
-.nav-btn {
+.nav-btn {{
     background: transparent;
     border: 1px solid transparent;
     border-radius: 10px;
-    color: #8fa8b8;
+    color: {fg_dim};
     font-size: 13px;
     font-weight: bold;
     padding: 10px 14px;
     margin: 3px 0;
     transition: all 0.18s ease;
-}
+}}
 
-.nav-btn:hover {
-    background: rgba(0, 240, 255, 0.08);
-    border-color: rgba(0, 240, 255, 0.3);
-    color: #00f0ff;
-}
+.nav-btn:hover {{
+    background: {glow};
+    border-color: {surface_border};
+    color: {accent};
+}}
 
-.nav-btn.active {
-    background: rgba(0, 240, 255, 0.15);
-    border-color: #00f0ff;
-    color: #00f0ff;
-    box-shadow: 0 0 12px rgba(0, 240, 255, 0.25);
-}
+.nav-btn.active {{
+    background: {glow};
+    border-color: {accent};
+    color: {accent};
+    box-shadow: 0 0 12px {glow};
+}}
 
 /* Content Pages */
-.content-page {
+.content-page {{
     padding: 20px 24px;
     background: transparent;
-}
+}}
 
-.section-header {
+.section-header {{
     font-size: 14px;
     font-weight: 800;
-    color: #00f0ff;
+    color: {accent};
     margin-bottom: 10px;
-}
+}}
 
-.card {
+.card {{
     background: rgba(14, 17, 26, 0.7);
     border: 1px solid rgba(255, 255, 255, 0.07);
     border-radius: 12px;
     padding: 14px 16px;
     margin-bottom: 12px;
-}
+}}
 
-.card-title {
+.card-title {{
     font-size: 13px;
     font-weight: bold;
-    color: #e2f1f8;
-}
+    color: {fg};
+}}
 
-.card-desc {
+.card-desc {{
     font-size: 11px;
-    color: #8fa8b8;
-}
+    color: {fg_dim};
+}}
 
 /* Cyber buttons */
-.cyber-btn {
+.cyber-btn {{
     background: rgba(22, 27, 40, 0.9);
-    border: 1px solid rgba(0, 240, 255, 0.3);
+    border: 1px solid {surface_border};
     border-radius: 8px;
-    color: #e2f1f8;
+    color: {fg};
     font-weight: bold;
     font-size: 12px;
     padding: 8px 14px;
     transition: all 0.2s ease;
-}
+}}
 
-.cyber-btn:hover {
-    background: #00f0ff;
-    color: #08090d;
-    box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
-}
+.cyber-btn:hover {{
+    background: {accent};
+    color: {bg_hex};
+    box-shadow: 0 0 12px {glow};
+}}
 
-.cyber-btn-magenta {
+.cyber-btn-magenta {{
     background: rgba(30, 18, 30, 0.9);
     border: 1px solid rgba(255, 0, 127, 0.4);
     border-radius: 8px;
@@ -176,15 +195,15 @@ window {
     font-size: 12px;
     padding: 8px 14px;
     transition: all 0.2s ease;
-}
+}}
 
-.cyber-btn-magenta:hover {
+.cyber-btn-magenta:hover {{
     background: #ff007f;
     color: #ffffff;
     box-shadow: 0 0 12px rgba(255, 0, 127, 0.4);
-}
+}}
 
-.cyber-btn-violet {
+.cyber-btn-violet {{
     background: rgba(26, 16, 42, 0.9);
     border: 1px solid rgba(168, 85, 247, 0.4);
     border-radius: 8px;
@@ -193,15 +212,15 @@ window {
     font-size: 12px;
     padding: 8px 14px;
     transition: all 0.2s ease;
-}
+}}
 
-.cyber-btn-violet:hover {
+.cyber-btn-violet:hover {{
     background: #a855f7;
     color: #0a0814;
     box-shadow: 0 0 12px rgba(168, 85, 247, 0.5);
-}
+}}
 
-.cyber-btn-azure {
+.cyber-btn-azure {{
     background: rgba(14, 28, 48, 0.9);
     border: 1px solid rgba(56, 189, 248, 0.4);
     border-radius: 8px;
@@ -210,15 +229,15 @@ window {
     font-size: 12px;
     padding: 8px 14px;
     transition: all 0.2s ease;
-}
+}}
 
-.cyber-btn-azure:hover {
+.cyber-btn-azure:hover {{
     background: #38bdf8;
     color: #060e1a;
     box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
-}
+}}
 
-.cyber-btn-crimson {
+.cyber-btn-crimson {{
     background: rgba(36, 14, 22, 0.9);
     border: 1px solid rgba(255, 0, 85, 0.4);
     border-radius: 8px;
@@ -227,15 +246,15 @@ window {
     font-size: 12px;
     padding: 8px 14px;
     transition: all 0.2s ease;
-}
+}}
 
-.cyber-btn-crimson:hover {
+.cyber-btn-crimson:hover {{
     background: #ff0055;
     color: #ffffff;
     box-shadow: 0 0 12px rgba(255, 0, 85, 0.5);
-}
+}}
 
-.cyber-btn-hydro {
+.cyber-btn-hydro {{
     background: rgba(12, 28, 42, 0.9);
     border: 1px solid rgba(0, 194, 203, 0.4);
     border-radius: 8px;
@@ -244,15 +263,15 @@ window {
     font-size: 12px;
     padding: 8px 14px;
     transition: all 0.2s ease;
-}
+}}
 
-.cyber-btn-hydro:hover {
+.cyber-btn-hydro:hover {{
     background: #00c2cb;
     color: #050a14;
     box-shadow: 0 0 12px rgba(0, 194, 203, 0.5);
-}
+}}
 
-.cyber-btn-amber {
+.cyber-btn-amber {{
     background: rgba(36, 24, 10, 0.9);
     border: 1px solid rgba(251, 191, 36, 0.4);
     border-radius: 8px;
@@ -261,15 +280,15 @@ window {
     font-size: 12px;
     padding: 8px 14px;
     transition: all 0.2s ease;
-}
+}}
 
-.cyber-btn-amber:hover {
+.cyber-btn-amber:hover {{
     background: #fbbf24;
     color: #090507;
     box-shadow: 0 0 12px rgba(251, 191, 36, 0.5);
-}
+}}
 
-.cyber-btn-mint {
+.cyber-btn-mint {{
     background: rgba(13, 36, 34, 0.9);
     border: 1px solid rgba(45, 212, 191, 0.4);
     border-radius: 8px;
@@ -278,15 +297,15 @@ window {
     font-size: 12px;
     padding: 8px 14px;
     transition: all 0.2s ease;
-}
+}}
 
-.cyber-btn-mint:hover {
+.cyber-btn-mint:hover {{
     background: #2dd4bf;
     color: #071113;
     box-shadow: 0 0 12px rgba(45, 212, 191, 0.5);
-}
+}}
 
-.cyber-btn-electro {
+.cyber-btn-electro {{
     background: rgba(26, 16, 48, 0.9);
     border: 1px solid rgba(139, 92, 246, 0.4);
     border-radius: 8px;
@@ -295,15 +314,15 @@ window {
     font-size: 12px;
     padding: 8px 14px;
     transition: all 0.2s ease;
-}
+}}
 
-.cyber-btn-electro:hover {
+.cyber-btn-electro:hover {{
     background: #8b5cf6;
     color: #0a0614;
     box-shadow: 0 0 12px rgba(139, 92, 246, 0.5);
-}
+}}
 
-.cyber-btn-emerald {
+.cyber-btn-emerald {{
     background: rgba(8, 36, 30, 0.9);
     border: 1px solid rgba(16, 185, 129, 0.4);
     border-radius: 8px;
@@ -312,15 +331,15 @@ window {
     font-size: 12px;
     padding: 8px 14px;
     transition: all 0.2s ease;
-}
+}}
 
-.cyber-btn-emerald:hover {
+.cyber-btn-emerald:hover {{
     background: #10b981;
     color: #040f0e;
     box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
-}
+}}
 
-.cyber-btn-sakura {
+.cyber-btn-sakura {{
     background: rgba(38, 16, 32, 0.9);
     border: 1px solid rgba(244, 114, 182, 0.4);
     border-radius: 8px;
@@ -329,184 +348,185 @@ window {
     font-size: 12px;
     padding: 8px 14px;
     transition: all 0.2s ease;
-}
+}}
 
-.cyber-btn-sakura:hover {
+.cyber-btn-sakura:hover {{
     background: #f472b6;
     color: #12080f;
     box-shadow: 0 0 12px rgba(244, 114, 182, 0.5);
-}
+}}
 
-.cyber-btn-active {
-    background: rgba(0, 240, 255, 0.2);
-    border-color: #00f0ff;
-    color: #00f0ff;
-}
+.cyber-btn-active {{
+    background: {glow};
+    border-color: {accent};
+    color: {accent};
+}}
 
 /* Switch / Sliders */
-scale trough {
+scale trough {{
     background-color: rgba(22, 27, 40, 0.9);
-    border: 1px solid rgba(0, 240, 255, 0.2);
+    border: 1px solid {surface_border};
     border-radius: 6px;
     min-height: 8px;
-}
+}}
 
-scale highlight {
-    background: linear-gradient(90deg, #00f0ff, #ff007f);
+scale highlight {{
+    background: linear-gradient(90deg, {accent}, {alt});
     border-radius: 6px;
-}
+}}
 
-scale slider {
-    background-color: #00f0ff;
+scale slider {{
+    background-color: {accent};
     border-radius: 50%;
     min-width: 14px;
     min-height: 14px;
     margin: -3px;
-    box-shadow: 0 0 8px #00f0ff;
-}
+    box-shadow: 0 0 8px {accent};
+}}
 
-switch {
+switch {{
     background-color: #161b28;
     border: 1px solid #1f2638;
     border-radius: 12px;
     min-width: 44px;
     min-height: 22px;
-}
+}}
 
-switch:checked {
-    background-color: #00f0ff;
-    border-color: #00f0ff;
-}
+switch:checked {{
+    background-color: {accent};
+    border-color: {accent};
+}}
 
-switch slider {
+switch slider {{
     background-color: #e2f1f8;
     border-radius: 12px;
     min-width: 18px;
     min-height: 18px;
     margin: 2px;
-}
+}}
+
 /* Scrolled windows, Viewports & Lists */
-scrolledwindow, viewport, list {
+scrolledwindow, viewport, list {{
     background-color: transparent;
     background: transparent;
-}
+}}
 
-list, .keybind-list {
+list, .keybind-list {{
     background-color: transparent;
     background: transparent;
     border: none;
-}
+}}
 
-list row, .keybind-row {
+list row, .keybind-row {{
     background-color: rgba(14, 17, 26, 0.78);
-    border: 1px solid rgba(0, 240, 255, 0.15);
+    border: 1px solid {surface_border};
     border-radius: 8px;
     margin: 3px 0;
     padding: 6px 12px;
-    color: #e2f1f8;
+    color: {fg};
     transition: all 0.18s ease;
-}
+}}
 
-list row:hover, .keybind-row:hover {
+list row:hover, .keybind-row:hover {{
     background-color: rgba(22, 27, 40, 0.95);
-    border-color: rgba(0, 240, 255, 0.5);
-    box-shadow: 0 0 12px rgba(0, 240, 255, 0.2);
-}
+    border-color: {accent};
+    box-shadow: 0 0 12px {glow};
+}}
 
-list row:selected, .keybind-row:selected {
-    background-color: rgba(0, 240, 255, 0.18);
-    border-color: #00f0ff;
+list row:selected, .keybind-row:selected {{
+    background-color: {glow};
+    border-color: {accent};
     color: #ffffff;
-}
+}}
 
 /* Scrollbars */
-scrollbar {
+scrollbar {{
     background-color: transparent;
     border: none;
-}
+}}
 
-scrollbar slider {
-    background-color: rgba(0, 240, 255, 0.25);
+scrollbar slider {{
+    background-color: {glow};
     border-radius: 6px;
     min-width: 6px;
     min-height: 6px;
-}
+}}
 
-scrollbar slider:hover {
-    background-color: rgba(0, 240, 255, 0.6);
-}
+scrollbar slider:hover {{
+    background-color: {accent};
+}}
 
 /* Search entry */
-entry, search-entry, .search-entry {
+entry, search-entry, .search-entry {{
     background-color: rgba(14, 17, 26, 0.9);
-    border: 1px solid rgba(0, 240, 255, 0.3);
+    border: 1px solid {surface_border};
     border-radius: 8px;
-    color: #e2f1f8;
+    color: {fg};
     padding: 8px 12px;
     font-size: 13px;
     margin-bottom: 12px;
-}
+}}
 
-entry:focus, search-entry:focus, .search-entry:focus {
-    border-color: #00f0ff;
-    box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
-}
+entry:focus, search-entry:focus, .search-entry:focus {{
+    border-color: {accent};
+    box-shadow: 0 0 10px {glow};
+}}
 
 /* Keybinds badges & tags */
-.key-badge {
-    background-color: rgba(0, 240, 255, 0.12);
-    border: 1px solid rgba(0, 240, 255, 0.4);
+.key-badge {{
+    background-color: {glow};
+    border: 1px solid {surface_border};
     border-radius: 6px;
-    color: #00f0ff;
+    color: {accent};
     font-weight: bold;
     font-size: 11px;
     padding: 4px 8px;
-}
+}}
 
-.key-desc {
-    color: #e2f1f8;
+.key-desc {{
+    color: {fg};
     font-size: 12px;
-}
+}}
 
-.category-tag {
+.category-tag {{
     font-size: 10px;
-    color: #ff007f;
+    color: {alt};
     font-weight: bold;
-}
+}}
 
-.custom-badge {
-    background-color: rgba(255, 0, 127, 0.18);
-    border: 1px solid rgba(255, 0, 127, 0.5);
+.custom-badge {{
+    background-color: {glow_alt};
+    border: 1px solid {alt};
     border-radius: 6px;
-    color: #ff007f;
+    color: {alt};
     font-size: 10px;
     font-weight: 800;
     padding: 2px 6px;
-}
+}}
 
-.form-label {
+.form-label {{
     font-size: 11px;
     font-weight: bold;
-    color: #8fa8b8;
-}
+    color: {fg_dim};
+}}
 
-.chip-btn {
+.chip-btn {{
     background-color: rgba(14, 17, 26, 0.9);
-    border: 1px solid rgba(0, 240, 255, 0.25);
+    border: 1px solid {surface_border};
     border-radius: 6px;
-    color: #00f0ff;
+    color: {accent};
     font-size: 10px;
     font-weight: bold;
     padding: 3px 8px;
     margin-right: 4px;
-}
+}}
 
-.chip-btn:hover {
-    background-color: rgba(0, 240, 255, 0.2);
-    border-color: #00f0ff;
-}
+.chip-btn:hover {{
+    background-color: {glow};
+    border-color: {accent};
+}}
 
-.del-btn {
+.del-btn {{
     background-color: transparent;
     border: 1px solid rgba(255, 0, 85, 0.35);
     border-radius: 6px;
@@ -515,22 +535,22 @@ entry:focus, search-entry:focus, .search-entry:focus {
     font-weight: bold;
     padding: 4px 10px;
     transition: all 0.15s ease;
-}
+}}
 
-.del-btn:hover {
+.del-btn:hover {{
     background-color: #ff0055;
     color: #ffffff;
     box-shadow: 0 0 8px rgba(255, 0, 85, 0.5);
-}
+}}
 
-combobox button.combo {
+combobox button.combo {{
     background-color: rgba(14, 17, 26, 0.9);
-    border: 1px solid rgba(0, 240, 255, 0.3);
+    border: 1px solid {surface_border};
     border-radius: 8px;
-    color: #e2f1f8;
+    color: {fg};
     padding: 6px 10px;
-}
-"""
+}}
+""".encode()
 
 CUSTOM_KEYBINDS_JSON = os.path.expanduser("~/.config/hypr/custom_keybinds.json")
 CUSTOM_KEYBINDS_LUA = os.path.expanduser("~/.config/hypr/conf/custom_keybinds.lua")
@@ -614,15 +634,18 @@ class CyberSettingsWindow(Gtk.Window):
         target_w = min(screen_w - 60, max(960, min(1180, int(screen_w * 0.65))))
         target_h = min(screen_h - 80, max(640, min(800, int(screen_h * 0.75))))
 
-        self.set_default_size(target_w, target_h)
-
-        provider = Gtk.CssProvider()
-        provider.load_from_data(CSS)
+        self.css_provider = Gtk.CssProvider()
+        self.apply_theme_css()
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),
-            provider,
+            self.css_provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         )
+        try:
+            import signal
+            GLib.unix_signal_add(GLib.PRIORITY_DEFAULT, signal.SIGUSR1, lambda: (self.apply_theme_css(), True)[1])
+        except Exception:
+            pass
 
         main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         main_box.get_style_context().add_class("main-panel")
@@ -687,6 +710,13 @@ class CyberSettingsWindow(Gtk.Window):
         except Exception:
             return ""
 
+    def apply_theme_css(self, theme_name=None):
+        try:
+            css_data = build_css(theme_name)
+            self.css_provider.load_from_data(css_data)
+        except Exception:
+            pass
+
     def add_page(self, name, label, widget):
         btn = Gtk.Button(label=label)
         btn.get_style_context().add_class("nav-btn")
@@ -729,6 +759,10 @@ class CyberSettingsWindow(Gtk.Window):
         c1.pack_start(c1_title, False, False, 0)
         c1.pack_start(c1_desc, False, False, 0)
 
+        def select_theme(th):
+            spawn_cmd(f"~/.config/waybar/scripts/theme-switch.sh {th}")
+            self.apply_theme_css(th)
+
         # Fila 1: Temas Base del Sistema
         t_lbl1 = Gtk.Label(label="Estilos del Sistema:", xalign=0)
         t_lbl1.get_style_context().add_class("form-label")
@@ -737,15 +771,15 @@ class CyberSettingsWindow(Gtk.Window):
         theme_btns = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
         b_anime = Gtk.Button(label="󰄛 Cyber Anime (Tokyo Neon)")
         b_anime.get_style_context().add_class("cyber-btn")
-        b_anime.connect("clicked", lambda w: spawn_cmd("~/.config/waybar/scripts/theme-switch.sh cyber-anime"))
+        b_anime.connect("clicked", lambda w: select_theme("cyber-anime"))
 
         b_matrix = Gtk.Button(label="󰌨 Matrix Blackhat")
         b_matrix.get_style_context().add_class("cyber-btn")
-        b_matrix.connect("clicked", lambda w: spawn_cmd("~/.config/waybar/scripts/theme-switch.sh matrix"))
+        b_matrix.connect("clicked", lambda w: select_theme("matrix"))
 
         b_macchiato = Gtk.Button(label="󰄛 Macchiato Whitehat")
         b_macchiato.get_style_context().add_class("cyber-btn")
-        b_macchiato.connect("clicked", lambda w: spawn_cmd("~/.config/waybar/scripts/theme-switch.sh macchiato"))
+        b_macchiato.connect("clicked", lambda w: select_theme("macchiato"))
 
         theme_btns.pack_start(b_anime, True, True, 0)
         theme_btns.pack_start(b_matrix, True, True, 0)
@@ -760,19 +794,19 @@ class CyberSettingsWindow(Gtk.Window):
         wpe_themes_box1 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
         b_wolf = Gtk.Button(label="🐺 Silver Wolf (Cyber Violet)")
         b_wolf.get_style_context().add_class("cyber-btn-violet")
-        b_wolf.connect("clicked", lambda w: spawn_cmd("~/.config/waybar/scripts/theme-switch.sh silver-wolf"))
+        b_wolf.connect("clicked", lambda w: select_theme("silver-wolf"))
 
         b_ba = Gtk.Button(label="🕊️ Blue Archive (Kivotos Azure)")
         b_ba.get_style_context().add_class("cyber-btn-azure")
-        b_ba.connect("clicked", lambda w: spawn_cmd("~/.config/waybar/scripts/theme-switch.sh blue-archive"))
+        b_ba.connect("clicked", lambda w: select_theme("blue-archive"))
 
         b_furina = Gtk.Button(label="💧 Furina (Fontaine Hydro)")
         b_furina.get_style_context().add_class("cyber-btn-hydro")
-        b_furina.connect("clicked", lambda w: spawn_cmd("~/.config/waybar/scripts/theme-switch.sh furina-hydro"))
+        b_furina.connect("clicked", lambda w: select_theme("furina-hydro"))
 
         b_keqing = Gtk.Button(label="⚡ Keqing (Electro Violet)")
         b_keqing.get_style_context().add_class("cyber-btn-electro")
-        b_keqing.connect("clicked", lambda w: spawn_cmd("~/.config/waybar/scripts/theme-switch.sh keqing-electro"))
+        b_keqing.connect("clicked", lambda w: select_theme("keqing-electro"))
 
         wpe_themes_box1.pack_start(b_wolf, True, True, 0)
         wpe_themes_box1.pack_start(b_ba, True, True, 0)
@@ -788,23 +822,23 @@ class CyberSettingsWindow(Gtk.Window):
         wpe_themes_box2 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
         b_rose = Gtk.Button(label="🌹 Camellya (Crimson Rose)")
         b_rose.get_style_context().add_class("cyber-btn-crimson")
-        b_rose.connect("clicked", lambda w: spawn_cmd("~/.config/waybar/scripts/theme-switch.sh crimson-rose"))
+        b_rose.connect("clicked", lambda w: select_theme("crimson-rose"))
 
         b_kurumi = Gtk.Button(label="⏳ Kurumi (Crimson & Gold)")
         b_kurumi.get_style_context().add_class("cyber-btn-amber")
-        b_kurumi.connect("clicked", lambda w: spawn_cmd("~/.config/waybar/scripts/theme-switch.sh kurumi-tokisaki"))
+        b_kurumi.connect("clicked", lambda w: select_theme("kurumi-tokisaki"))
 
         b_firefly = Gtk.Button(label="✨ Firefly (Starlight Mint)")
         b_firefly.get_style_context().add_class("cyber-btn-mint")
-        b_firefly.connect("clicked", lambda w: spawn_cmd("~/.config/waybar/scripts/theme-switch.sh firefly-starlight"))
+        b_firefly.connect("clicked", lambda w: select_theme("firefly-starlight"))
 
         b_carlotta = Gtk.Button(label="🌿 Carlotta (Sea Emerald)")
         b_carlotta.get_style_context().add_class("cyber-btn-emerald")
-        b_carlotta.connect("clicked", lambda w: spawn_cmd("~/.config/waybar/scripts/theme-switch.sh carlotta-ocean"))
+        b_carlotta.connect("clicked", lambda w: select_theme("carlotta-ocean"))
 
         b_alya = Gtk.Button(label="🌸 Alya (Pastel Sakura)")
         b_alya.get_style_context().add_class("cyber-btn-sakura")
-        b_alya.connect("clicked", lambda w: spawn_cmd("~/.config/waybar/scripts/theme-switch.sh alya-sakura"))
+        b_alya.connect("clicked", lambda w: select_theme("alya-sakura"))
 
         wpe_themes_box2.pack_start(b_rose, True, True, 0)
         wpe_themes_box2.pack_start(b_kurumi, True, True, 0)

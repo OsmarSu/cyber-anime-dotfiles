@@ -23,6 +23,14 @@ apply_wall() {
         --transition-bezier .43,1.19,1,1.01
     pkill -f mpvpaper 2>/dev/null || true
     pkill -f linux-wallpaperengine 2>/dev/null || true
+
+    # Automatically detect matching theme and synchronize whole system palette
+    local matched_theme
+    matched_theme=$("$HOME/.local/bin/theme_utils.py" detect "$path" 2>/dev/null || echo "cyber-anime")
+    if [[ -n "$matched_theme" ]]; then
+        setsid "$HOME/.config/waybar/scripts/theme-switch.sh" "$matched_theme" --keep-wallpaper >/dev/null 2>&1 &
+        notify-send -a "Wallpaper Selector" "Fondo aplicado" "Tema sincronizado: $(echo "$matched_theme" | tr '-' ' ' | awk '{for(i=1;i<=NF;i++)sub(/./,toupper(substr($i,1,1)),$i)}1')" 2>/dev/null || true
+    fi
 }
 
 # --random: usato dall'autostart per inizializzare il symlink all'avvio

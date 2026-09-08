@@ -34,10 +34,20 @@ Entorno de escritorio cyberpunk y anime de alto rendimiento para **Arch Linux** 
 
 ## 󰀻 Características Principales
 
-- **Suite Multitema Dinámica (12 Paletas Predefinidas):**
-  - Colección de temas inspirados en personajes de anime y videojuegos (Honkai: Star Rail, Genshin Impact, Blue Archive, Date A Live, Roshidere, Wuthering Waves).
-  - Sincronización completa e instantánea en caliente a través de: **Hyprland**, **Waybar**, **Kitty**, **SwayNC**, **Rofi**, **Hyprlock** y **Fastfetch**.
-  - Selector gráfico en cuadrícula de 3 filas con botones neón luminosos en **Cyber Settings** (`Super + I` o `Super + S`).
+- **Suite Multitema Dinámica y Armonización Total (12 Paletas Predefinidas):**
+  - Colección de temas inspirados en estética Cyberpunk y personajes de anime/juegos (*Honkai: Star Rail*, *Genshin Impact*, *Blue Archive*, *Date A Live*, *Roshidere*, *Wuthering Waves*).
+  - **Detección y Sincronización Automática al Escoger Cualquier Fondo (`theme_utils.py`):**
+    - Al seleccionar un fondo en `wpe-picker` o `rofi-wallpaper`, el motor inteligente de cuantización de color en mediana (PIL Lanczos/MedianCut) analiza la imagen/fotograma en <20ms, calcula la distancia perceptual HSV contra las 12 paletas y aplica automáticamente el tema con mayor afinidad cromática.
+    - Respaldado por heurística de palabras clave de personajes y franquicias para reconocimiento exacto.
+  - **Armonización Visual Total de TODAS las Ventanas y Elementos:**
+    - **Hyprland**: Bordes activos con gradientes dobles a 45° y resplandores luminosos (`decoration.shadow`, `range = 14`, `render_power = 2`, `shadow.color` calibrado con canal alfa traslúcido para cada paleta).
+    - **Waybar**: Píldoras traslúcidas (`@pill-bg`), acento activo (`@accent-active`), indicadores de workspaces activos y tooltips estilizados.
+    - **SwayNC (`Super + N`)**: Tarjetas de notificación con resplandor (`box-shadow`), centro de control, botones de acción (`buttons-grid`) y sliders sin restos de cyan hardcodeado.
+    - **Wlogout (`Super + Esc`)**: 12 temas CSS dedicados en `.config/wlogout/themes/`, bordes con resplandor neón `@accent-glow` y `@accent-sec-glow` al pasar el cursor.
+    - **Cyber Settings (`Super + I` / `Super + S`)**: Mutación visual en caliente en tiempo real al seleccionar cualquier tema; bordes, títulos, botones de navegación activos y sliders en gradiente.
+    - **Popups de Reloj y Audio (`calendar-popup` & `volume-popup`)**: Ventanas emergentes de Layer-Shell sincronizadas en tiempo real con la paleta y sombras resplandecientes del tema activo.
+    - **Rofi**: 4 interfaces unificadas ([`launcher.rasi`](.config/rofi/launcher.rasi), [`wpe.rasi`](.config/rofi/wpe.rasi), [`wallpaper.rasi`](.config/rofi/wallpaper.rasi), [`dialog.rasi`](.config/rofi/dialog.rasi)).
+    - **Kitty, Fastfetch y Hyprlock**: Paletas idénticas y coherentes en el emulador de terminal, pantalla de bloqueo y fetch del sistema.
 
 - **Ventanas y Selectores Unificados (1140×700px Glassmorphism):**
   - El cajón de aplicaciones ([`launcher.rasi`](.config/rofi/launcher.rasi)), el selector de Wallpaper Engine ([`wpe.rasi`](.config/rofi/wpe.rasi)) y el selector de fondos estáticos ([`wallpaper.rasi`](.config/rofi/wallpaper.rasi)) comparten exactamente las mismas dimensiones amplias (`1140px × 700px`), bordes redondeados a `18px` y diseño en cristal translúcido que deja ver el fondo de pantalla activo.
@@ -67,9 +77,9 @@ Entorno de escritorio cyberpunk y anime de alto rendimiento para **Arch Linux** 
   - Sliders de volumen, micrófono y brillo, junto con widget de música MPRIS.
 
 - **Menú de Sesión y Energía Coherente (`wlogout` / `Super + Esc`):**
-  - Iconos vectoriales Cyber-Neon de 512×512 con trazo uniforme (32px), fondo transparente y estados coordinados:
-    - **Normal**: Trazo en Cyan Neón (`#00f0ff`).
-    - **Hover**: Trazo en Rosa Neón / Magenta (`#ff007f`) con resplandor neón suave.
+  - Iconos vectoriales Cyber-Neon de 512×512 con trazo uniforme (32px), fondo transparente y estados coordinados con la paleta activa:
+    - **Normal**: Trazo neón nítido y fondo translúcido a juego.
+    - **Hover**: Resplandor neón dual con caja de sombra y borde iluminado.
 
 - **Integración Nativa con Wallpaper Engine (`wpe-picker`):**
   - Selector interactivo en Rofi (`Super + W`) que escanea automáticamente tus fondos descargados de Steam Workshop (`431960`).
@@ -79,20 +89,20 @@ Entorno de escritorio cyberpunk y anime de alto rendimiento para **Arch Linux** 
 
 ## 🎨 Catálogo de los 12 Temas
 
-| ID del Tema | Inspiración / Personaje | Color Primario | Color Secundario / Acento |
-| :--- | :--- | :--- | :--- |
-| **`cyber-anime`** | Tokyo Neon Original | `#00f0ff` (Cyan Eléctrico) | `#ff007f` (Magenta Neón) |
-| **`silver-wolf`** | Silver Wolf (*Honkai: Star Rail*) | `#a855f7` (Violeta Hacker) | `#00f0ff` (Cyan Neón) |
-| **`blue-archive`** | Blue Archive (*Kivotos Azure*) | `#38bdf8` (Azul Celeste) | `#ffd166` (Oro Halo) |
-| **`crimson-rose`** | Camellya / Zero Two | `#ff0055` (Carmesí Neón) | `#ff758f` (Rosa Intenso) |
-| **`furina-hydro`** | Furina (*Genshin Impact Fontaine*) | `#00c2cb` (Aqua Hydro) | `#ffd166` (Dorado Real) |
-| **`kurumi-tokisaki`** | Kurumi Tokisaki (*Date A Live*) | `#dc2626` (Rojo Carmesí) | `#fbbf24` (Oro Reloj) |
-| **`firefly-starlight`** | Firefly (*Honkai: Star Rail*) | `#2dd4bf` (Menta Estelar) | `#fb923c` (Ámbar Fuego) |
-| **`keqing-electro`** | Keqing (*Genshin Impact Liyue*) | `#8b5cf6` (Violeta Electro) | `#d946ef` (Orquídea) |
-| **`carlotta-ocean`** | Carlotta (*Wuthering Waves*) | `#10b981` (Esmeralda Mar) | `#06b6d4` (Cyan Profundo) |
-| **`alya-sakura`** | Alya (*Roshidere*) | `#f472b6` (Rosa Sakura) | `#f8fafc` (Platino Nieve) |
-| **`matrix`** | Cyber Terminal Hacker | `#00ff41` (Verde Matrix) | `#ff0033` (Rojo Alerta) |
-| **`macchiato`** | Catppuccin Macchiato | `#b7bdf8` (Lavanda Pastel) | `#c6a0f6` (Malva) |
+| ID del Tema | Inspiración / Personaje | Color Primario | Color Secundario / Acento | Fondo Base |
+| :--- | :--- | :--- | :--- | :--- |
+| **`cyber-anime`** | Tokyo Neon Original | `#00f0ff` (Cyan Eléctrico) | `#ff007f` (Magenta Neón) | `#08090d` |
+| **`silver-wolf`** | Silver Wolf (*Honkai: Star Rail*) | `#a855f7` (Violeta Hacker) | `#00f0ff` (Cyan Neón) | `#0a0814` |
+| **`blue-archive`** | Blue Archive (*Kivotos Azure*) | `#38bdf8` (Azul Celeste) | `#ffd166` (Oro Halo) | `#060e1a` |
+| **`crimson-rose`** | Camellya / Zero Two | `#ff0055` (Carmesí Neón) | `#ff758f` (Rosa Intenso) | `#0d0609` |
+| **`furina-hydro`** | Furina (*Genshin Impact Fontaine*) | `#00c2cb` (Aqua Hydro) | `#ffd166` (Dorado Real) | `#050a14` |
+| **`kurumi-tokisaki`** | Kurumi Tokisaki (*Date A Live*) | `#dc2626` (Rojo Carmesí) | `#fbbf24` (Oro Reloj) | `#090507` |
+| **`firefly-starlight`** | Firefly (*Honkai: Star Rail*) | `#2dd4bf` (Menta Estelar) | `#fb923c` (Ámbar Fuego) | `#071113` |
+| **`keqing-electro`** | Keqing (*Genshin Impact Liyue*) | `#8b5cf6` (Violeta Electro) | `#d946ef` (Orquídea) | `#0a0614` |
+| **`carlotta-ocean`** | Carlotta (*Wuthering Waves*) | `#10b981` (Esmeralda Mar) | `#06b6d4` (Cyan Profundo) | `#040f0e` |
+| **`alya-sakura`** | Alya (*Roshidere*) | `#f472b6` (Rosa Sakura) | `#c084fc` (Lavanda Suave) | `#12080f` |
+| **`matrix`** | Cyber Terminal BlackArch | `#ff4455` (Rojo Terminal) | `#ff8040` (Naranja Neón) | `#080000` |
+| **`macchiato`** | Catppuccin Macchiato | `#b7bdf8` (Lavanda Pastel) | `#eed49f` (Oro Macchiato) | `#24273a` |
 
 > 💡 *Para cambiar de tema por consola ejecuta: `~/.config/waybar/scripts/theme-switch.sh <ID_TEMA>`*
 

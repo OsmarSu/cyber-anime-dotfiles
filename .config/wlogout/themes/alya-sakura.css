@@ -1,0 +1,10 @@
+/* wlogout theme — alya-sakura */
+@define-color bg-window rgba(18, 8, 15, 0.88);
+@define-color btn-bg rgba(32, 14, 26, 0.78);
+@define-color btn-bg-hover rgba(48, 20, 39, 0.95);
+@define-color btn-border rgba(244, 114, 182, 0.30);
+@define-color accent #f472b6;
+@define-color accent-alt #c084fc;
+@define-color accent-glow rgba(244, 114, 182, 0.45);
+@define-color accent-sec-glow rgba(192, 132, 252, 0.25);
+@define-color text-color #fff1f2;

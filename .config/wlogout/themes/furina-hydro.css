@@ -1,0 +1,10 @@
+/* wlogout theme — furina-hydro */
+@define-color bg-window rgba(5, 10, 20, 0.88);
+@define-color btn-bg rgba(12, 23, 42, 0.78);
+@define-color btn-bg-hover rgba(20, 36, 64, 0.95);
+@define-color btn-border rgba(0, 194, 203, 0.30);
+@define-color accent #00c2cb;
+@define-color accent-alt #ffd166;
+@define-color accent-glow rgba(0, 194, 203, 0.45);
+@define-color accent-sec-glow rgba(255, 209, 102, 0.25);
+@define-color text-color #f0f8ff;

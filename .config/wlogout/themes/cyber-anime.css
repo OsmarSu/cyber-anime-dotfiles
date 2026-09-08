@@ -1,0 +1,10 @@
+/* wlogout theme — cyber-anime */
+@define-color bg-window rgba(8, 9, 13, 0.88);
+@define-color btn-bg rgba(14, 17, 26, 0.78);
+@define-color btn-bg-hover rgba(22, 27, 40, 0.95);
+@define-color btn-border rgba(0, 240, 255, 0.30);
+@define-color accent #00f0ff;
+@define-color accent-alt #ff007f;
+@define-color accent-glow rgba(0, 240, 255, 0.45);
+@define-color accent-sec-glow rgba(255, 0, 127, 0.25);
+@define-color text-color #e2f1f8;

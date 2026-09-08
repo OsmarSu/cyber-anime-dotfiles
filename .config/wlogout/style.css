@@ -1,4 +1,6 @@
-/* wlogout — Cyber Anime (Tokyo Night Neon / Cyberpunk) */
+@import url("theme.css");
+
+/* wlogout — Dynamic Cyber Anime Theming */
 * {
     font-family: "JetBrainsMono Nerd Font", monospace;
     font-size: 13pt;
@@ -6,18 +8,18 @@
 }
 
 window {
-    background-color: rgba(8, 9, 13, 0.86);
-    color: #e2f1f8;
+    background-color: @bg-window;
+    color: @text-color;
 }
 
 button {
     background-repeat:   no-repeat;
     background-position: center 32%;
     background-size:     24%;
-    background-color:    rgba(14, 17, 26, 0.75);
-    border:              2px solid rgba(0, 240, 255, 0.25);
+    background-color:    @btn-bg;
+    border:              2px solid @btn-border;
     border-radius:       18px;
-    color:               #e2f1f8;
+    color:               @text-color;
     margin:              16px;
     transition:          all 0.2s ease-in-out;
     outline:             none;
@@ -25,11 +27,11 @@ button {
 
 button:hover,
 button:focus {
-    background-color:    rgba(22, 27, 40, 0.95);
+    background-color:    @btn-bg-hover;
     background-size:     28%;
-    border-color:        #00f0ff;
-    color:               #00f0ff;
-    box-shadow:          0 0 20px rgba(0, 240, 255, 0.4), 0 0 35px rgba(255, 0, 127, 0.25);
+    border-color:        @accent;
+    color:               @accent;
+    box-shadow:          0 0 22px @accent-glow, 0 0 35px @accent-sec-glow;
     margin:              10px;
     outline:             none;
 }

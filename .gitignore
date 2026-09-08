@@ -8,10 +8,12 @@ __pycache__/
 .current_wallpaper
 .current_wallpaper.png
 .current_wpe
+.current_theme
 .wall_dir
 wpe_properties.json
 *.pid
 *.log
+.config/wlogout/theme.css
 
 # Editor & OS temporary files
 *.swp

@@ -33,92 +33,99 @@ try:
 except Exception:
     pass
 
-CSS = b"""
-window {
-    background: transparent;
-}
+try:
+    import theme_utils
+except ImportError:
+    sys.path.insert(0, os.path.expanduser("~/.local/bin"))
+    import theme_utils
 
-.calendar-card {
-    background-color: rgba(14, 17, 26, 0.96);
-    border: 1px solid #00f0ff;
+p = theme_utils.get_palette()
+CSS = f"""
+window {{
+    background: transparent;
+}}
+
+.calendar-card {{
+    background-color: {p['bg']};
+    border: 1px solid {p['accent']};
     border-radius: 14px;
     padding: 16px 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 240, 255, 0.25);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 22px {p['glow']};
     min-width: 320px;
-}
+}}
 
-.clock-text {
+.clock-text {{
     font-family: 'JetBrainsMono Nerd Font', monospace;
     font-size: 28px;
     font-weight: 800;
-    color: #00f0ff;
-}
+    color: {p['accent']};
+}}
 
-.date-text {
+.date-text {{
     font-family: 'JetBrainsMono Nerd Font', monospace;
     font-size: 13px;
-    color: #8fa8b8;
+    color: {p['fg_dim']};
     margin-bottom: 4px;
-}
+}}
 
-.close-btn {
+.close-btn {{
     background: transparent;
-    color: #8fa8b8;
+    color: {p['fg_dim']};
     border: none;
     font-size: 18px;
     padding: 2px 8px;
     border-radius: 6px;
-}
-.close-btn:hover {
-    background: rgba(255, 0, 127, 0.2);
-    color: #ff007f;
-}
+}}
+.close-btn:hover {{
+    background: {p['glow_alt']};
+    color: {p['alt']};
+}}
 
-.separator {
-    background-color: rgba(0, 240, 255, 0.2);
+.separator {{
+    background-color: {p['surface_border']};
     margin: 6px 0 12px 0;
-}
+}}
 
-calendar {
+calendar {{
     background-color: transparent;
-    color: #e2f1f8;
+    color: {p['fg']};
     border: none;
     font-family: 'JetBrainsMono Nerd Font', monospace;
     font-size: 13px;
-}
+}}
 
-calendar:selected {
-    background-color: #ff007f;
+calendar:selected {{
+    background-color: {p['accent']};
     color: #ffffff;
     border-radius: 6px;
     font-weight: bold;
-}
+}}
 
-calendar.header {
-    color: #00f0ff;
+calendar.header {{
+    color: {p['accent']};
     font-weight: bold;
-}
+}}
 
-calendar.button {
-    color: #00f0ff;
+calendar.button {{
+    color: {p['accent']};
     background: transparent;
     border: none;
-}
+}}
 
-calendar.button:hover {
-    color: #ff007f;
-}
+calendar.button:hover {{
+    color: {p['alt']};
+}}
 
-calendar:indeterminate {
+calendar:indeterminate {{
     color: rgba(143, 168, 184, 0.4);
-}
+}}
 
-.close-hint {
+.close-hint {{
     font-size: 10px;
     color: rgba(143, 168, 184, 0.6);
     margin-top: 8px;
-}
-"""
+}}
+""".encode()
 
 class CalendarPopup(Gtk.Window):
     def __init__(self):

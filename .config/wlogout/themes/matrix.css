@@ -1,0 +1,10 @@
+/* wlogout theme — matrix */
+@define-color bg-window rgba(8, 0, 0, 0.90);
+@define-color btn-bg rgba(22, 4, 4, 0.80);
+@define-color btn-bg-hover rgba(30, 6, 6, 0.95);
+@define-color btn-border rgba(255, 68, 85, 0.35);
+@define-color accent #ff4455;
+@define-color accent-alt #ff8040;
+@define-color accent-glow rgba(255, 68, 85, 0.50);
+@define-color accent-sec-glow rgba(255, 128, 64, 0.25);
+@define-color text-color #cc3344;

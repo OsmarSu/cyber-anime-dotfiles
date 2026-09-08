@@ -1,0 +1,10 @@
+/* wlogout theme — crimson-rose */
+@define-color bg-window rgba(12, 6, 9, 0.88);
+@define-color btn-bg rgba(26, 12, 18, 0.78);
+@define-color btn-bg-hover rgba(40, 18, 28, 0.95);
+@define-color btn-border rgba(255, 0, 85, 0.30);
+@define-color accent #ff0055;
+@define-color accent-alt #ff758f;
+@define-color accent-glow rgba(255, 0, 85, 0.45);
+@define-color accent-sec-glow rgba(255, 117, 143, 0.25);
+@define-color text-color #fff0f3;

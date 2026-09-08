@@ -1,0 +1,10 @@
+/* wlogout theme — carlotta-ocean */
+@define-color bg-window rgba(4, 15, 14, 0.88);
+@define-color btn-bg rgba(8, 26, 24, 0.78);
+@define-color btn-bg-hover rgba(15, 41, 38, 0.95);
+@define-color btn-border rgba(16, 185, 129, 0.30);
+@define-color accent #10b981;
+@define-color accent-alt #06b6d4;
+@define-color accent-glow rgba(16, 185, 129, 0.45);
+@define-color accent-sec-glow rgba(6, 182, 212, 0.25);
+@define-color text-color #ecfdf5;

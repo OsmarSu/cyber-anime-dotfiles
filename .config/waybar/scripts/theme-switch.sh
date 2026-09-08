@@ -44,6 +44,8 @@ rm -f "$HOME/.config/swaync/style.css"
 cp "$HOME/.config/swaync/themes/${theme}.css"             "$HOME/.config/swaync/style.css"
 ln -sf "$HOME/.config/hypr/themes/${theme}.lua"           "$HOME/.config/hypr/theme.lua"
 ln -sf "$HOME/.config/hypr/themes/hyprlock-${theme}.conf" "$HOME/.config/hypr/hyprlock.conf"
+ln -sf "$HOME/.config/wlogout/themes/${theme}.css"        "$HOME/.config/wlogout/theme.css" 2>/dev/null || true
+echo "$theme" > "$HOME/.config/rofi/.current_theme"
 
 # Only touch wallpaper if explicitly requested via --set-wallpaper
 if [[ -n "$NEW_WALL" && -f "$NEW_WALL" ]]; then
@@ -62,6 +64,7 @@ fi
 # ── Reload/restart processes ────────────────────────────────────────────────
 hyprctl reload >/tmp/hypr-theme-switch.log 2>&1 || true
 pkill -SIGUSR1 -x kitty 2>/dev/null || true
+pkill -SIGUSR1 -f cyber-settings 2>/dev/null || true
 setsid "$HOME/.config/swaync/restart" >/tmp/swaync-theme-switch.log 2>&1 &
 
 # Waybar reload

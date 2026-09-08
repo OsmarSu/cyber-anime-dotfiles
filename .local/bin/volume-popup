@@ -58,98 +58,105 @@ def get_sink_name():
         pass
     return "Altavoces / Auriculares"
 
-CSS = b"""
-window {
-    background: transparent;
-}
+try:
+    import theme_utils
+except ImportError:
+    sys.path.insert(0, os.path.expanduser("~/.local/bin"))
+    import theme_utils
 
-.volume-card {
-    background-color: rgba(14, 17, 26, 0.96);
-    border: 1px solid #00f0ff;
+p = theme_utils.get_palette()
+CSS = f"""
+window {{
+    background: transparent;
+}}
+
+.volume-card {{
+    background-color: {p['bg']};
+    border: 1px solid {p['accent']};
     border-radius: 14px;
     padding: 16px 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 240, 255, 0.25);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 22px {p['glow']};
     min-width: 320px;
-}
+}}
 
-.title {
+.title {{
     font-family: 'JetBrainsMono Nerd Font', monospace;
     font-size: 15px;
     font-weight: 800;
-    color: #00f0ff;
-}
+    color: {p['accent']};
+}}
 
-.device-desc {
+.device-desc {{
     font-size: 11px;
-    color: #8fa8b8;
+    color: {p['fg_dim']};
     margin-bottom: 8px;
-}
+}}
 
-.section-label {
+.section-label {{
     font-family: 'JetBrainsMono Nerd Font', monospace;
     font-size: 12px;
-    color: #cad3f5;
+    color: {p['fg']};
     font-weight: bold;
-}
+}}
 
-.vol-val {
+.vol-val {{
     font-family: 'JetBrainsMono Nerd Font', monospace;
     font-size: 12px;
     font-weight: bold;
-    color: #00f0ff;
-}
+    color: {p['accent']};
+}}
 
-scale trough {
+scale trough {{
     background-color: rgba(91, 96, 120, 0.35);
     border-radius: 6px;
     min-height: 8px;
-}
+}}
 
-scale highlight {
-    background-color: #00f0ff;
+scale highlight {{
+    background-color: {p['accent']};
     border-radius: 6px;
-}
+}}
 
-.mute-btn {
+.mute-btn {{
     background: rgba(30, 32, 48, 0.8);
-    border: 1px solid rgba(0, 240, 255, 0.3);
+    border: 1px solid {p['surface_border']};
     border-radius: 8px;
-    color: #00f0ff;
+    color: {p['accent']};
     padding: 4px 10px;
     font-size: 14px;
-}
+}}
 
-.mute-btn.muted {
+.mute-btn.muted {{
     background: rgba(237, 135, 150, 0.2);
     border-color: #ed8796;
     color: #ed8796;
-}
+}}
 
-.close-btn {
+.close-btn {{
     background: transparent;
-    color: #8fa8b8;
+    color: {p['fg_dim']};
     border: none;
     font-size: 16px;
-}
-.close-btn:hover {
-    color: #ff007f;
-}
+}}
+.close-btn:hover {{
+    color: {p['alt']};
+}}
 
-.pavu-btn {
-    background: rgba(0, 240, 255, 0.1);
-    border: 1px solid #00f0ff;
+.pavu-btn {{
+    background: {p['glow']};
+    border: 1px solid {p['accent']};
     border-radius: 8px;
-    color: #00f0ff;
+    color: {p['accent']};
     padding: 6px 12px;
     margin-top: 10px;
     font-weight: bold;
     font-size: 12px;
-}
-.pavu-btn:hover {
-    background: #00f0ff;
-    color: #08090d;
-}
-"""
+}}
+.pavu-btn:hover {{
+    background: {p['accent']};
+    color: {p['bg_hex']};
+}}
+""".encode()
 
 class VolumePopup(Gtk.Window):
     def __init__(self):

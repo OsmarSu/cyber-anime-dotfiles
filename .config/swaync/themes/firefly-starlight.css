@@ -56,11 +56,11 @@ scrollbar slider {
 
 .notification {
   background: rgba(7, 17, 19, 0.94);
-  border: 1px solid rgba(0, 240, 255, 0.45);
+  border: 1px solid rgba(45, 212, 191, 0.45);
   border-radius: 14px;
   padding: 14px 16px;
   margin: 0px 4px 8px 4px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75), 0 0 14px rgba(0, 240, 255, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75), 0 0 14px rgba(45, 212, 191, 0.2);
 }
 
 .notification-content {
@@ -134,11 +134,11 @@ scrollbar slider {
 /* Control Center */
 .control-center {
   background: rgba(8, 9, 13, 0.94);
-  border: 1px solid rgba(0, 240, 255, 0.4);
+  border: 1px solid rgba(45, 212, 191, 0.4);
   border-radius: 18px;
   padding: 18px;
   margin: 8px;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.88), 0 0 24px rgba(0, 240, 255, 0.2);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.88), 0 0 24px rgba(45, 212, 191, 0.2);
 }
 
 .control-center-list {
@@ -201,7 +201,7 @@ scrollbar slider {
   padding: 10px 14px;
   margin: 6px 0;
   border-radius: 12px;
-  border: 1px solid rgba(0, 240, 255, 0.18);
+  border: 1px solid rgba(45, 212, 191, 0.18);
 }
 
 .widget-volume > trough > highlight {
@@ -220,7 +220,7 @@ scrollbar slider {
 .widget-buttons-grid > flowbox > flowboxchild > button {
   background: rgba(14, 17, 26, 0.85);
   border-radius: 12px;
-  border: 1px solid rgba(0, 240, 255, 0.2);
+  border: 1px solid rgba(45, 212, 191, 0.2);
   color: @text;
   min-width: 52px;
   min-height: 52px;
@@ -233,7 +233,7 @@ scrollbar slider {
   background: rgba(22, 27, 40, 0.95);
   border-color: #2dd4bf;
   color: #2dd4bf;
-  box-shadow: 0 0 14px rgba(0, 240, 255, 0.35);
+  box-shadow: 0 0 14px rgba(45, 212, 191, 0.35);
 }
 
 /* Media player */
@@ -242,7 +242,7 @@ scrollbar slider {
   padding: 14px;
   margin: 8px 0;
   border-radius: 14px;
-  border: 1px solid rgba(0, 240, 255, 0.28);
+  border: 1px solid rgba(45, 212, 191, 0.28);
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
 }
 
