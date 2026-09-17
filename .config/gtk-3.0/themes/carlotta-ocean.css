@@ -1,0 +1,353 @@
+/* Theme: carlotta-ocean (Cyber-Anime RGB Frosted Glass) */
+
+/* Standard GTK theme variables */
+@define-color theme_base_color #040f0e;
+@define-color theme_bg_color #040f0e;
+@define-color theme_fg_color #ecfdf5;
+@define-color theme_text_color #ecfdf5;
+@define-color theme_selected_bg_color #10b981;
+@define-color theme_selected_fg_color #040f0e;
+@define-color base_color #040f0e;
+@define-color bg_color #040f0e;
+@define-color text_color #ecfdf5;
+@define-color fg_color #ecfdf5;
+@define-color selected_bg_color #10b981;
+@define-color selected_fg_color #040f0e;
+@define-color insensitive_bg_color #081a18;
+@define-color insensitive_fg_color #a7f3d0;
+
+/* Custom Cyber Variables */
+@define-color theme_accent #10b981;
+@define-color theme_alt #06b6d4;
+@define-color theme_bg rgba(4, 15, 14, 0.94);
+@define-color theme_bg_opaque #040f0e;
+@define-color theme_surface #081a18;
+@define-color theme_surface_border rgba(16, 185, 129, 0.35);
+@define-color theme_fg #ecfdf5;
+@define-color theme_fg_dim #a7f3d0;
+@define-color theme_glow rgba(16, 185, 129, 0.35);
+@define-color theme_glow_alt rgba(6, 182, 212, 0.25);
+
+/* Base Window Styling */
+window,
+window.background,
+#ThunarWindow,
+.thunar,
+.thunar-window {
+    background-color: rgba(4, 15, 14, 0.94);
+    color: #ecfdf5;
+    font-family: "JetBrainsMono Nerd Font", "Noto Sans", sans-serif;
+}
+
+/* Views & TreeViews */
+view,
+treeview,
+iconview,
+ExoIconView,
+ExoTreeView,
+.view,
+.standard-view {
+    background-color: transparent;
+    color: #ecfdf5;
+}
+
+/* Top RGB accent glow strip */
+menubar,
+#ThunarWindow toolbar:first-child {
+    border-top: 2px solid transparent;
+    border-image: linear-gradient(90deg, #10b981, #06b6d4, #00f0ff, #ff007f, #00ff9f, #10b981) 1;
+}
+
+/* Menubar */
+menubar {
+    background-color: rgba(4, 15, 14, 0.88);
+    color: #ecfdf5;
+    padding: 2px 4px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+menubar > menuitem {
+    padding: 3px 8px;
+    border-radius: 4px;
+    color: #a7f3d0;
+}
+
+menubar > menuitem:hover {
+    background: rgba(16, 185, 129, 0.25);
+    color: #10b981;
+}
+
+/* Toolbar with frosted styling */
+toolbar {
+    background-color: rgba(8, 26, 24, 0.75);
+    border-bottom: 1px solid rgba(16, 185, 129, 0.25);
+    padding: 2px 4px;
+    color: #ecfdf5;
+}
+
+toolbar button {
+    background: rgba(8, 26, 24, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    color: #a7f3d0;
+    padding: 3px 6px;
+    margin: 1px 2px;
+    transition: all 0.2s ease;
+}
+
+toolbar button image {
+    padding: 0;
+    margin: 0;
+    min-width: 16px;
+    min-height: 16px;
+}
+
+toolbar button:hover {
+    background: rgba(16, 185, 129, 0.25);
+    border-color: #10b981;
+    color: #10b981;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.35);
+}
+
+/* Pathbar / Breadcrumbs */
+.path-bar-box,
+.location-bar {
+    background-color: rgba(8, 26, 24, 0.70);
+    border-bottom: 1px solid rgba(16, 185, 129, 0.20);
+    padding: 3px 6px;
+}
+
+.path-bar button {
+    background: rgba(8, 26, 24, 0.80);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    border-radius: 6px;
+    color: #ecfdf5;
+    padding: 3px 8px;
+    margin: 1px 2px;
+}
+
+.path-bar button:hover {
+    background: rgba(16, 185, 129, 0.30);
+    border-color: #10b981;
+    color: #10b981;
+}
+
+.path-bar button:checked,
+.path-bar button:active {
+    background: #10b981;
+    color: #040f0e;
+    font-weight: bold;
+}
+
+/* Sidebar (Bookmarks, Places, Drives) */
+scrolledwindow.sidebar,
+.sidebar {
+    background-color: rgba(8, 26, 24, 0.45);
+    border-right: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.sidebar treeview {
+    background-color: transparent;
+    color: #ecfdf5;
+    padding: 6px;
+}
+
+.sidebar treeview:hover {
+    background-color: transparent;
+}
+
+/* Main Icon & Details View */
+scrolledwindow,
+viewport,
+scrolledwindow > viewport {
+    background-color: transparent;
+}
+
+/* Notebook & Tabs (Thunar Multi-tab & Split-view) */
+notebook,
+notebook.frame,
+notebook > stack,
+notebook > stack:backdrop,
+notebook.frame > stack,
+notebook.frame > stack:backdrop {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+}
+
+notebook > header {
+    background-color: rgba(4, 15, 14, 0.85);
+    border-bottom: 1px solid rgba(16, 185, 129, 0.25);
+    padding: 2px 4px 0 4px;
+}
+
+notebook > header tab {
+    background-color: rgba(8, 26, 24, 0.55);
+    color: #a7f3d0;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    padding: 5px 14px;
+    margin: 2px 3px 0 3px;
+    transition: all 0.2s ease;
+}
+
+notebook > header tab:hover {
+    background-color: rgba(16, 185, 129, 0.20);
+    color: #10b981;
+}
+
+notebook > header tab:checked {
+    background-color: rgba(8, 26, 24, 0.90);
+    color: #10b981;
+    border-color: #10b981;
+    border-bottom: 2px solid #10b981;
+    font-weight: bold;
+    box-shadow: 0 -2px 8px rgba(16, 185, 129, 0.25);
+}
+
+notebook > header tab:backdrop {
+    background-color: rgba(4, 15, 14, 0.50);
+    color: #a7f3d0;
+}
+
+notebook > header tab:checked:backdrop {
+    background-color: rgba(8, 26, 24, 0.70);
+    color: #10b981;
+    border-bottom: 2px solid #10b981;
+}
+
+/* Close button inside tab */
+notebook > header tab button {
+    padding: 2px;
+    margin: 0 0 0 6px;
+    min-width: 16px;
+    min-height: 16px;
+    border-radius: 4px;
+    background: transparent;
+    color: #a7f3d0;
+    border: none;
+}
+
+notebook > header tab button:hover {
+    background: rgba(255, 0, 85, 0.40);
+    color: #ffffff;
+}
+
+/* Paned & Split View */
+paned,
+paned > separator {
+    background-color: transparent;
+}
+
+paned > separator {
+    min-width: 4px;
+    min-height: 4px;
+    background-color: rgba(16, 185, 129, 0.25);
+}
+
+paned > separator:hover {
+    background-color: #10b981;
+    box-shadow: 0 0 8px #10b981;
+}
+
+/* Ensure backdrop never turns white anywhere in the window */
+window:backdrop,
+window.background:backdrop,
+#ThunarWindow:backdrop,
+.thunar:backdrop,
+.thunar-window:backdrop {
+    background-color: rgba(4, 15, 14, 0.94);
+    color: #ecfdf5;
+}
+
+view:backdrop,
+treeview:backdrop,
+iconview:backdrop,
+ExoIconView:backdrop,
+ExoTreeView:backdrop,
+.view:backdrop,
+.standard-view:backdrop,
+scrolledwindow:backdrop,
+viewport:backdrop,
+scrolledwindow > viewport:backdrop,
+grid:backdrop,
+box:backdrop,
+paned:backdrop {
+    background-color: transparent;
+    color: #ecfdf5;
+}
+
+/* Selected & Hover Items */
+view:selected,
+treeview.view:selected,
+iconview:selected,
+ExoIconView:selected,
+ExoTreeView:selected,
+.view:selected {
+    background-color: #10b981;
+    color: #040f0e;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+view:hover,
+treeview.view:hover,
+iconview:hover,
+ExoIconView:hover,
+ExoTreeView:hover,
+.view:hover {
+    background-color: rgba(16, 185, 129, 0.15);
+}
+
+/* Context Menus & Popups */
+menu,
+.menu,
+popover {
+    background-color: rgba(4, 15, 14, 0.96);
+    border: 1px solid #10b981;
+    border-radius: 10px;
+    padding: 6px;
+    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.35);
+}
+
+menu menuitem,
+.menu menuitem {
+    border-radius: 6px;
+    padding: 5px 10px;
+    color: #ecfdf5;
+}
+
+menu menuitem:hover,
+.menu menuitem:hover {
+    background: #10b981;
+    color: #040f0e;
+}
+
+/* Thin Cyber Scrollbar */
+scrollbar {
+    background-color: transparent;
+    transition: all 0.2s ease;
+}
+
+scrollbar slider {
+    background-color: rgba(16, 185, 129, 0.35);
+    border-radius: 4px;
+    min-width: 6px;
+    min-height: 6px;
+    border: none;
+}
+
+scrollbar slider:hover {
+    background-color: #10b981;
+    box-shadow: 0 0 8px #10b981;
+}
+
+/* Statusbar */
+statusbar {
+    background-color: rgba(4, 15, 14, 0.88);
+    border-top: 1px solid rgba(16, 185, 129, 0.25);
+    color: #a7f3d0;
+    padding: 3px 10px;
+}

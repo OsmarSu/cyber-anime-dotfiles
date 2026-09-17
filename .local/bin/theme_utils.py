@@ -208,6 +208,22 @@ THEMES = {
         "glow": "rgba(183, 189, 248, 0.35)",
         "glow_alt": "rgba(238, 212, 159, 0.22)",
         "keywords": ["catppuccin", "macchiato", "mocha", "latte", "coffee"]
+    },
+    "pastel-end4": {
+        "display_name": "Pastel End-4 (Material Lavender)",
+        "accent": "#d0bcff",
+        "accent_rgb": (208, 188, 255),
+        "alt": "#e8def8",
+        "alt_rgb": (232, 222, 248),
+        "bg": "rgba(20, 18, 26, 0.94)",
+        "bg_hex": "#14121a",
+        "surface": "#1d1926",
+        "surface_border": "rgba(208, 188, 255, 0.35)",
+        "fg": "#f3eefc",
+        "fg_dim": "#cac4d0",
+        "glow": "rgba(208, 188, 255, 0.35)",
+        "glow_alt": "rgba(232, 222, 248, 0.22)",
+        "keywords": ["end4", "end-4", "pastel", "lavender", "material", "iris", "minimal"]
     }
 }
 

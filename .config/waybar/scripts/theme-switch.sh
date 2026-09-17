@@ -3,7 +3,7 @@
 # Supported themes:
 #   cyber-anime | silver-wolf | blue-archive | crimson-rose | furina-hydro
 #   kurumi-tokisaki | firefly-starlight | keqing-electro | carlotta-ocean | alya-sakura
-#   matrix | macchiato
+#   matrix | macchiato | pastel-end4
 
 theme="${1:-cyber-anime}"
 shift || true
@@ -45,6 +45,18 @@ cp "$HOME/.config/swaync/themes/${theme}.css"             "$HOME/.config/swaync/
 ln -sf "$HOME/.config/hypr/themes/${theme}.lua"           "$HOME/.config/hypr/theme.lua"
 ln -sf "$HOME/.config/hypr/themes/hyprlock-${theme}.conf" "$HOME/.config/hypr/hyprlock.conf"
 ln -sf "$HOME/.config/wlogout/themes/${theme}.css"        "$HOME/.config/wlogout/theme.css" 2>/dev/null || true
+
+# Thunar (GTK3) Theme
+if [[ -f "$HOME/.config/gtk-3.0/themes/${theme}.css" ]]; then
+    ln -sf "$HOME/.config/gtk-3.0/themes/${theme}.css" "$HOME/.config/gtk-3.0/gtk.css"
+fi
+gsettings set org.gnome.desktop.interface icon-theme 'candy-icons' 2>/dev/null || true
+
+# Yazi Theme
+if [[ -f "$HOME/.config/yazi/themes/${theme}.toml" ]]; then
+    ln -sf "$HOME/.config/yazi/themes/${theme}.toml" "$HOME/.config/yazi/theme.toml"
+fi
+
 echo "$theme" > "$HOME/.config/rofi/.current_theme"
 
 # Only touch wallpaper if explicitly requested via --set-wallpaper
@@ -65,6 +77,7 @@ fi
 hyprctl reload >/tmp/hypr-theme-switch.log 2>&1 || true
 pkill -SIGUSR1 -x kitty 2>/dev/null || true
 pkill -SIGUSR1 -f cyber-settings 2>/dev/null || true
+thunar -q 2>/dev/null || true
 setsid "$HOME/.config/swaync/restart" >/tmp/swaync-theme-switch.log 2>&1 &
 
 # Waybar reload

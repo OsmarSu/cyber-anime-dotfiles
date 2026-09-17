@@ -5,7 +5,7 @@ local home    = os.getenv("HOME")
 local mainMod = "SUPER"
 
 local terminal    = "kitty"
-local fileManager = "dolphin"
+local fileManager = "thunar"
 local termFileManager = "kitty -e yazi"
 local browser     = "sh -c 'command -v brave >/dev/null 2>&1 && exec brave || exec firefox'"
 local editor      = "code"

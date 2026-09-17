@@ -9,6 +9,7 @@ import signal
 import subprocess
 import json
 import time
+import threading
 
 LOCK_FILE = f"/tmp/cyber_settings_{os.getuid()}.pid"
 if os.path.exists(LOCK_FILE):
@@ -36,6 +37,12 @@ try:
 except ImportError:
     sys.path.insert(0, os.path.expanduser("~/.local/bin"))
     import theme_utils
+
+try:
+    import battery_control
+except ImportError:
+    sys.path.insert(0, os.path.expanduser("~/.local/bin"))
+    import battery_control
 
 def build_css(theme_name=None):
     p = theme_utils.get_palette(theme_name)
@@ -781,9 +788,14 @@ class CyberSettingsWindow(Gtk.Window):
         b_macchiato.get_style_context().add_class("cyber-btn")
         b_macchiato.connect("clicked", lambda w: select_theme("macchiato"))
 
+        b_end4 = Gtk.Button(label="🌸 Pastel End-4 (Lavender)")
+        b_end4.get_style_context().add_class("cyber-btn")
+        b_end4.connect("clicked", lambda w: select_theme("pastel-end4"))
+
         theme_btns.pack_start(b_anime, True, True, 0)
         theme_btns.pack_start(b_matrix, True, True, 0)
         theme_btns.pack_start(b_macchiato, True, True, 0)
+        theme_btns.pack_start(b_end4, True, True, 0)
         c1.pack_start(theme_btns, False, False, 4)
 
         # Fila 2: Temas Wallpaper Engine (Violet, Azure, Hydro & Electro)
@@ -1023,7 +1035,100 @@ class CyberSettingsWindow(Gtk.Window):
         c1.pack_start(pwr_box, False, False, 6)
         box.pack_start(c1, False, False, 0)
 
-        # 2. Control de Reposo
+        # 2. Control de Batería y Modo Conservación
+        try:
+            bat_mgr = battery_control.BatteryManager()
+            binfo = bat_mgr.get_info()
+        except Exception:
+            bat_mgr = None
+            binfo = {"has_battery": False}
+
+        if binfo.get("has_battery"):
+            c_bat = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+            c_bat.get_style_context().add_class("card")
+
+            c_bat_title = Gtk.Label(label="󰂄 Cuidado de Batería y Límite de Carga", xalign=0)
+            c_bat_title.get_style_context().add_class("card-title")
+            c_bat.pack_start(c_bat_title, False, False, 0)
+
+            mtype = binfo.get("mode_type")
+            if mtype == "lenovo":
+                hw_desc = "Lenovo Legion / IdeaPad — Modo Conservación fija la carga en ~60% para proteger las celdas conectado a AC."
+            elif mtype == "threshold":
+                hw_desc = "Umbral de Carga (ASUS / ThinkPad / Framework) — Regula la carga máxima."
+            elif mtype == "lg":
+                hw_desc = "LG Gram Battery Care — Límite de carga fijado al 80%."
+            elif mtype == "samsung":
+                hw_desc = "Samsung Battery Life Extender — Límite fijado al 80%."
+            else:
+                hw_desc = "Gestión y salud de la batería del sistema."
+
+            c_bat_desc = Gtk.Label(label=hw_desc, xalign=0)
+            c_bat_desc.get_style_context().add_class("card-desc")
+            c_bat_desc.set_line_wrap(True)
+            c_bat.pack_start(c_bat_desc, False, False, 0)
+
+            if mtype:
+                row_cons = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+                lbl_text = "Modo Conservación (Límite al 60% para alargar vida útil)" if mtype == "lenovo" else f"Límite de Carga ({binfo.get('charge_limit', 80)}%)"
+                lbl_cons = Gtk.Label(label=lbl_text, xalign=0)
+                lbl_cons.get_style_context().add_class("card-desc")
+                lbl_cons.set_line_wrap(True)
+
+                sw_cons = Gtk.Switch()
+                sw_cons.set_active(binfo.get("conservation_active", False))
+
+                is_updating_ui = False
+
+                def on_toggle_conservation(switch_widget, gparam):
+                    nonlocal is_updating_ui
+                    if is_updating_ui:
+                        return
+                    target_state = switch_widget.get_active()
+
+                    def worker():
+                        nonlocal is_updating_ui
+                        if bat_mgr:
+                            success = bat_mgr.set_conservation(target_state)
+                            if not success:
+                                def revert():
+                                    nonlocal is_updating_ui
+                                    is_updating_ui = True
+                                    switch_widget.set_active(not target_state)
+                                    is_updating_ui = False
+                                    return False
+                                GLib.idle_add(revert)
+
+                    threading.Thread(target=worker, daemon=True).start()
+
+                sw_cons.connect("notify::active", on_toggle_conservation)
+                row_cons.pack_start(lbl_cons, True, True, 0)
+                row_cons.pack_end(sw_cons, False, False, 0)
+                c_bat.pack_start(row_cons, False, False, 4)
+
+            cycles_str = f" • Ciclos: {binfo['cycles']}" if binfo.get('cycles') is not None else ""
+            power_str = f" • Consumo: {binfo['power_w']} W" if binfo.get('power_w', 0) > 0 else ""
+            stat_text = f"Nivel: {binfo.get('capacity', 0)}% ({binfo.get('status', 'Unknown')}) • Salud: {binfo.get('health', 100)}%{cycles_str}{power_str}"
+            lbl_stats = Gtk.Label(label=stat_text, xalign=0)
+            lbl_stats.get_style_context().add_class("card-desc")
+            c_bat.pack_start(lbl_stats, False, False, 2)
+
+            bat_actions = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+            b_rofi_bat = Gtk.Button(label="󰂄 Menú Rofi de Batería")
+            b_rofi_bat.get_style_context().add_class("cyber-btn")
+            b_rofi_bat.connect("clicked", lambda w: (spawn_cmd("~/.local/bin/battery-control menu"), self.close_window()))
+
+            b_udev = Gtk.Button(label="🛡️ Configurar Permisos Sin Password")
+            b_udev.get_style_context().add_class("cyber-btn-magenta")
+            b_udev.connect("clicked", lambda w: spawn_cmd("~/.local/bin/battery-control setup-udev"))
+
+            bat_actions.pack_start(b_rofi_bat, True, True, 0)
+            bat_actions.pack_start(b_udev, True, True, 0)
+            c_bat.pack_start(bat_actions, False, False, 4)
+
+            box.pack_start(c_bat, False, False, 0)
+
+        # 3. Control de Reposo
         c2 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
         c2.get_style_context().add_class("card")
         c2_title = Gtk.Label(label="󰒲 Modo de Reposo y Pantalla", xalign=0)

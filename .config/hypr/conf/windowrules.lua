@@ -200,3 +200,21 @@ hl.window_rule({
     pin         = false,
 })
 
+-- Thunar file manager styling, opacity and dialogs
+hl.window_rule({
+    name    = "thunar-opacity",
+    match   = { class = "^(thunar|Thunar)$" },
+    opacity = "0.94 0.86",
+})
+
+hl.window_rule({
+    name   = "thunar-dialogs",
+    match  = {
+        class = "^(thunar|Thunar)$",
+        title = "^(Progreso|File Operation Progress|Confirmar|Confirm to replace files|Propiedades|Properties)$",
+    },
+    float  = true,
+    center = true,
+})
+
+

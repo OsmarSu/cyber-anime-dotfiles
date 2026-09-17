@@ -1,0 +1,187 @@
+# Theme: firefly-starlight (Cyber-Anime RGB)
+
+[mgr]
+cwd = { fg = "#2dd4bf", bold = true }
+
+# Hovered item
+hovered = { bg = "#152e34", fg = "#2dd4bf", bold = true }
+preview_hovered = { underline = true }
+
+# Find
+find_keyword  = { fg = "#fde047", bold = true, italic = true }
+find_position = { fg = "#fde047", bg = "reset", bold = true }
+
+# Marker
+marker_copied   = { fg = "#2dd4bf", bg = "#2dd4bf" }
+marker_cut      = { fg = "#f43f5e", bg = "#f43f5e" }
+marker_selected = { fg = "#2dd4bf", bg = "#2dd4bf" }
+
+# Tab
+tab_active   = { bg = "#2dd4bf", fg = "#071113", bold = true }
+tab_inactive = { bg = "#0d1e22", fg = "#99f6e4" }
+tab_width    = 1
+
+# Count
+count_copied   = { fg = "#071113", bg = "#2dd4bf", bold = true }
+count_cut      = { fg = "#071113", bg = "#f43f5e", bold = true }
+count_selected = { fg = "#071113", bg = "#2dd4bf", bold = true }
+
+# Border
+border_symbol = "│"
+border_style  = { fg = "#14554f" }
+
+[mode]
+normal_main = { bg = "#2dd4bf", fg = "#071113", bold = true }
+normal_alt  = { bg = "#0d1e22", fg = "#2dd4bf" }
+
+select_main = { bg = "#fb923c", fg = "#071113", bold = true }
+select_alt  = { bg = "#0d1e22", fg = "#fb923c" }
+
+unset_main  = { bg = "#fde047", fg = "#071113", bold = true }
+unset_alt   = { bg = "#0d1e22", fg = "#fde047" }
+
+[status]
+separator_open  = ""
+separator_close = ""
+
+# Progress
+progress_label  = { fg = "#f0fdfa", bold = true }
+progress_normal = { fg = "#2dd4bf", bg = "#0d1e22" }
+progress_error  = { fg = "#f43f5e", bg = "#0d1e22" }
+
+# Permissions
+permissions_t = { fg = "#2dd4bf" }
+permissions_r = { fg = "#fde047" }
+permissions_w = { fg = "#f43f5e" }
+permissions_x = { fg = "#2dd4bf" }
+permissions_s = { fg = "#99f6e4" }
+
+[which]
+cols            = 3
+mask            = { bg = "#071113" }
+cand            = { fg = "#2dd4bf" }
+rest            = { fg = "#99f6e4" }
+desc            = { fg = "#f0fdfa" }
+separator       = " ➜ "
+separator_style = { fg = "#14554f" }
+
+[filetype]
+rules = [
+    # Directories
+    { url = "*/", fg = "#2dd4bf", bold = true },
+
+    # Media with vibrant RGB
+    { mime = "**/image/*", fg = "#fb923c" },
+    { mime = "**/{audio,video}/*", fg = "#a78bfa" },
+
+    # Archives
+    { mime = "**/application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}", fg = "#f43f5e" },
+
+    # Documents & Code
+    { mime = "**/application/{pdf,doc,rtf}", fg = "#fb923c" },
+    { mime = "application/json", fg = "#fde047" },
+    { mime = "text/markdown", fg = "#2dd4bf" },
+
+    # Special files
+    { url = "*", is = "orphan", bg = "#f43f5e" },
+    { url = "*", is = "exec", fg = "#2dd4bf", bold = true },
+
+    # Fallback
+    { url = "*", fg = "#f0fdfa" },
+]
+
+[icon]
+prepend_conds = [
+    { if = "dir & hovered", text = "󰝰", fg = "#2dd4bf" },
+    { if = "dir", text = "󰉋", fg = "#2dd4bf" },
+    { if = "link", text = "", fg = "#fb923c" },
+    { if = "exec", text = "", fg = "#2dd4bf" },
+]
+prepend_dirs = [
+    # Spanish Common Folders
+    { name = "Descargas", text = "󰉍", fg = "#fb923c" },
+    { name = "Documentos", text = "󱔗", fg = "#0284c7" },
+    { name = "Escritorio", text = "󰍹", fg = "#fde047" },
+    { name = "Imágenes", text = "󰉏", fg = "#f43f5e" },
+    { name = "Música", text = "󱍙", fg = "#a78bfa" },
+    { name = "Vídeos", text = "󰉐", fg = "#2dd4bf" },
+    { name = "Juegos", text = "󰊴", fg = "#fb923c" },
+    { name = "Proyectos", text = "󱘗", fg = "#2dd4bf" },
+    { name = "Plantillas", text = "󱁿", fg = "#fde047" },
+    { name = "Público", text = "󰉎", fg = "#fb923c" },
+
+    # English Common Folders
+    { name = "Downloads", text = "󰉍", fg = "#fb923c" },
+    { name = "Documents", text = "󱔗", fg = "#0284c7" },
+    { name = "Desktop", text = "󰍹", fg = "#fde047" },
+    { name = "Pictures", text = "󰉏", fg = "#f43f5e" },
+    { name = "Music", text = "󱍙", fg = "#a78bfa" },
+    { name = "Videos", text = "󰉐", fg = "#2dd4bf" },
+    { name = "Movies", text = "󰉐", fg = "#2dd4bf" },
+    { name = "Games", text = "󰊴", fg = "#fb923c" },
+    { name = "Development", text = "󱘗", fg = "#2dd4bf" },
+    { name = "Public", text = "󰉎", fg = "#fb923c" },
+    { name = "Templates", text = "󱁿", fg = "#fde047" },
+
+    # Dev & Config Folders
+    { name = "dotfiles", text = "󰌠", fg = "#fde047" },
+    { name = ".config", text = "󱁿", fg = "#2dd4bf" },
+    { name = ".git", text = "󰊢", fg = "#fb923c" },
+    { name = "Arduino", text = "", fg = "#00979d" },
+    { name = "lost+found", text = "󰟢", fg = "#f43f5e" },
+]
+prepend_exts = [
+    # Documents & Markdown
+    { name = "md", text = "󰍔", fg = "#2dd4bf" },
+    { name = "markdown", text = "󰍔", fg = "#2dd4bf" },
+    { name = "txt", text = "󰈙", fg = "#f0fdfa" },
+    { name = "pdf", text = "󰈦", fg = "#f43f5e" },
+    { name = "doc", text = "󰈬", fg = "#0284c7" },
+    { name = "docx", text = "󰈬", fg = "#0284c7" },
+    { name = "xls", text = "󰈛", fg = "#2dd4bf" },
+    { name = "xlsx", text = "󰈛", fg = "#2dd4bf" },
+
+    # Programming
+    { name = "py", text = "󰌠", fg = "#fde047" },
+    { name = "rs", text = "󱘗", fg = "#fb923c" },
+    { name = "js", text = "󰌞", fg = "#fde047" },
+    { name = "ts", text = "󰛦", fg = "#2dd4bf" },
+    { name = "jsx", text = "󰌞", fg = "#fde047" },
+    { name = "tsx", text = "󰛦", fg = "#2dd4bf" },
+    { name = "json", text = "󰘦", fg = "#fde047" },
+    { name = "toml", text = "󰅪", fg = "#fb923c" },
+    { name = "yaml", text = "󰅪", fg = "#fb923c" },
+    { name = "yml", text = "󰅪", fg = "#fb923c" },
+    { name = "lua", text = "󰢱", fg = "#2dd4bf" },
+    { name = "c", text = "", fg = "#0284c7" },
+    { name = "cpp", text = "", fg = "#0284c7" },
+    { name = "h", text = "", fg = "#0284c7" },
+    { name = "hpp", text = "", fg = "#0284c7" },
+    { name = "go", text = "󰟓", fg = "#0284c7" },
+    { name = "sh", text = "󰞷", fg = "#2dd4bf" },
+    { name = "bash", text = "󰞷", fg = "#2dd4bf" },
+    { name = "zsh", text = "󰞷", fg = "#2dd4bf" },
+
+    # Images
+    { name = "png", text = "󰋩", fg = "#fb923c" },
+    { name = "jpg", text = "󰋩", fg = "#fb923c" },
+    { name = "jpeg", text = "󰋩", fg = "#fb923c" },
+    { name = "webp", text = "󰋩", fg = "#fb923c" },
+    { name = "gif", text = "󰋩", fg = "#fb923c" },
+    { name = "svg", text = "󰋩", fg = "#fde047" },
+
+    # Media
+    { name = "mp3", text = "󰎆", fg = "#fde047" },
+    { name = "flac", text = "󰎆", fg = "#fde047" },
+    { name = "wav", text = "󰎆", fg = "#fde047" },
+    { name = "mp4", text = "󰕧", fg = "#a78bfa" },
+    { name = "mkv", text = "󰕧", fg = "#a78bfa" },
+    { name = "webm", text = "󰕧", fg = "#a78bfa" },
+
+    # Archives
+    { name = "zip", text = "", fg = "#f43f5e" },
+    { name = "tar", text = "", fg = "#f43f5e" },
+    { name = "gz", text = "", fg = "#f43f5e" },
+    { name = "7z", text = "", fg = "#f43f5e" },
+    { name = "rar", text = "", fg = "#f43f5e" },
+]

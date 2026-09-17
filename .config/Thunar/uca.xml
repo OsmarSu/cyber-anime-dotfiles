@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+  <action>
+    <icon>utilities-terminal</icon>
+    <name>󰄛 Abrir Terminal Kitty aquí</name>
+    <submenu></submenu>
+    <unique-id>1726000001-1</unique-id>
+    <command>kitty --directory %f</command>
+    <description>Abrir terminal Kitty en la carpeta actual</description>
+    <range></range>
+    <patterns>*</patterns>
+    <directories/>
+  </action>
+  <action>
+    <icon>terminal</icon>
+    <name>⚡ Abrir Yazi aquí</name>
+    <submenu></submenu>
+    <unique-id>1726000002-2</unique-id>
+    <command>kitty -e yazi %f</command>
+    <description>Abrir el gestor de archivos Yazi en esta carpeta</description>
+    <range></range>
+    <patterns>*</patterns>
+    <directories/>
+  </action>
+  <action>
+    <icon>code</icon>
+    <name>󰨞 Abrir en VS Code</name>
+    <submenu></submenu>
+    <unique-id>1726000003-3</unique-id>
+    <command>code %F</command>
+    <description>Abrir archivos o carpetas seleccionadas en Visual Studio Code</description>
+    <range></range>
+    <patterns>*</patterns>
+    <directories/>
+    <other-files/>
+    <text-files/>
+  </action>
+  <action>
+    <icon>nvim</icon>
+    <name>󰎕 Editar en Neovim</name>
+    <submenu></submenu>
+    <unique-id>1726000004-4</unique-id>
+    <command>kitty -e nvim %F</command>
+    <description>Editar en Neovim dentro de Kitty</description>
+    <range></range>
+    <patterns>*</patterns>
+    <other-files/>
+    <text-files/>
+  </action>
+  <action>
+    <icon>preferences-desktop-wallpaper</icon>
+    <name>󰸉 Establecer como Fondo de Pantalla</name>
+    <submenu></submenu>
+    <unique-id>1726000005-5</unique-id>
+    <command>sh -c &apos;~/.config/waybar/scripts/theme-switch.sh --set-wallpaper &quot;%f&quot;&apos;</command>
+    <description>Aplicar esta imagen como fondo con transición fluida</description>
+    <range></range>
+    <patterns>*.png;*.jpg;*.jpeg;*.webp;*.gif;*.PNG;*.JPG;*.JPEG;*.WEBP</patterns>
+    <image-files/>
+  </action>
+  <action>
+    <icon>edit-copy</icon>
+    <name>󰛓 Copiar ruta al portapapeles</name>
+    <submenu></submenu>
+    <unique-id>1726000006-6</unique-id>
+    <command>sh -c &apos;echo -n &quot;%f&quot; | wl-copy&apos;</command>
+    <description>Copiar ruta absoluta al portapapeles</description>
+    <range></range>
+    <patterns>*</patterns>
+    <directories/>
+    <audio-files/>
+    <image-files/>
+    <other-files/>
+    <text-files/>
+    <video-files/>
+  </action>
+  <action>
+    <icon>archive-extract</icon>
+    <name>󰁨 Extraer aquí</name>
+    <submenu></submenu>
+    <unique-id>1726000007-7</unique-id>
+    <command>7z x &quot;%f&quot; -o*</command>
+    <description>Extraer el archivo en una carpeta con su mismo nombre</description>
+    <range></range>
+    <patterns>*.zip;*.tar;*.tar.gz;*.tgz;*.tar.bz2;*.tar.xz;*.7z;*.rar;*.ZIP;*.7Z;*.RAR</patterns>
+    <other-files/>
+  </action>
+  <action>
+    <icon>archive-insert</icon>
+    <name>󰈈 Comprimir en archivo .zip</name>
+    <submenu></submenu>
+    <unique-id>1726000008-8</unique-id>
+    <command>7z a &quot;%n.zip&quot; %N</command>
+    <description>Comprimir elementos seleccionados en archivo .zip</description>
+    <range></range>
+    <patterns>*</patterns>
+    <directories/>
+    <audio-files/>
+    <image-files/>
+    <other-files/>
+    <text-files/>
+    <video-files/>
+  </action>
+</actions>

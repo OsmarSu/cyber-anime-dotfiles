@@ -1,0 +1,85 @@
+/* ─────────────────────────────────────────────────────────
+   Theme — Pastel End-4 (Material You Lavender / Monochromatic)
+   Palette: Monochromatic Lavender & Iris with soft Material 3 pills
+   ───────────────────────────────────────────────────────── */
+
+/* ── Palette ── */
+@define-color base       #14121a;
+@define-color mantle     #100e16;
+@define-color crust      #0b0a0f;
+@define-color surface0   #1d1926;
+@define-color surface1   #282334;
+@define-color surface2   #352f44;
+@define-color text       #f3eefc;
+@define-color subtext0   #cac4d0;
+@define-color subtext1   #e6e0e9;
+@define-color overlay0   #79747e;
+@define-color overlay1   #938f99;
+@define-color overlay2   #aea9b4;
+@define-color rosewater  #f4dbd6;
+@define-color flamingo   #f0c6c6;
+@define-color pink       #f5bde6;
+@define-color mauve      #c6a0f6;
+@define-color red        #f38ba8;
+@define-color maroon     #ee99a0;
+@define-color peach      #fab387;
+@define-color yellow     #f9e2af;
+@define-color green      #a6e3a1;
+@define-color teal       #94e2d5;
+@define-color sky        #89dceb;
+@define-color sapphire   #74c7ec;
+@define-color blue       #89b4fa;
+@define-color lavender   #d0bcff;
+
+/* ── Role mapping ── */
+@define-color bar-bg          rgba(20, 18, 26, 0.72);
+@define-color pill-bg         rgba(29, 25, 38, 0.70);
+@define-color pill-bg-hover   rgba(40, 35, 52, 0.88);
+@define-color text-fg         @text;
+@define-color text-dim        @overlay0;
+@define-color accent-active   #d0bcff;
+@define-color accent-hover    #e8def8;
+@define-color accent-warning  #f9e2af;
+@define-color accent-critical #f38ba8;
+@define-color accent-good     #a6e3a1;
+
+/* ── End-4 Dots Specificity Overrides ── */
+window#waybar .modules-left,
+window#waybar .modules-center,
+window#waybar .modules-right {
+  background: @bar-bg;
+  border: 1px solid rgba(208, 188, 255, 0.16);
+  border-radius: 18px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35), 0 0 6px rgba(208, 188, 255, 0.06);
+}
+
+window#waybar .modules-left:hover,
+window#waybar .modules-center:hover,
+window#waybar .modules-right:hover {
+  border-color: rgba(208, 188, 255, 0.32);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), 0 0 10px rgba(208, 188, 255, 0.12);
+}
+
+window#waybar #workspaces button {
+  border-radius: 10px;
+  background: rgba(29, 25, 38, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  color: @text-dim;
+  transition: all 180ms ease;
+}
+
+window#waybar #workspaces button.active {
+  color: #14121a;
+  background: linear-gradient(135deg, #e8def8, #d0bcff);
+  border: 1px solid #e8def8;
+  box-shadow: 0 0 10px rgba(208, 188, 255, 0.40);
+  font-weight: 900;
+  border-radius: 10px;
+}
+
+window#waybar #workspaces button:hover {
+  background: rgba(208, 188, 255, 0.16);
+  color: #d0bcff;
+  border-color: rgba(208, 188, 255, 0.35);
+  box-shadow: 0 0 8px rgba(208, 188, 255, 0.20);
+}

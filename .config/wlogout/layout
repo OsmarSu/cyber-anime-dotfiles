@@ -6,13 +6,13 @@
 }
 {
     "label" : "logout",
-    "action" : "loginctl terminate-user $USER",
+    "action" : "hyprctl dispatch exit",
     "text" : "Cerrar Sesion",
     "keybind" : "e"
 }
 {
     "label" : "suspend",
-    "action" : "systemctl suspend",
+    "action" : "loginctl lock-session && systemctl suspend",
     "text" : "Suspender",
     "keybind" : "u"
 }

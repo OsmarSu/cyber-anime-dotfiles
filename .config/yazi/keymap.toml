@@ -1,0 +1,28 @@
+# ==============================================================================
+# keymap.toml — Cyber-Anime Enhanced Shortcuts for Yazi
+# ==============================================================================
+
+[[mgr.prepend_keymap]]
+on   = [ "T" ]
+run  = 'shell "kitty --directory \"$PWD\" &" --orphan --desc "Abrir Terminal Kitty"'
+desc = "Abrir Terminal Kitty aquí"
+
+[[mgr.prepend_keymap]]
+on   = [ "E" ]
+run  = 'shell "thunar \"$PWD\" &" --orphan --desc "Abrir en Thunar"'
+desc = "Abrir carpeta en Thunar"
+
+[[mgr.prepend_keymap]]
+on   = [ "W" ]
+run  = 'shell "~/.config/waybar/scripts/theme-switch.sh --set-wallpaper \"$0\"" --confirm --desc "Fondo de Pantalla"'
+desc = "Establecer imagen como fondo de pantalla"
+
+[[mgr.prepend_keymap]]
+on   = [ "C" ]
+run  = 'shell "code \"$PWD\" &" --orphan --desc "Abrir en VS Code"'
+desc = "Abrir carpeta en VS Code"
+
+[[mgr.prepend_keymap]]
+on   = [ "V" ]
+run  = 'shell "nvim \"$0\"" --block --desc "Editar en Neovim"'
+desc = "Editar archivo en Neovim"

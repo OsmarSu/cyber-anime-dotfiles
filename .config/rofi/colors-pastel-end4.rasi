@@ -1,0 +1,34 @@
+/* colors-pastel-end4.rasi — Pastel End-4 (Material You Lavender)
+ * Palette identica a ~/.config/waybar/theme.css → coerenza visiva totale.
+ * Swap: ln -sf colors-pastel-end4.rasi ~/.config/rofi/colors.rasi
+ */
+
+* {
+    /* ── Base (= waybar base/mantle/surface0/surface1) ── */
+    bg          : #14121acc;   /* base 80% — lascia passare il blur */
+    bg-alt      : #1d1926ee;   /* mantle/surface0 93% — inputbar leggibile */
+    bg-selected : #352f44ee;   /* surface2 — voce selezionata leggibile */
+    surface     : #d0bcff44;   /* bordo sottile pastel */
+
+    /* ── Foreground (= waybar text/subtext/overlay) ── */
+    fg          : #f3eefc;   /* text     = waybar @text-fg */
+    fg-alt      : #e8def8;   /* subtext1 */
+    fg-dim      : #938f99;   /* overlay0 = waybar @text-dim */
+
+    /* ── Accent — lavender ── */
+    accent      : #d0bcff;   /* lavender */
+    accent-dim  : #9a82db;   /* overlay1 */
+
+    /* ── Semantic ── */
+    urgent      : #f38ba8;   /* pastel red */
+    warning     : #f9e2af;   /* pastel yellow */
+
+    /* ── Typography ── */
+    font-family : "JetBrainsMono Nerd Font";
+    font-size   : 12;
+
+    /* ── Border radius (End-4 Material 3 soft curves) ── */
+    border-r         : 18px;
+    border-r-inner   : 12px;
+    border-r-element : 10px;
+}

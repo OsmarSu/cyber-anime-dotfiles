@@ -87,7 +87,7 @@ Entorno de escritorio cyberpunk y anime de alto rendimiento para **Arch Linux** 
 
 ---
 
-## 🎨 Catálogo de los 12 Temas
+## 🎨 Catálogo de los 13 Temas
 
 | ID del Tema | Inspiración / Personaje | Color Primario | Color Secundario / Acento | Fondo Base |
 | :--- | :--- | :--- | :--- | :--- |
@@ -103,6 +103,7 @@ Entorno de escritorio cyberpunk y anime de alto rendimiento para **Arch Linux** 
 | **`alya-sakura`** | Alya (*Roshidere*) | `#f472b6` (Rosa Sakura) | `#c084fc` (Lavanda Suave) | `#12080f` |
 | **`matrix`** | Cyber Terminal BlackArch | `#ff4455` (Rojo Terminal) | `#ff8040` (Naranja Neón) | `#080000` |
 | **`macchiato`** | Catppuccin Macchiato | `#b7bdf8` (Lavanda Pastel) | `#eed49f` (Oro Macchiato) | `#24273a` |
+| **`pastel-end4`** | Material You / End-4 Dots | `#d0bcff` (Lavanda Pastel) | `#e8def8` (Luz Monocromática) | `#14121a` |
 
 > 💡 *Para cambiar de tema por consola ejecuta: `~/.config/waybar/scripts/theme-switch.sh <ID_TEMA>`*
 

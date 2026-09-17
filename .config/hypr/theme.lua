@@ -1,1 +1,1 @@
-/home/oswi/.config/hypr/themes/blue-archive.lua
+/home/oswi/.config/hypr/themes/pastel-end4.lua

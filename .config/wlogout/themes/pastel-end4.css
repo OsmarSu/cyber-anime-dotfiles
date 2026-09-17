@@ -1,0 +1,10 @@
+/* wlogout theme — pastel-end4 */
+@define-color bg-window rgba(20, 18, 26, 0.88);
+@define-color btn-bg rgba(29, 25, 38, 0.78);
+@define-color btn-bg-hover rgba(53, 47, 68, 0.95);
+@define-color btn-border rgba(208, 188, 255, 0.30);
+@define-color accent #d0bcff;
+@define-color accent-alt #e8def8;
+@define-color accent-glow rgba(208, 188, 255, 0.40);
+@define-color accent-sec-glow rgba(232, 222, 248, 0.25);
+@define-color text-color #f3eefc;

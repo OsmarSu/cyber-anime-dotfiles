@@ -68,7 +68,7 @@
       "class<discord|vesktop>": "󰙯",
       "class<steam>": "󰓓",
       "class<code|vscodium>": "󰨞",
-      "class<dolphin|yazi>": "󰉋",
+      "class<thunar|Thunar|dolphin|yazi>": "󰉋",
       "class<obsidian>": "󰎕",
       "class<spotify>": "󰓇"
     },
@@ -225,8 +225,10 @@
     "format-plugged": "󰚥 {capacity}%",
     "format-alt": "{time} {icon}",
     "format-icons": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
-    "tooltip-format": "{capacity}% ({timeTo})\nClic: Monitor de recursos",
-    "on-click": "kitty --class floating-tool -e btop"
+    "tooltip-format": "Batería: {capacity}% ({timeTo})\nSalud: {health}%\nConsumo: {power:.1f}W • Ciclos: {cycles}\n\nClic izq: Menú de Batería y Energía\nClic der: Alternar Modo Conservación\nClic central: Monitor btop",
+    "on-click": "$HOME/.local/bin/battery-control menu",
+    "on-click-right": "$HOME/.local/bin/battery-control toggle",
+    "on-click-middle": "kitty --class floating-tool -e btop"
   },
 
   "custom/settings": {
